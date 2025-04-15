@@ -28,47 +28,59 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
-            button4 = new Button();
+            mouseCoordinates = new Label();
+            clickedOnPlayerLabel = new Label();
+            xScrollBar = new HScrollBar();
+            yScrollBar = new VScrollBar();
+            howManyPlayerCharacters = new Label();
             SuspendLayout();
             // 
-            // button1
+            // mouseCoordinates
             // 
-            button1.Location = new Point(0, 0);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            mouseCoordinates.AutoSize = true;
+            mouseCoordinates.Location = new Point(0, 624);
+            mouseCoordinates.Name = "mouseCoordinates";
+            mouseCoordinates.Size = new Size(135, 20);
+            mouseCoordinates.TabIndex = 4;
+            mouseCoordinates.Text = "mouse coordinates";
             // 
-            // button2
+            // clickedOnPlayerLabel
             // 
-            button2.Location = new Point(1090, 0);
-            button2.Name = "button2";
-            button2.Size = new Size(94, 29);
-            button2.TabIndex = 1;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
+            clickedOnPlayerLabel.AutoSize = true;
+            clickedOnPlayerLabel.Location = new Point(0, 573);
+            clickedOnPlayerLabel.Name = "clickedOnPlayerLabel";
+            clickedOnPlayerLabel.Size = new Size(128, 20);
+            clickedOnPlayerLabel.TabIndex = 7;
+            clickedOnPlayerLabel.Text = "clicked on player?";
             // 
-            // button3
+            // xScrollBar
             // 
-            button3.Location = new Point(0, 626);
-            button3.Name = "button3";
-            button3.Size = new Size(94, 29);
-            button3.TabIndex = 2;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
+            xScrollBar.Location = new Point(508, 618);
+            xScrollBar.Maximum = 250;
+            xScrollBar.Minimum = -250;
+            xScrollBar.Name = "xScrollBar";
+            xScrollBar.Size = new Size(172, 26);
+            xScrollBar.TabIndex = 12;
+            xScrollBar.Scroll += xScrollBar_Scroll;
             // 
-            // button4
+            // yScrollBar
             // 
-            button4.Location = new Point(1090, 626);
-            button4.Name = "button4";
-            button4.Size = new Size(94, 29);
-            button4.TabIndex = 3;
-            button4.Text = "button4";
-            button4.UseVisualStyleBackColor = true;
+            yScrollBar.Location = new Point(1147, 242);
+            yScrollBar.Maximum = 250;
+            yScrollBar.Minimum = -250;
+            yScrollBar.Name = "yScrollBar";
+            yScrollBar.Size = new Size(26, 161);
+            yScrollBar.TabIndex = 13;
+            yScrollBar.Scroll += yScrollBar_Scroll;
+            // 
+            // howManyPlayerCharacters
+            // 
+            howManyPlayerCharacters.AutoSize = true;
+            howManyPlayerCharacters.Location = new Point(0, 520);
+            howManyPlayerCharacters.Name = "howManyPlayerCharacters";
+            howManyPlayerCharacters.Size = new Size(193, 20);
+            howManyPlayerCharacters.TabIndex = 14;
+            howManyPlayerCharacters.Text = "how many player characters";
             // 
             // GEOSform
             // 
@@ -76,21 +88,24 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(howManyPlayerCharacters);
+            Controls.Add(yScrollBar);
+            Controls.Add(xScrollBar);
+            Controls.Add(clickedOnPlayerLabel);
+            Controls.Add(mouseCoordinates);
+            DoubleBuffered = true;
             Name = "GEOSform";
             Text = "GEOS";
             Load += GEOSform_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-
-        private Button button1;
-        private Button button2;
-        private Button button3;
-        private Button button4;
+        private Label mouseCoordinates;
+        private Label clickedOnPlayerLabel;
+        private HScrollBar xScrollBar;
+        private VScrollBar yScrollBar;
+        private Label howManyPlayerCharacters;
     }
 }
