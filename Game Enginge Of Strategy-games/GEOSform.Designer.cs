@@ -32,7 +32,7 @@
             clickedOnPlayerLabel = new Label();
             xScrollBar = new HScrollBar();
             yScrollBar = new VScrollBar();
-            howManyPlayerCharacters = new Label();
+            tileCoordinates = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -73,14 +73,14 @@
             yScrollBar.TabIndex = 13;
             yScrollBar.Scroll += yScrollBar_Scroll;
             // 
-            // howManyPlayerCharacters
+            // tileCoordinates
             // 
-            howManyPlayerCharacters.AutoSize = true;
-            howManyPlayerCharacters.Location = new Point(0, 520);
-            howManyPlayerCharacters.Name = "howManyPlayerCharacters";
-            howManyPlayerCharacters.Size = new Size(193, 20);
-            howManyPlayerCharacters.TabIndex = 14;
-            howManyPlayerCharacters.Text = "how many player characters";
+            tileCoordinates.AutoSize = true;
+            tileCoordinates.Location = new Point(178, 626);
+            tileCoordinates.Name = "tileCoordinates";
+            tileCoordinates.Size = new Size(112, 20);
+            tileCoordinates.TabIndex = 14;
+            tileCoordinates.Text = "tile coordinates";
             // 
             // GEOSform
             // 
@@ -88,7 +88,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
-            Controls.Add(howManyPlayerCharacters);
+            Controls.Add(tileCoordinates);
             Controls.Add(yScrollBar);
             Controls.Add(xScrollBar);
             Controls.Add(clickedOnPlayerLabel);
@@ -106,6 +106,6 @@
         private Label clickedOnPlayerLabel;
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
-        private Label howManyPlayerCharacters;
+        private Label tileCoordinates;
     }
 }

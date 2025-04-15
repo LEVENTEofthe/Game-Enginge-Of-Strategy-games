@@ -9,21 +9,15 @@ namespace GridbaseBattleSystem
 {
     internal class gridMap
     {
-        //private int[,] mapObject;   //do we really need a mapObject?
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public tile[,] Map { get; set; }
 
-        public gridMap(int width, int height, mapEvent[] mapEvents)
+        public gridMap(int width, int height)
         {
             this.Width = width;
             this.Height = height;
-            this.MapEvents = mapEvents;
-            //A map is basically this array called mapObject, which will be created upon making an object of this class. Come to think of it, do we even need it?
-            //this.mapObject = new int[this.Width, this.Height];
+            this.Map = new tile[width, height];
         }
-
-        public int Width { get; set; }
-
-        public int Height { get; set; }
-
-        public mapEvent[] MapEvents { get; set; }
     }
 }
