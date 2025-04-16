@@ -9,9 +9,7 @@ namespace Game_Enginge_Of_Strategy_games
     internal class mapObject //Interactable things that occupy tiles
     {
         public mapObjectTypes MapEventType { get; set; }
-
+        public tile MapPosition { get; set; }
         public bool CanStandOnIt { get; set; }
-
-        public (int, int) MapPosition { get; set; }
     }
 }

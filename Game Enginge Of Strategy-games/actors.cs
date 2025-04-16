@@ -11,27 +11,31 @@ namespace GridbaseBattleSystem
 {
     internal class actors
     {
-        private (int, int) mapPosition;
-
-        public actors(string name, Image image, int agility, (int, int) mapPosition)
-        {
-            this.Name = name;
-            this.Image = image;
-            this.Agility = agility;
-            this.MapPosition = mapPosition;
-        }
-
         public string Name { get; set; }
-
         public Image Image { get; set; }
-
         public int Agility { get; set; }
+        public tile MapPosition { get; set; }
 
-        public (int, int) MapPosition
+        public actors(string Name, Image Image, int Agility, tile MapPosition)
         {
-            get { return mapPosition; }
-            set { mapPosition.Item1 = value.Item1 - 1;  //-1 because it starts counting from 0 instead of 1
-                  mapPosition.Item2 = value.Item2 - 1; }
+            this.Name = Name;
+            this.Image = Image;
+            this.Agility = Agility;
+            this.MapPosition = MapPosition;
         }
+
+        public PointF GetScreenPosition(CameraManager cameraManager, int tileSize)
+        {
+            float worldX = MapPosition.Column * tileSize;
+            float worldY = MapPosition.Row * tileSize;
+            return cameraManager.WorldToScreen(worldX, worldY);
+        }
+
+        //public (int, int) MapPosition
+        //{
+        //    get { return mapPosition; }
+        //    set { mapPosition.Item1 = value.Item1 - 1;  //-1 because it starts counting from 0 instead of 1
+        //          mapPosition.Item2 = value.Item2 - 1; }
+        //}
     }
 }

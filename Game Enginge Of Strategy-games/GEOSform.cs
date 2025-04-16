@@ -9,10 +9,11 @@ namespace Game_Enginge_Of_Strategy_games
     public partial class GEOSform : Form
     {
        //System variables
-        private UIManager uiManager;    //big UI = the class itself, small ui = the object(?) we use
+        private UIManager uiManager;
+        private CameraManager cameraManager;
         private (actors, Rectangle)[] playerTiles;
         private (actors, Rectangle)[] enemyTiles;
-        private int tileSize = 64;
+        private int tileSize = 32;
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
@@ -34,14 +35,15 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
             uiManager = new UIManager(this);
+            cameraManager = new CameraManager();
 
             //test data
-            testmap = new(8, 6, []);
-            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (7, 6));
-            player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 1));
-            player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3));
-            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 3));
-            enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5));
+            testmap = new(8, 6);
+            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(1,2));
+            player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(5, 1));
+            player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(1, 3));
+            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, new tile(4, 3));
+            enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, new tile(4, 5));
 
             testMatch = new(testmap, [player1, player2, player3], [enemy1, enemy2]);
 
@@ -65,16 +67,25 @@ namespace Game_Enginge_Of_Strategy_games
             Graphics g = e.Graphics;
 
             //creating, positioning the grid map
-            int centerX = (this.ClientSize.Width) / 2 - (testMatch.Map.Rows * tileSize / 2) + viewOffsetX;
-            int centerY = (this.ClientSize.Height) / 2 - (testMatch.Map.Columns * tileSize / 2) + viewOffsetY;
+                    //this is about outdated, but drawing the actors is still based on this
+                int centerX = (this.ClientSize.Width) / 2 - (testMatch.Map.Rows * tileSize / 2) + viewOffsetX;
+                int centerY = (this.ClientSize.Height) / 2 - (testMatch.Map.Columns * tileSize / 2) + viewOffsetY;
 
-            for (int x = 0; x < testMatch.Map.Rows; x++)
+            for (int r = 0; r < testMatch.Map.Rows; r++)
             {
-                for (int y = 0; y < testMatch.Map.Columns; y++)
+                for (int c = 0; c < testMatch.Map.Columns; c++)
                 {
-                    //This will dynamically update the location of the tile the player in for when we want to click on it
-                    Rectangle tileRect = new Rectangle(centerX + x * tileSize, centerY + y * tileSize, tileSize, tileSize);
-                    g.DrawRectangle(Pens.White, tileRect);
+                    float worldX = c * tileSize;
+                    float worldY = r * tileSize;
+
+                    PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                    float size = tileSize * cameraManager.Zoom;
+
+                    e.Graphics.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
+
+                            //this here be the previous version
+                        //Rectangle tileRect = new Rectangle(centerX + r * tileSize, centerY + c * tileSize, tileSize, tileSize);
+                        //g.DrawRectangle(Pens.White, tileRect);
                 }
             }
 
@@ -85,12 +96,12 @@ namespace Game_Enginge_Of_Strategy_games
             //+ viewOffsetX / tileSize is used in positioning the player when scrolling
             foreach (actors i in testMatch.PlayerTeam)
             {
-                g.DrawImage(i.Image, centerX + i.MapPosition.Item1 * tileSize, centerY + i.MapPosition.Item2 * tileSize, tileSize, tileSize);
+                g.DrawImage(i.Image, centerX + i.MapPosition.Column * tileSize, centerY + i.MapPosition.Row * tileSize, tileSize, tileSize);
             }
 
             foreach (actors i in testMatch.EnemyTeam)
             {
-                g.DrawImage(i.Image, centerX + i.MapPosition.Item1 * tileSize, centerY + i.MapPosition.Item2 * tileSize, tileSize, tileSize);
+                g.DrawImage(i.Image, centerX + i.MapPosition.Column * tileSize, centerY + i.MapPosition.Row * tileSize, tileSize, tileSize);
             }
 
 
@@ -99,7 +110,7 @@ namespace Game_Enginge_Of_Strategy_games
             int counter = 0;
             foreach (actors act in testMatch.PlayerTeam)
             {
-                playerTiles[counter] = (act, new Rectangle(centerX + act.MapPosition.Item1 * tileSize + viewOffsetX / tileSize, centerY + act.MapPosition.Item2 * tileSize + viewOffsetY / tileSize, tileSize, tileSize));
+                playerTiles[counter] = (act, new Rectangle(centerX + act.MapPosition.Column * tileSize + viewOffsetX / tileSize, centerY + act.MapPosition.Row * tileSize + viewOffsetY / tileSize, tileSize, tileSize));
                 counter++;
             }
 
@@ -107,7 +118,7 @@ namespace Game_Enginge_Of_Strategy_games
             counter = 0;
             foreach (actors act in testMatch.EnemyTeam)
             {
-                enemyTiles[counter] = (act, new Rectangle(centerX + act.MapPosition.Item1 * tileSize + viewOffsetX / tileSize, centerY + act.MapPosition.Item2 * tileSize + viewOffsetY / tileSize, tileSize, tileSize));
+                enemyTiles[counter] = (act, new Rectangle(centerX + act.MapPosition.Column * tileSize + viewOffsetX / tileSize, centerY + act.MapPosition.Row * tileSize + viewOffsetY / tileSize, tileSize, tileSize));
                 counter++;
             }
 
