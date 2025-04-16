@@ -8,14 +8,8 @@ namespace Game_Enginge_Of_Strategy_games
 {
     public partial class GEOSform : Form
     {
+       //System variables
         private UIManager uiManager;    //big UI = the class itself, small ui = the object(?) we use
-        private match testMatch;
-        private gridMap testmap;
-        private actors player1;
-        private actors player2;
-        private actors player3;
-        private actors enemy1;
-        private actors enemy2;
         private (actors, Rectangle)[] playerTiles;
         private (actors, Rectangle)[] enemyTiles;
         private int tileSize = 64;
@@ -24,6 +18,15 @@ namespace Game_Enginge_Of_Strategy_games
         private Point dragStart;
         private int viewOffsetX = 0;
         private int viewOffsetY = 0;
+
+       //Testdata variables
+        private match testMatch;
+        private tileMap testmap;
+        private actors player1;
+        private actors player2;
+        private actors player3;
+        private actors enemy1;
+        private actors enemy2;
 
 
         public GEOSform()
@@ -62,12 +65,12 @@ namespace Game_Enginge_Of_Strategy_games
             Graphics g = e.Graphics;
 
             //creating, positioning the grid map
-            int centerX = (this.ClientSize.Width) / 2 - (testMatch.Map.Width * tileSize / 2) + viewOffsetX;
-            int centerY = (this.ClientSize.Height) / 2 - (testMatch.Map.Height * tileSize / 2) + viewOffsetY;
+            int centerX = (this.ClientSize.Width) / 2 - (testMatch.Map.Rows * tileSize / 2) + viewOffsetX;
+            int centerY = (this.ClientSize.Height) / 2 - (testMatch.Map.Columns * tileSize / 2) + viewOffsetY;
 
-            for (int x = 0; x < testMatch.Map.Width; x++)
+            for (int x = 0; x < testMatch.Map.Rows; x++)
             {
-                for (int y = 0; y < testMatch.Map.Height; y++)
+                for (int y = 0; y < testMatch.Map.Columns; y++)
                 {
                     //This will dynamically update the location of the tile the player in for when we want to click on it
                     Rectangle tileRect = new Rectangle(centerX + x * tileSize, centerY + y * tileSize, tileSize, tileSize);

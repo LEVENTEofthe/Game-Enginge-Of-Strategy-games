@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    internal class mapEvent //Interactable things that occupy tiles
+    internal class mapObject //Interactable things that occupy tiles
     {
-        public mapEventTypes MapEventType { get; set; }
+        public mapObjectTypes MapEventType { get; set; }
 
         public bool CanStandOnIt { get; set; }
 
