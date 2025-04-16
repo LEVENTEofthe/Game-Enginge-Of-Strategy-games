@@ -17,8 +17,8 @@ namespace Game_Enginge_Of_Strategy_games
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
-        private int viewOffsetX = 0;
-        private int viewOffsetY = 0;
+        //private int viewOffsetX = 0;
+        //private int viewOffsetY = 0;
 
        //Testdata variables
         private match testMatch;
@@ -66,11 +66,7 @@ namespace Game_Enginge_Of_Strategy_games
         {
             Graphics g = e.Graphics;
 
-            //creating, positioning the grid map
-                    //this is about outdated, but drawing the actors is still based on this
-                int centerX = (this.ClientSize.Width) / 2 - (testMatch.Map.Rows * tileSize / 2) + viewOffsetX;
-                int centerY = (this.ClientSize.Height) / 2 - (testMatch.Map.Columns * tileSize / 2) + viewOffsetY;
-
+            //drawing the tile map
             for (int r = 0; r < testMatch.Map.Rows; r++)
             {
                 for (int c = 0; c < testMatch.Map.Columns; c++)
@@ -81,11 +77,8 @@ namespace Game_Enginge_Of_Strategy_games
                     PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
                     float size = tileSize * cameraManager.Zoom;
 
-                    e.Graphics.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
-
-                            //this here be the previous version
-                        //Rectangle tileRect = new Rectangle(centerX + r * tileSize, centerY + c * tileSize, tileSize, tileSize);
-                        //g.DrawRectangle(Pens.White, tileRect);
+                    g.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
+                    g.DrawRectangle(Pens.Crimson, screenPos.X, screenPos.Y, size, size);
                 }
             }
 
@@ -93,37 +86,55 @@ namespace Game_Enginge_Of_Strategy_games
             (int, int)[] playerPositions = new (int, int)[testMatch.PlayerTeam.Length];
             (int, int)[] enemyPositions = new (int, int)[testMatch.EnemyTeam.Length];
 
-            //+ viewOffsetX / tileSize is used in positioning the player when scrolling
             foreach (actors i in testMatch.PlayerTeam)
             {
-                g.DrawImage(i.Image, centerX + i.MapPosition.Column * tileSize, centerY + i.MapPosition.Row * tileSize, tileSize, tileSize);
+                float worldX = i.MapPosition.Column * tileSize;
+                float worldY = i.MapPosition.Row * tileSize;
+                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float size = tileSize * cameraManager.Zoom;
+
+                g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
             }
 
             foreach (actors i in testMatch.EnemyTeam)
             {
-                g.DrawImage(i.Image, centerX + i.MapPosition.Column * tileSize, centerY + i.MapPosition.Row * tileSize, tileSize, tileSize);
+                float worldX = i.MapPosition.Column * tileSize;
+                float worldY = i.MapPosition.Row * tileSize;
+                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float size = tileSize * cameraManager.Zoom;
+
+                g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
             }
 
-
+            //this all bellow is still outdated
             playerTiles = new (actors, Rectangle)[testMatch.PlayerTeam.Length];
             enemyTiles = new (actors, Rectangle)[testMatch.EnemyTeam.Length];
             int counter = 0;
             foreach (actors act in testMatch.PlayerTeam)
             {
-                playerTiles[counter] = (act, new Rectangle(centerX + act.MapPosition.Column * tileSize + viewOffsetX / tileSize, centerY + act.MapPosition.Row * tileSize + viewOffsetY / tileSize, tileSize, tileSize));
+                float worldX = act.MapPosition.Column * tileSize;
+                float worldY = act.MapPosition.Row * tileSize;
+                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float size = tileSize * cameraManager.Zoom;
+
+                playerTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
                 counter++;
             }
-
 
             counter = 0;
             foreach (actors act in testMatch.EnemyTeam)
             {
-                enemyTiles[counter] = (act, new Rectangle(centerX + act.MapPosition.Column * tileSize + viewOffsetX / tileSize, centerY + act.MapPosition.Row * tileSize + viewOffsetY / tileSize, tileSize, tileSize));
+                float worldX = act.MapPosition.Column * tileSize;
+                float worldY = act.MapPosition.Row * tileSize;
+                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float size = tileSize * cameraManager.Zoom;
+
+                enemyTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
                 counter++;
             }
 
             //debugging
-            howManyPlayerCharacters.Text = $"Number of player characters: {Convert.ToString(playerTiles.Length)}";
+            howManyPlayerCharacters.Text = $"Number of player characters: {playerTiles.Length}";
         }
 
         private void Zoom(int size)
@@ -137,7 +148,7 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)
         {
-            int delta /*fire power!!*/ = e.Delta;
+            int delta = e.Delta;
 
             if (delta > 0)
             {
@@ -194,35 +205,46 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         private void GEOSform_MouseMove(object sender, MouseEventArgs e)
-        {
+        {   
             if (isDragging)
             {
-                //difference between previous and current mouse position
-                int deltaX = e.X - dragStart.X;
-                int deltaY = e.Y - dragStart.Y;
-                //how much the screen will move (when dragging on it)
-                viewOffsetX += deltaX;
-                viewOffsetY += deltaY;
-                int tileOffsetX = viewOffsetX / tileSize;
-                int tileOffsetY = viewOffsetY / tileSize;
+                Point currentPoint = e.Location;
+                int dx = currentPoint.X - dragStart.X;
+                int dy = currentPoint.Y - dragStart.Y;
 
-                //player.MapPosition = (player.MapPosition.Item1 - tileOffsetX, player.MapPosition.Item2 - tileOffsetY);
+                cameraManager.OffsetX += dx;
+                cameraManager.OffsetY += dy;
 
-                dragStart = e.Location;
+                dragStart = currentPoint;
 
-                //Setting a border to scrolling
-                if (viewOffsetX > 250)
-                    viewOffsetX = 250;
-                if (viewOffsetX < -250)
-                    viewOffsetX = -250;
-                if (viewOffsetY > 250)
-                    viewOffsetY = 250;
-                if (viewOffsetY < -250)
-                    viewOffsetY = -250;
 
-                //Syncing the scrollbar to dragscroll
-                xScrollBar.Value = viewOffsetX;
-                yScrollBar.Value = viewOffsetY;
+                    //old version
+                ////difference between previous and current mouse position
+                //int deltaX = e.X - dragStart.X;
+                //int deltaY = e.Y - dragStart.Y;
+                ////how much the screen will move (when dragging on it)
+                //viewOffsetX += deltaX;
+                //viewOffsetY += deltaY;
+                //int tileOffsetX = viewOffsetX / tileSize;
+                //int tileOffsetY = viewOffsetY / tileSize;
+
+                ////player.MapPosition = (player.MapPosition.Item1 - tileOffsetX, player.MapPosition.Item2 - tileOffsetY);
+
+                //dragStart = e.Location;
+
+                ////Setting a border to scrolling
+                //if (viewOffsetX > 250)
+                //    viewOffsetX = 250;
+                //if (viewOffsetX < -250)
+                //    viewOffsetX = -250;
+                //if (viewOffsetY > 250)
+                //    viewOffsetY = 250;
+                //if (viewOffsetY < -250)
+                //    viewOffsetY = -250;
+
+                ////Syncing the scrollbar to dragscroll
+                //xScrollBar.Value = viewOffsetX;
+                //yScrollBar.Value = viewOffsetY;
 
                 Invalidate();
             }
@@ -237,20 +259,18 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void xScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
-            viewOffsetX = xScrollBar.Value;
+            //viewOffsetX = xScrollBar.Value;
 
             Invalidate();
 
-            //(int px, int py) = player.MapPosition;    //I'm not sure if this line is needed
         }
 
         private void yScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
-            viewOffsetY = yScrollBar.Value;
+            //viewOffsetY = yScrollBar.Value;
 
             Invalidate();
 
-            //(int px, int py) = player.MapPosition;    //I'm not sure if this line is needed
         }
     }
 }
