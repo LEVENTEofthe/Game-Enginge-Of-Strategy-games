@@ -1,6 +1,7 @@
 using GridbaseBattleSystem;
 using System;
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Linq;
 using System.Numerics;
 
@@ -137,6 +138,17 @@ namespace Game_Enginge_Of_Strategy_games
             howManyPlayerCharacters.Text = $"Number of player characters: {playerTiles.Length}";
         }
 
+        private void TileSelectMode()
+        {
+            void GEOSform_MouseMove(object sender, MouseEventArgs e)
+            {
+                foreach (var t in testMatch.Map.tileMapObject)
+                {
+                    //if (e.Location == t.)
+                }
+            }
+        }
+
         private void Zoom(int size)
         {
             if (size > 19 && size < 101)
@@ -217,39 +229,16 @@ namespace Game_Enginge_Of_Strategy_games
 
                 dragStart = currentPoint;
 
-
-                    //old version
-                ////difference between previous and current mouse position
-                //int deltaX = e.X - dragStart.X;
-                //int deltaY = e.Y - dragStart.Y;
-                ////how much the screen will move (when dragging on it)
-                //viewOffsetX += deltaX;
-                //viewOffsetY += deltaY;
-                //int tileOffsetX = viewOffsetX / tileSize;
-                //int tileOffsetY = viewOffsetY / tileSize;
-
-                ////player.MapPosition = (player.MapPosition.Item1 - tileOffsetX, player.MapPosition.Item2 - tileOffsetY);
-
-                //dragStart = e.Location;
-
-                ////Setting a border to scrolling
-                //if (viewOffsetX > 250)
-                //    viewOffsetX = 250;
-                //if (viewOffsetX < -250)
-                //    viewOffsetX = -250;
-                //if (viewOffsetY > 250)
-                //    viewOffsetY = 250;
-                //if (viewOffsetY < -250)
-                //    viewOffsetY = -250;
-
-                ////Syncing the scrollbar to dragscroll
-                //xScrollBar.Value = viewOffsetX;
-                //yScrollBar.Value = viewOffsetY;
-
                 Invalidate();
             }
 
+            //debugging
             mouseCoordinates.Text = e.Location.ToString();
+
+            foreach (var t in testMatch.Map.tileMapObject)
+            {
+                tileLoc.Text = $"last tile location: {t.Row}, {t.Column} tile\ncursor location: {cameraManager.ScreenToWorld(e.X, e.Y)}";
+            }
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
@@ -259,18 +248,14 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void xScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
-            //viewOffsetX = xScrollBar.Value;
-
+            cameraManager.OffsetX = xScrollBar.Value;
             Invalidate();
-
         }
 
         private void yScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
-            //viewOffsetY = yScrollBar.Value;
-
+            cameraManager.OffsetY = yScrollBar.Value;
             Invalidate();
-
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    class match //one fight is called a match - because your game won't only contain one fight
+    internal class match //one fight is called a match - because your game won't only contain one fight
     {
 
         public match(tileMap map, actors[] playerTeam, actors[] enemyTeam)
