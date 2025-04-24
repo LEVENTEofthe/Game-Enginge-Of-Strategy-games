@@ -30,12 +30,5 @@ namespace GridbaseBattleSystem
             float worldY = MapPosition.Row * tileSize;
             return cameraManager.WorldToScreen(worldX, worldY);
         }
-
-        //public (int, int) MapPosition
-        //{
-        //    get { return mapPosition; }
-        //    set { mapPosition.Item1 = value.Item1 - 1;  //-1 because it starts counting from 0 instead of 1
-        //          mapPosition.Item2 = value.Item2 - 1; }
-        //}
     }
 }
