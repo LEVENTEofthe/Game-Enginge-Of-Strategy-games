@@ -32,9 +32,7 @@
             clickedOnPlayerLabel = new Label();
             xScrollBar = new HScrollBar();
             yScrollBar = new VScrollBar();
-            howManyPlayerCharacters = new Label();
-            countRowCol = new Label();
-            mapdata = new Label();
+            tileCoords = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -75,32 +73,14 @@
             yScrollBar.TabIndex = 13;
             yScrollBar.Scroll += yScrollBar_Scroll;
             // 
-            // howManyPlayerCharacters
+            // tileCoords
             // 
-            howManyPlayerCharacters.AutoSize = true;
-            howManyPlayerCharacters.Location = new Point(0, 520);
-            howManyPlayerCharacters.Name = "howManyPlayerCharacters";
-            howManyPlayerCharacters.Size = new Size(193, 20);
-            howManyPlayerCharacters.TabIndex = 14;
-            howManyPlayerCharacters.Text = "how many player characters";
-            // 
-            // countRowCol
-            // 
-            countRowCol.AutoSize = true;
-            countRowCol.Location = new Point(12, 388);
-            countRowCol.Name = "countRowCol";
-            countRowCol.Size = new Size(168, 20);
-            countRowCol.TabIndex = 15;
-            countRowCol.Text = "numberOfRowsColumns";
-            // 
-            // mapdata
-            // 
-            mapdata.AutoSize = true;
-            mapdata.Location = new Point(21, 309);
-            mapdata.Name = "mapdata";
-            mapdata.Size = new Size(69, 20);
-            mapdata.TabIndex = 16;
-            mapdata.Text = "mapdata";
+            tileCoords.AutoSize = true;
+            tileCoords.Location = new Point(158, 624);
+            tileCoords.Name = "tileCoords";
+            tileCoords.Size = new Size(160, 20);
+            tileCoords.TabIndex = 14;
+            tileCoords.Text = "whichTileBellowMouse";
             // 
             // GEOSform
             // 
@@ -108,9 +88,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
-            Controls.Add(mapdata);
-            Controls.Add(countRowCol);
-            Controls.Add(howManyPlayerCharacters);
+            Controls.Add(tileCoords);
             Controls.Add(yScrollBar);
             Controls.Add(xScrollBar);
             Controls.Add(clickedOnPlayerLabel);
@@ -127,8 +105,6 @@
         private Label clickedOnPlayerLabel;
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
-        private Label howManyPlayerCharacters;
-        private Label countRowCol;
-        private Label mapdata;
+        private Label tileCoords;
     }
 }

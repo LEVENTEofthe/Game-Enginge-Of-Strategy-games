@@ -29,7 +29,7 @@ namespace Game_Enginge_Of_Strategy_games
             );
         }
 
-        public PointF ScreenToWorld(float screenX, float screenY)   //converting window coordinates to in-game map coordinates
+        public PointF ScreenToWorld(float screenX, float screenY)   //converting window coordinates to map-relative coordinates
         {
             return new PointF(
                 (screenX - OffsetX) / Zoom,
@@ -37,15 +37,23 @@ namespace Game_Enginge_Of_Strategy_games
             );
         }
 
-        public (int, int) ScreenToTile(float screenX, float screenY)     //it basically returns the row, column of the tile the cursor is on
+        //public (int, int) ScreenToTile(float screenX, float screenY)     //it basically returns the row, column of the tile the cursor is on
+        //{
+        //    float worldX = ScreenToWorld(screenX, screenY).X;
+        //    float worldY = ScreenToWorld(screenX, screenY).Y;
+
+        //    int tileColumn = (int)(worldX / TileSize);
+        //    int tileRow = (int)(worldY / TileSize);
+
+        //    return (tileColumn, tileRow);
+        //}
+
+        public (decimal, decimal) ScreenToTile(int screenX, int screenY)    //converting window coordinates to tile row/column coordinates
         {
-            float worldX = ScreenToWorld(screenX, screenY).X;
-            float worldY = ScreenToWorld(screenX, screenY).Y;
+            decimal col = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).X / TileSize + 1));
+            decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Y / TileSize + 1));
 
-            int tileColumn = (int)(worldX / TileSize);
-            int tileRow = (int)(worldY / TileSize);
-
-            return (tileColumn, tileRow);
+            return (col, row);
         }
     }
 }

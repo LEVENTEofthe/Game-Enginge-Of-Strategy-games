@@ -11,7 +11,7 @@ namespace GridbaseBattleSystem
     {
         public int Columns { get; private set; }
         public int Rows { get; private set; }
-        public tile[,] tileMapObject { get; private set; }
+        //public tile[,] tileMapObject { get; private set; }
         public string Tileset { get; set; }
         public int[][] TileData { get; set; }
 

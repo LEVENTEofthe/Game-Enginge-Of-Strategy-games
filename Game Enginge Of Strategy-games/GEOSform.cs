@@ -20,6 +20,7 @@ namespace Game_Enginge_Of_Strategy_games
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
+        private bool cursorTileHighlight = true;
 
        //Testdata variables
         private match Match;
@@ -40,7 +41,6 @@ namespace Game_Enginge_Of_Strategy_games
 
             string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS assets/maps/map1.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
-            mapdata.Text =  Map.TileData.ToString();
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
@@ -61,9 +61,6 @@ namespace Game_Enginge_Of_Strategy_games
             this.MouseDown += GEOSform_MouseDown;
             this.MouseUp += GEOSform_MouseUp;
             this.MouseMove += GEOSform_MouseMove;
-
-            //debug
-            countRowCol.Text = $"{Match.Map.Rows} rows, {Match.Map.Columns} columns";
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)
@@ -92,12 +89,12 @@ namespace Game_Enginge_Of_Strategy_games
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
 
                     //g.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
-                    g.DrawRectangle(Pens.Crimson, screenPos.X, screenPos.Y, size, size);
+                    //g.DrawRectangle(Pens.Crimson, screenPos.X, screenPos.Y, size, size);
                 }
             }
             
 
-            //Putting the actors on the grid
+            //Putting the actors' textures on the grid
             (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];
             (int, int)[] enemyPositions = new (int, int)[Match.EnemyTeam.Length];
 
@@ -121,7 +118,7 @@ namespace Game_Enginge_Of_Strategy_games
                 g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
             }
 
-            //this all bellow is still outdated (I think, not 100% sure)
+            //actor hitboxes
             playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
             enemyTiles = new (actors, Rectangle)[Match.EnemyTeam.Length];
             int counter = 0;
@@ -147,9 +144,6 @@ namespace Game_Enginge_Of_Strategy_games
                 enemyTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
                 counter++;
             }
-
-            //debugging
-            howManyPlayerCharacters.Text = $"Number of player characters: {playerTiles.Length}";
         }
 
         private void Zoom(int size)
@@ -220,7 +214,7 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         private void GEOSform_MouseMove(object sender, MouseEventArgs e)
-        {   
+        {
             if (isDragging)
             {
                 Point currentPoint = e.Location;
@@ -237,8 +231,14 @@ namespace Game_Enginge_Of_Strategy_games
 
             PointF currentTile = cameraManager.ScreenToWorld(e.X, e.Y);
 
+            if (cursorTileHighlight)
+            {
+                
+            }
+
             //debugging
             mouseCoordinates.Text = e.Location.ToString();
+            tileCoords.Text = cameraManager.ScreenToTile(e.X, e.Y).ToString();
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
