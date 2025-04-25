@@ -16,13 +16,14 @@ namespace Game_Enginge_Of_Strategy_games
         private int defaultTileSize = 16;
         private (actors, Rectangle)[] playerTiles;
         private (actors, Rectangle)[] enemyTiles;
+        Bitmap tilesetImage;
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
 
        //Testdata variables
-        private match testMatch;
-        private tileMap testmap;
+        private match Match;
+        private tileMap Map;
         private actors player1;
         private actors player2;
         private actors player3;
@@ -37,21 +38,20 @@ namespace Game_Enginge_Of_Strategy_games
             uiManager = new UIManager(this);
             cameraManager = new CameraManager(defaultTileSize);
 
-            //test data
-            testmap = new(8, 6);
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS assets/maps/map1.json");
+            Map = JsonSerializer.Deserialize<tileMap>(mapjson);
+            mapdata.Text =  Map.TileData.ToString();
 
+            tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
+
+            //test data
             player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(1,2));
             player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(5, 1));
             player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(1, 3));
             enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, new tile(4, 3));
             enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, new tile(4, 5));
 
-            testMatch = new(testmap, [player1, player2, player3], [enemy1, enemy2]);
-
-            //load data
-            Bitmap tilesetImage = new Bitmap("C:/Users/bakos/Documents/GEOS assets/tilesets/")
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS assets/maps/map3.json");
-            testmap = JsonSerializer.Deserialize<tileMap>(mapjson);
+            Match = new(Map, [player1, player2, player3], [enemy1, enemy2]);
 
             //this is apparently a constructor
             this.DoubleBuffered = true; // Makes drawing smoother
@@ -61,11 +61,9 @@ namespace Game_Enginge_Of_Strategy_games
             this.MouseDown += GEOSform_MouseDown;
             this.MouseUp += GEOSform_MouseUp;
             this.MouseMove += GEOSform_MouseMove;
-        }
 
-        private void GEOSform_Load(object sender, EventArgs e)
-        {
-
+            //debug
+            countRowCol.Text = $"{Match.Map.Rows} rows, {Match.Map.Columns} columns";
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)
@@ -73,26 +71,37 @@ namespace Game_Enginge_Of_Strategy_games
             Graphics g = e.Graphics;
 
             //drawing the tile map
-            for (int r = 0; r < testMatch.Map.Rows; r++)
+            int tilesPerRow = tilesetImage.Width / defaultTileSize;
+
+            for (int r = 0; r < Match.Map.Rows; r++)
             {
-                for (int c = 0; c < testMatch.Map.Columns; c++)
+                for (int c = 0; c < Match.Map.Columns; c++)
                 {
+                    int tileIndex = Match.Map.TileData[r][c];
+
+                    int sx = (tileIndex % tilesPerRow) * defaultTileSize;
+                    int sy = (tileIndex / tilesPerRow) * defaultTileSize;
+                    Rectangle tilesetSrc = new Rectangle(sx, sy, defaultTileSize, defaultTileSize);
+
                     float worldX = c * cameraManager.TileSize;
                     float worldY = r * cameraManager.TileSize;
-
                     PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
                     float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                    g.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
+                    RectangleF tileHitbox = new RectangleF(screenPos.X, screenPos.Y, size, size);
+                    g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
+
+                    //g.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
                     g.DrawRectangle(Pens.Crimson, screenPos.X, screenPos.Y, size, size);
                 }
             }
+            
 
             //Putting the actors on the grid
-            (int, int)[] playerPositions = new (int, int)[testMatch.PlayerTeam.Length];
-            (int, int)[] enemyPositions = new (int, int)[testMatch.EnemyTeam.Length];
+            (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];
+            (int, int)[] enemyPositions = new (int, int)[Match.EnemyTeam.Length];
 
-            foreach (actors i in testMatch.PlayerTeam)
+            foreach (actors i in Match.PlayerTeam)
             {
                 float worldX = i.MapPosition.Column * cameraManager.TileSize;
                 float worldY = i.MapPosition.Row * cameraManager.TileSize;
@@ -102,7 +111,7 @@ namespace Game_Enginge_Of_Strategy_games
                 g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
             }
 
-            foreach (actors i in testMatch.EnemyTeam)
+            foreach (actors i in Match.EnemyTeam)
             {
                 float worldX = i.MapPosition.Column * cameraManager.TileSize;
                 float worldY = i.MapPosition.Row * cameraManager.TileSize;
@@ -112,11 +121,11 @@ namespace Game_Enginge_Of_Strategy_games
                 g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
             }
 
-            //this all bellow is still outdated (I think)
-            playerTiles = new (actors, Rectangle)[testMatch.PlayerTeam.Length];
-            enemyTiles = new (actors, Rectangle)[testMatch.EnemyTeam.Length];
+            //this all bellow is still outdated (I think, not 100% sure)
+            playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
+            enemyTiles = new (actors, Rectangle)[Match.EnemyTeam.Length];
             int counter = 0;
-            foreach (actors act in testMatch.PlayerTeam)
+            foreach (actors act in Match.PlayerTeam)
             {
                 float worldX = act.MapPosition.Column * cameraManager.TileSize;
                 float worldY = act.MapPosition.Row * cameraManager.TileSize;
@@ -128,7 +137,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             counter = 0;
-            foreach (actors act in testMatch.EnemyTeam)
+            foreach (actors act in Match.EnemyTeam)
             {
                 float worldX = act.MapPosition.Column * cameraManager.TileSize;
                 float worldY = act.MapPosition.Row * cameraManager.TileSize;
@@ -230,7 +239,6 @@ namespace Game_Enginge_Of_Strategy_games
 
             //debugging
             mouseCoordinates.Text = e.Location.ToString();
-            tileLoc.Text = currentTile.ToString();
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)

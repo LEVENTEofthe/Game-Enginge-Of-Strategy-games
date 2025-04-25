@@ -33,7 +33,8 @@
             xScrollBar = new HScrollBar();
             yScrollBar = new VScrollBar();
             howManyPlayerCharacters = new Label();
-            tileLoc = new Label();
+            countRowCol = new Label();
+            mapdata = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -83,14 +84,23 @@
             howManyPlayerCharacters.TabIndex = 14;
             howManyPlayerCharacters.Text = "how many player characters";
             // 
-            // tileLoc
+            // countRowCol
             // 
-            tileLoc.AutoSize = true;
-            tileLoc.Location = new Point(12, 388);
-            tileLoc.Name = "tileLoc";
-            tileLoc.Size = new Size(53, 20);
-            tileLoc.TabIndex = 15;
-            tileLoc.Text = "tileLoc";
+            countRowCol.AutoSize = true;
+            countRowCol.Location = new Point(12, 388);
+            countRowCol.Name = "countRowCol";
+            countRowCol.Size = new Size(168, 20);
+            countRowCol.TabIndex = 15;
+            countRowCol.Text = "numberOfRowsColumns";
+            // 
+            // mapdata
+            // 
+            mapdata.AutoSize = true;
+            mapdata.Location = new Point(21, 309);
+            mapdata.Name = "mapdata";
+            mapdata.Size = new Size(69, 20);
+            mapdata.TabIndex = 16;
+            mapdata.Text = "mapdata";
             // 
             // GEOSform
             // 
@@ -98,7 +108,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
-            Controls.Add(tileLoc);
+            Controls.Add(mapdata);
+            Controls.Add(countRowCol);
             Controls.Add(howManyPlayerCharacters);
             Controls.Add(yScrollBar);
             Controls.Add(xScrollBar);
@@ -107,7 +118,6 @@
             DoubleBuffered = true;
             Name = "GEOSform";
             Text = "GEOS";
-            Load += GEOSform_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -118,6 +128,7 @@
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
         private Label howManyPlayerCharacters;
-        private Label tileLoc;
+        private Label countRowCol;
+        private Label mapdata;
     }
 }
