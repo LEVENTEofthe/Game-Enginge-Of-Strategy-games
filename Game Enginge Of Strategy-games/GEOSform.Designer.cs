@@ -32,7 +32,9 @@
             clickedOnPlayerLabel = new Label();
             xScrollBar = new HScrollBar();
             yScrollBar = new VScrollBar();
-            tileCoordinates = new Label();
+            howManyPlayerCharacters = new Label();
+            countRowCol = new Label();
+            mapdata = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -73,14 +75,32 @@
             yScrollBar.TabIndex = 13;
             yScrollBar.Scroll += yScrollBar_Scroll;
             // 
-            // tileCoordinates
+            // howManyPlayerCharacters
             // 
-            tileCoordinates.AutoSize = true;
-            tileCoordinates.Location = new Point(178, 626);
-            tileCoordinates.Name = "tileCoordinates";
-            tileCoordinates.Size = new Size(112, 20);
-            tileCoordinates.TabIndex = 14;
-            tileCoordinates.Text = "tile coordinates";
+            howManyPlayerCharacters.AutoSize = true;
+            howManyPlayerCharacters.Location = new Point(0, 520);
+            howManyPlayerCharacters.Name = "howManyPlayerCharacters";
+            howManyPlayerCharacters.Size = new Size(193, 20);
+            howManyPlayerCharacters.TabIndex = 14;
+            howManyPlayerCharacters.Text = "how many player characters";
+            // 
+            // countRowCol
+            // 
+            countRowCol.AutoSize = true;
+            countRowCol.Location = new Point(12, 388);
+            countRowCol.Name = "countRowCol";
+            countRowCol.Size = new Size(168, 20);
+            countRowCol.TabIndex = 15;
+            countRowCol.Text = "numberOfRowsColumns";
+            // 
+            // mapdata
+            // 
+            mapdata.AutoSize = true;
+            mapdata.Location = new Point(21, 309);
+            mapdata.Name = "mapdata";
+            mapdata.Size = new Size(69, 20);
+            mapdata.TabIndex = 16;
+            mapdata.Text = "mapdata";
             // 
             // GEOSform
             // 
@@ -88,7 +108,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
-            Controls.Add(tileCoordinates);
+            Controls.Add(mapdata);
+            Controls.Add(countRowCol);
+            Controls.Add(howManyPlayerCharacters);
             Controls.Add(yScrollBar);
             Controls.Add(xScrollBar);
             Controls.Add(clickedOnPlayerLabel);
@@ -96,7 +118,6 @@
             DoubleBuffered = true;
             Name = "GEOSform";
             Text = "GEOS";
-            Load += GEOSform_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -106,6 +127,8 @@
         private Label clickedOnPlayerLabel;
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
-        private Label tileCoordinates;
+        private Label howManyPlayerCharacters;
+        private Label countRowCol;
+        private Label mapdata;
     }
 }
