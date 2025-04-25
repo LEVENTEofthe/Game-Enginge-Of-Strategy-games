@@ -9,39 +9,29 @@ namespace Game_Enginge_Of_Strategy_games
 {
     internal class tile
     {
-        private int row;
         private int column;
-        public Image Texture { get; set; }
+        private int row;
+        public int TilesetIndex { get; set; }     //which texture from the tileset is used
         public mapObject MapObject { get; set; }
         public actors ActorStandsHere { get; set; }
 
-
-        public tile(int Row, int Column, Image Texture)
+        public tile(int Column, int Row, int TilesetIndex)
         {
-            this.Row = Row;
             this.Column = Column;
-            this.Texture = Texture;
-        }
-
-        public tile(int Row, int Column)
-        {
             this.Row = Row;
-            this.Column = Column;
-            Texture = Image.FromFile("C:/Users/bakos/Documents/GEOS assets/tiles/placeholder.png");
+            this.TilesetIndex = TilesetIndex;
         }
 
-
-        public int Row
-        {
-            get { return row; }
-            set { row = value - 1; }    //-1 because otherwise we would have to count rows and columns starting from number 0
-        }
         public int Column
         {
             get { return column; }
-            set {  column = value - 1; }
+            set { column = value + 1; }  //-1 because otherwise we would have to count rows and columns starting from number 0
         }
-
+        public int Row
+        {
+            get { return row; }
+            set { row = value + 1; }
+        }
 
         public bool CanStepHere()
         {
@@ -49,6 +39,11 @@ namespace Game_Enginge_Of_Strategy_games
             bool MapObjectCantBeStandedOn = MapObject != null && !MapObject.CanStandOnIt;
 
             return !actorStandsHere && !MapObjectCantBeStandedOn;
+        }
+
+        public override string ToString()
+        {
+            return $"col: {column}, row: {row}, tileset index: {TilesetIndex}, actor: {ActorStandsHere}";
         }
     }
 }

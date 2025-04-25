@@ -14,9 +14,9 @@ namespace GridbaseBattleSystem
         public string Name { get; set; }
         public Image Image { get; set; }
         public int Agility { get; set; }
-        public tile MapPosition { get; set; }
+        private (int, int) mapPosition { get; set; } //Col, Row
 
-        public actors(string Name, Image Image, int Agility, tile MapPosition)
+        public actors(string Name, Image Image, int Agility, (int, int) MapPosition)
         {
             this.Name = Name;
             this.Image = Image;
@@ -24,10 +24,16 @@ namespace GridbaseBattleSystem
             this.MapPosition = MapPosition;
         }
 
+        public (int, int) MapPosition
+        {
+            get { return mapPosition; }
+            set { mapPosition = (value.Item1 - 1, value.Item2 - 1); }
+        }
+
         public PointF GetScreenPosition(CameraManager cameraManager, int tileSize)
         {
-            float worldX = MapPosition.Column * tileSize;
-            float worldY = MapPosition.Row * tileSize;
+            float worldX = MapPosition.Item1 * tileSize;
+            float worldY = MapPosition.Item2 * tileSize;
             return cameraManager.WorldToScreen(worldX, worldY);
         }
     }
