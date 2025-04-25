@@ -7,31 +7,10 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    public class ActionContext    //Here are all the things that a character action would need as parameters
+    internal class actionContext    //This class contains various data that an action might or might not need
     {
-        public actors User { get; set; }
-        public targetType TargetType { get; set; }
-        private actors target;
-        public actors Target
-        {
-            get { return target; }
-            set
-            {
-                if (TargetType == targetType.none)
-                {
-                    Target = null;
-                }
-                if (TargetType == targetType.self)
-                {
-                    target = User;
-                }
-                if (TargetType == targetType.clickEnemy)
-                {
-                    target = value;
-                }
-            }
-        }
-
-        public Dictionary<string, object> Extras { get; set; } = new(); //this is for letting the user create custom stuff that I didn't think of or something
+        public actors Target {  get; set; }     //target can be self; another actor; self and another actor; another actor of specified attributes (like team); area of tiles;
+        public tile TargetTile { get; set; }    //can be none if the action has no defined range
+        public tile UserMustStandOnSpecificTile { get; set; }
     }
 }
