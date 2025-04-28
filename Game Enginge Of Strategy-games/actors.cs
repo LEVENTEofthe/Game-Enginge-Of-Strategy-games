@@ -13,14 +13,14 @@ namespace GridbaseBattleSystem
     {
         public string Name { get; set; }
         public Image Image { get; set; }
-        public int Agility { get; set; }
+        public int MaxHP { get; set; }
         private (int, int) mapPosition { get; set; } //Col, Row
 
-        public actors(string Name, Image Image, int Agility, (int, int) MapPosition)
+        public actors(string Name, Image Image, int MaxHP, (int, int) MapPosition)
         {
             this.Name = Name;
             this.Image = Image;
-            this.Agility = Agility;
+            this.MaxHP = MaxHP;
             this.MapPosition = MapPosition;
         }
 

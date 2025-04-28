@@ -39,16 +39,16 @@ namespace Game_Enginge_Of_Strategy_games
             uiManager = new UIManager(this);
             cameraManager = new CameraManager(defaultTileSize);
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS assets/maps/map2.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map3.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             //test data
-            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1,2));
+            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2));
             //player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (5, 1));
             //player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3));
-            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (2, 3));
+            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png"), 10, (2, 3));
             //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5));
 
             Match = new(Map, [player1, /*player2, player3*/], [enemy1, /*enemy2*/]);
@@ -61,9 +61,6 @@ namespace Game_Enginge_Of_Strategy_games
             this.MouseDown += GEOSform_MouseDown;
             this.MouseUp += GEOSform_MouseUp;
             this.MouseMove += GEOSform_MouseMove;
-
-            //debug
-            mapDimensions.Text = Match.Map.ToString();
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)
@@ -91,9 +88,6 @@ namespace Game_Enginge_Of_Strategy_games
 
                     RectangleF tileHitbox = new RectangleF(screenPos.X, screenPos.Y, size, size);
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
-
-                    //g.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
-                    //g.DrawRectangle(Pens.Crimson, screenPos.X, screenPos.Y, size, size);
                 }
             }
 
