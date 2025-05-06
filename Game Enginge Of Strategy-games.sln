@@ -5,9 +5,9 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game Enginge Of Strategy-games", "Game Enginge Of Strategy-games\Game Enginge Of Strategy-games.csproj", "{0D0AC3B7-FC46-4FEA-A27E-E90139E2CDE3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tile Map Drawing", "..\Tile Map Drawing\Tile Map Drawing\Tile Map Drawing.csproj", "{77BFD5C1-BD87-4522-AFD4-1DA163E6BE39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterCreator", "CharacterCreator\CharacterCreator.csproj", "{F9D75327-00D1-4C1A-B06F-3DA739A05290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterCreator", "CharacterCreator\CharacterCreator.csproj", "{F9D75327-00D1-4C1A-B06F-3DA739A05290}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tile Map Drawing", "Tile Map Drawing\Tile Map Drawing.csproj", "{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{0D0AC3B7-FC46-4FEA-A27E-E90139E2CDE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D0AC3B7-FC46-4FEA-A27E-E90139E2CDE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D0AC3B7-FC46-4FEA-A27E-E90139E2CDE3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77BFD5C1-BD87-4522-AFD4-1DA163E6BE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77BFD5C1-BD87-4522-AFD4-1DA163E6BE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77BFD5C1-BD87-4522-AFD4-1DA163E6BE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77BFD5C1-BD87-4522-AFD4-1DA163E6BE39}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9D75327-00D1-4C1A-B06F-3DA739A05290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9D75327-00D1-4C1A-B06F-3DA739A05290}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9D75327-00D1-4C1A-B06F-3DA739A05290}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D75327-00D1-4C1A-B06F-3DA739A05290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

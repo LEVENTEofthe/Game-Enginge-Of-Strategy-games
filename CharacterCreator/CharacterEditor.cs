@@ -31,7 +31,7 @@ namespace CharacterCreator
                     }
                     else
                     {
-                        MessageBox.Show($"Invalid image size: {tryImage.Size}!", "Invalid size", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show($"Invalid image size: {tryImage.Size}", "Invalid size", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         tryImage.Dispose();
                     }
 
