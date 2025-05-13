@@ -45,11 +45,12 @@ namespace Game_Enginge_Of_Strategy_games
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             //test data
-            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2));
-            //player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (5, 1));
-            //player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3));
-            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png"), 10, (2, 3));
-            //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5));
+            List<characterActions> defaultActionSet = new List<characterActions>() { new characterMovement(), new attack(), new magic() };
+            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2), defaultActionSet);
+            //player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (5, 1), defaultActionSet);
+            //player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3), defaultActionSet);
+            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png"), 10, (2, 3), defaultActionSet);
+            //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5), defaultActionSet);
 
             Match = new(Map, [player1, /*player2, player3*/], [enemy1, /*enemy2*/]);
 

@@ -22,4 +22,21 @@ namespace Game_Enginge_Of_Strategy_games
             throw new NotImplementedException();
         }
     }
+
+    internal class attack : characterActions
+    {
+        public override string Name => "atk";
+        public override void Execute(actors user, actionContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    internal class magic : characterActions
+    {
+        public override string Name => "Magic";
+        public override void Execute(actors user, actionContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -15,13 +15,15 @@ namespace GridbaseBattleSystem
         public Image Image { get; set; }
         public int MaxHP { get; set; }
         private (int, int) mapPosition { get; set; } //Col, Row
+        public List<characterActions> ActionSet { get; set; }   //recently added, need to update the character creator and json reader
 
-        public actors(string Name, Image Image, int MaxHP, (int, int) MapPosition)
+        public actors(string Name, Image Image, int MaxHP, (int, int) MapPosition, List<characterActions> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;
             this.MaxHP = MaxHP;
             this.MapPosition = MapPosition;
+            this.ActionSet = ActionSet;
         }
 
         public (int, int) MapPosition

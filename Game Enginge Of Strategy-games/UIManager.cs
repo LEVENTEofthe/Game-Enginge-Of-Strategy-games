@@ -32,7 +32,7 @@ namespace Game_Enginge_Of_Strategy_games
         {
             ClosePlayerCharacterActionPanel();
 
-            Panel panel = new Panel
+            Panel panel = new Panel //I wonder if we could make a built in customizable panel creator. Let's not linger on it yet, but it sure would be nice in the future
             {
                 Size = new Size(200, 100),
                 BackColor = Color.FromArgb(205, 127, 50),
@@ -43,12 +43,15 @@ namespace Game_Enginge_Of_Strategy_games
             currentActorActionPanel = panel;
 
             TextBox nameText = new TextBox { Text = $"{actor.Name}", Location = new Point(5, 5), Size = new Size(90, 30) };
-            Button moveBtn = new Button { Text = "Move", Location = new Point(5, 20), Size = new Size(90, 30) };
-            Button attackBtn = new Button { Text = "Attack", Location = new Point(5, 40), Size = new Size(90, 30) };
-
             currentActorActionPanel.Controls.Add(nameText);
-            currentActorActionPanel.Controls.Add(moveBtn);
-            currentActorActionPanel.Controls.Add(attackBtn);
+
+            Point point = new(5, 30);
+            foreach (var i in actor.ActionSet)
+            {
+                Button btn = new Button { Text = i.Name, Location = point, Size = new(90, 27)};
+                point.Y += 25;
+                currentActorActionPanel.Controls.Add(btn);
+            }
 
             parentForm.Controls.Add(currentActorActionPanel);
         }
