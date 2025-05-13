@@ -11,7 +11,7 @@ namespace Tile_Map_Drawing
         Size tilesetSizeMustBe = new Size(32, 48);
         int tileSize = 16;
 
-        int tileImageSize = 2;  //not used yet
+        int tileImageSize = 2;  //not yet used
         string tilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/tileset-16px-2x3.png";  //default
         Bitmap tilesetImage;
         int selectedTileIndex = 0;
@@ -158,6 +158,8 @@ namespace Tile_Map_Drawing
 
             tilesetImage = new Bitmap(tilesetImageSource);
             TilesetPanel.Image = tilesetImage;
+
+            MapDrawingField.Invalidate();
         }
 
         private void tilesetSelectBtn_Click(object sender, EventArgs e)

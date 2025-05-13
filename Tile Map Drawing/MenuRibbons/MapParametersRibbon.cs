@@ -19,6 +19,9 @@ namespace Tile_Map_Drawing.MenuRibbons
         public MapParametersRibbon()
         {
             InitializeComponent();
+
+            mapColumns = Convert.ToInt32(mapColumnsNumupdown.Value);
+            mapRows = Convert.ToInt32(mapRowsNumupdown.Value);
         }
 
         private void mapColumnsNumupdown_ValueChanged(object sender, EventArgs e)

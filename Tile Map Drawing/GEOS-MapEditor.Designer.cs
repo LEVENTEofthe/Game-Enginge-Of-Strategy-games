@@ -37,7 +37,6 @@
             drawMenuBtn = new Button();
             eventMenuBtn = new Button();
             ribbonPanel = new Panel();
-            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)TilesetPanel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).BeginInit();
             panel1.SuspendLayout();
@@ -137,15 +136,6 @@
             ribbonPanel.Size = new Size(712, 78);
             ribbonPanel.TabIndex = 11;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(47, 364);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 12;
-            label1.Text = "label1";
-            // 
             // TileMapEditor
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -153,7 +143,6 @@
             BackColor = SystemColors.ActiveCaption;
             ClientSize = new Size(800, 450);
             Controls.Add(mapParameterMenuBtn);
-            Controls.Add(label1);
             Controls.Add(ribbonPanel);
             Controls.Add(panel1);
             Controls.Add(eventMenuBtn);
@@ -166,7 +155,6 @@
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).EndInit();
             panel1.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -180,6 +168,5 @@
         private Button drawMenuBtn;
         private Button eventMenuBtn;
         private Panel ribbonPanel;
-        private Label label1;
     }
 }

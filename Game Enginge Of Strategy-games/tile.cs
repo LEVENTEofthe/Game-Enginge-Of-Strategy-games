@@ -25,7 +25,7 @@ namespace Game_Enginge_Of_Strategy_games
         public int Column
         {
             get { return column; }
-            set { column = value + 1; }  //-1 because otherwise we would have to count rows and columns starting from number 0
+            set { column = value + 1; }  //+1 because otherwise we would have to index rows and columns starting from number 0 (shouldn't this be -1 instead? like the machine starts counting from zero, so if we want to refer to the first object by saying 1 it would need to get 0, so 1 -1)
         }
         public int Row
         {

@@ -15,6 +15,7 @@ namespace GridbaseBattleSystem
         public int[][] TileData { get; set; }
         public tile[,] MapObject { get; private set; }  //Col, Row
 
+        //Looking at it, I'm not sure if it has any protection agains having TileData with unmatching row/col dimensions loaded.
         public tileMap(int Columns, int Rows, string Tileset, int[][] TileData)
         {
             this.Columns = Columns;
@@ -36,7 +37,7 @@ namespace GridbaseBattleSystem
                         return tile;
             }
 
-            return new tile(66,66,1);
+            return new tile(66,66,1); //This should be like an Exception or something
         }
 
         public override string ToString()
