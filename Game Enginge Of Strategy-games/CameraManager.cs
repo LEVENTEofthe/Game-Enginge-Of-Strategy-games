@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GridbaseBattleSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -28,6 +29,13 @@ namespace Game_Enginge_Of_Strategy_games
                 (y * Zoom) + OffsetY
             );
         }
+        public PointF WorldToScreen(PointF point)   //converting in-game map coordinates to window coordinates
+        {
+            return new PointF(
+                (point.X * Zoom) + OffsetX,
+                (point.Y * Zoom) + OffsetY
+            );
+        }
 
         public PointF ScreenToWorld(float screenX, float screenY)   //converting window coordinates to map-relative coordinates
         {
@@ -35,6 +43,10 @@ namespace Game_Enginge_Of_Strategy_games
                 (screenX - OffsetX) / Zoom,
                 (screenY - OffsetY) / Zoom
             );
+        }
+        public float ScreenToWorld(float screen)
+        {
+            return (screen - OffsetY) / Zoom;
         }
 
         //public (int, int) ScreenToTile(float screenX, float screenY)     //it basically returns the row, column of the tile the cursor is on
@@ -54,6 +66,29 @@ namespace Game_Enginge_Of_Strategy_games
             decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Y / TileSize + 1));
 
             return (col, row);
+        }
+        public decimal ScreenToTile(int screen)
+        {
+            return decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen / TileSize + 1)));
+        }
+
+        public PointF TileToWorld(decimal Col, decimal Row)
+        {
+            float worldX = (float)Col * TileSize;
+            float worldY = (float)Row * TileSize;
+
+            return new PointF(worldX, worldY);
+        }
+
+        public PointF TileToScreen(decimal Col, decimal Row)
+        {
+            PointF World = TileToWorld(Col, Row);
+            return WorldToScreen(World);
+        }
+
+        public bool IsInsideMap(int col, int row, int maxColumns, int maxRows)
+        {
+            return col >= 1 && col <= maxColumns && row >= 1 && row <= maxRows;
         }
     }
 }

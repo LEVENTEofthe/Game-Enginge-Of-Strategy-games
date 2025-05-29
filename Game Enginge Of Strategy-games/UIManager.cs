@@ -11,6 +11,7 @@ namespace Game_Enginge_Of_Strategy_games
     internal class UIManager    //this class will make the main form's work easier by handling all UI releated processes. That's good because now the main form will only need to be responsible for the app and "high level events" logic while the UI logics will be separated here, making it way more clean and easier to customise.
     {
         private Form parentForm;
+        private CameraManager cameraManager;
         private Panel currentActorActionPanel;
 
         public UIManager(Form Form)
@@ -54,6 +55,19 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             parentForm.Controls.Add(currentActorActionPanel);
+        }
+
+        public void highlightTile(tile selectedTile, Color color, Graphics g)
+        {
+            if (selectedTile == null)
+                return;
+
+            Rectangle highlight = new Rectangle(selectedTile.Column * cameraManager.TileSize, selectedTile.Row * cameraManager.TileSize, cameraManager.TileSize, cameraManager.TileSize);
+
+            using (Brush brush = new SolidBrush(color))
+            {
+                g.FillRectangle(brush, highlight);
+            }
         }
     }
 }

@@ -10,7 +10,8 @@ namespace Game_Enginge_Of_Strategy_games
 {
     public partial class GEOSform : Form
     {
-       //System variables
+        #region System variables
+        //System variables
         private UIManager uiManager;
         private CameraManager cameraManager;
         private int defaultTileSize = 16;
@@ -20,9 +21,7 @@ namespace Game_Enginge_Of_Strategy_games
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
-        private bool cursorTileHighlight = true;
-
-       //Testdata variables
+        private (int, int) tileUnderCursorHighlight;
         private match Match;
         private tileMap Map;
         private actors player1;
@@ -30,6 +29,7 @@ namespace Game_Enginge_Of_Strategy_games
         private actors player3;
         private actors enemy1;
         private actors enemy2;
+        #endregion
 
 
         public GEOSform()
@@ -44,6 +44,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
+            #region Test data
             //test data
             List<characterActions> defaultActionSet = new List<characterActions>() { new characterMovement(), new attack(), new magic() };
             player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2), defaultActionSet);
@@ -53,6 +54,7 @@ namespace Game_Enginge_Of_Strategy_games
             //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5), defaultActionSet);
 
             Match = new(Map, [player1, /*player2, player3*/], [enemy1, /*enemy2*/]);
+            #endregion
 
             //this is apparently a constructor
             this.DoubleBuffered = true; // Makes drawing smoother
@@ -68,7 +70,7 @@ namespace Game_Enginge_Of_Strategy_games
         {
             Graphics g = e.Graphics;
 
-            //drawing the tile map
+            #region Drawing the map
             int tilesPerRow = tilesetImage.Width / defaultTileSize;
 
             for (int r = 0; r < Match.Map.Rows; r++)
@@ -91,6 +93,13 @@ namespace Game_Enginge_Of_Strategy_games
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
                 }
             }
+
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan)))
+            {
+                PointF screenPos = cameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);
+                g.FillRectangle(brush, screenPos.X, screenPos.Y - 1, cameraManager.TileSize, cameraManager.TileSize);
+            }
+            
 
             //Putting the actors' textures on the grid
             (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];
@@ -115,6 +124,7 @@ namespace Game_Enginge_Of_Strategy_games
 
                 g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
             }
+            #endregion
 
             //actor hitboxes
             playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
@@ -144,13 +154,33 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        private void Zoom(int size)
+        #region Camera
+        private void GEOSform_MouseMove(object sender, MouseEventArgs e)
         {
-            if (size > 19 && size < 101)
+            if (isDragging)
             {
-                cameraManager.TileSize = size;
+                Point currentPoint = e.Location;
+                int dx = currentPoint.X - dragStart.X;
+                int dy = currentPoint.Y - dragStart.Y;
+
+                cameraManager.OffsetX += dx;
+                cameraManager.OffsetY += dy;
+
+                dragStart = currentPoint;
+
                 Invalidate();
             }
+
+            (decimal, decimal) currentTile = cameraManager.ScreenToTile(e.X, e.Y);
+            if (Match.Map.returnTile(currentTile.Item1, currentTile.Item2) != null)
+            {
+                tileUnderCursorHighlight = (Convert.ToInt32(currentTile.Item1), Convert.ToInt32(currentTile.Item2));
+                Invalidate();
+            }
+
+            //debugging
+            mouseCoordinates.Text = e.Location.ToString();
+            tileCoords.Text = cameraManager.ScreenToTile(e.X, e.Y).ToString();
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)
@@ -166,26 +196,6 @@ namespace Game_Enginge_Of_Strategy_games
                 cameraManager.TileSize = Math.Max(cameraManager.TileSize - 4, 20);
 
             Invalidate();
-        }
-
-        private actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
-        {
-            foreach (var i in playerTiles)
-            {
-                if (i.Item2.Contains(mousePosition))
-                    return i.Item1;
-            }
-            return null;
-        }
-
-        private actors clickedOnEnemyCharacter(Point mousePosition)
-        {
-            foreach (var i in enemyTiles)
-            {
-                if (i.Item2.Contains(mousePosition))
-                    return i.Item1;
-            }
-            return null;
         }
 
         private void GEOSform_MouseDown(object sender, MouseEventArgs e)
@@ -211,35 +221,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //debug
-            tilePicker.Text = Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2).ToString();
-        }
-
-        private void GEOSform_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (isDragging)
-            {
-                Point currentPoint = e.Location;
-                int dx = currentPoint.X - dragStart.X;
-                int dy = currentPoint.Y - dragStart.Y;
-
-                cameraManager.OffsetX += dx;
-                cameraManager.OffsetY += dy;
-
-                dragStart = currentPoint;
-
-                Invalidate();
-            }
-
-            PointF currentTile = cameraManager.ScreenToWorld(e.X, e.Y);
-
-            if (cursorTileHighlight)
-            {
-                
-            }
-
-            //debugging
-            mouseCoordinates.Text = e.Location.ToString();
-            tileCoords.Text = cameraManager.ScreenToTile(e.X, e.Y).ToString();
+            tilePicker.Text = Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.ToString();
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
@@ -258,5 +240,28 @@ namespace Game_Enginge_Of_Strategy_games
             cameraManager.OffsetY = yScrollBar.Value;
             Invalidate();
         }
+        #endregion
+
+        #region Mouse events
+        private actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
+        {
+            foreach (var i in playerTiles)
+            {
+                if (i.Item2.Contains(mousePosition))
+                    return i.Item1;
+            }
+            return null;
+        }
+
+        private actors clickedOnEnemyCharacter(Point mousePosition)
+        {
+            foreach (var i in enemyTiles)
+            {
+                if (i.Item2.Contains(mousePosition))
+                    return i.Item1;
+            }
+            return null;
+        }
+        #endregion
     }
 }

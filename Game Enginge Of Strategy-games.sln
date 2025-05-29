@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterCreator", "Charact
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tile Map Drawing", "Tile Map Drawing\Tile Map Drawing.csproj", "{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRPG-library", "SRPG-library\SRPG-library.csproj", "{46F72A4D-6394-48F9-B5A8-699CE692DA79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40E9FE69-F8E8-4930-B11A-FA2D0600DF87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46F72A4D-6394-48F9-B5A8-699CE692DA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F72A4D-6394-48F9-B5A8-699CE692DA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F72A4D-6394-48F9-B5A8-699CE692DA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F72A4D-6394-48F9-B5A8-699CE692DA79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

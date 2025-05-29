@@ -21,11 +21,6 @@ namespace Game_Enginge_Of_Strategy_games
             this.Row = Row;
             this.TilesetIndex = TilesetIndex;
         }
-        public tile(int Column, int Row)
-        {
-            this.Column = Column;
-            this.Row = Row;
-        }
 
         public int Column
         {

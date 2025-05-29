@@ -28,14 +28,16 @@ namespace GridbaseBattleSystem
                     MapObject[c, r] = new tile(c, r, TileData[r][c]);
         }
 
-        public tile? returnTile(decimal column, decimal row)
+        public tile returnTile(decimal column, decimal row)
         {
             foreach (var tile in MapObject)
             {
-                if (tile.Column == column && tile.Row == row)
-                    return tile;
+                if (tile.Column == column)
+                    if (tile.Row == row) 
+                        return tile;
             }
-            return null;
+
+            return new tile(66,66,1); //This should be like an Exception or something
         }
 
         public override string ToString()
