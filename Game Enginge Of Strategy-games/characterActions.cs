@@ -7,11 +7,22 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    internal abstract class characterActions
+    internal interface IcharacterActions
     {
-        public abstract string Name { get; }
-
+        public string Name { get; }
+        public string Description { get; }
+        
         public abstract void Execute(actors user, actionContext context);
+
+        public bool canBeExecuted();
+
+        public virtual bool IsValidTarget(actors target)
+        {
+            // Default to allowing any target
+            return true;
+        }
+
+        public void GetCost();
     }
 
     internal class characterMovement : characterActions
