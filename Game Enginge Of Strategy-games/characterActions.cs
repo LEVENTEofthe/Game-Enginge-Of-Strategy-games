@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    internal interface IcharacterActions
+    public interface IcharacterActions
     {
         public string Name { get; }
         public string Description { get; }
@@ -25,6 +25,7 @@ namespace Game_Enginge_Of_Strategy_games
         public void GetCost();
     }
 
+    /*
     internal class characterMovement : characterActions
     {
         public override string Name => "Move";
@@ -50,4 +51,5 @@ namespace Game_Enginge_Of_Strategy_games
             throw new NotImplementedException();
         }
     }
+    */
 }

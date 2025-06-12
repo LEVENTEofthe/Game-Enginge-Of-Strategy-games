@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CharacterCreator
 {
-    internal class actors
+    public class actors
     {
         public string Name { get; set; }
         public string Image { get; set; }   //the filename

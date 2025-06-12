@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tile_Map_Drawing
 {
-    internal class tile
+    public class tile
     {
         private int column;
         private int row;

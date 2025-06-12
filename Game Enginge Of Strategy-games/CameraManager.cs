@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    internal class CameraManager
+    public class CameraManager
     {
         public float OffsetX { get; set; }
         public float OffsetY { get; set; }

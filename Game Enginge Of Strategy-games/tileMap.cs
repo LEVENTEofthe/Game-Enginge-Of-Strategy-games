@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GridbaseBattleSystem
 {
-    internal class tileMap
+    public class tileMap
     {
         public int Columns { get; private set; }
         public int Rows { get; private set; }

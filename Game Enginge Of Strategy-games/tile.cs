@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    internal class tile
+    public class tile
     {
         private int column;
         private int row;

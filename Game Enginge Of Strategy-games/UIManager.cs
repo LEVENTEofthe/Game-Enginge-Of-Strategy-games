@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    internal class UIManager    //this class will make the main form's work easier by handling all UI releated processes. That's good because now the main form will only need to be responsible for the app and "high level events" logic while the UI logics will be separated here, making it way more clean and easier to customise.
+    public class UIManager    //this class will make the main form's work easier by handling all UI releated processes. That's good because now the main form will only need to be responsible for the app and "high level events" logic while the UI logics will be separated here, making it way more clean and easier to customise.
     {
         private Form parentForm;
         private CameraManager cameraManager;
@@ -47,12 +47,12 @@ namespace Game_Enginge_Of_Strategy_games
             currentActorActionPanel.Controls.Add(nameText);
 
             Point point = new(5, 30);
-            foreach (var i in actor.ActionSet)
-            {
-                Button btn = new Button { Text = i.Name, Location = point, Size = new(90, 27)};
-                point.Y += 25;
-                currentActorActionPanel.Controls.Add(btn);
-            }
+            //foreach (var i in actor.ActionSet)
+            //{
+            //    Button btn = new Button { Text = i.Name, Location = point, Size = new(90, 27)};
+            //    point.Y += 25;
+            //    currentActorActionPanel.Controls.Add(btn);
+            //}
 
             parentForm.Controls.Add(currentActorActionPanel);
         }

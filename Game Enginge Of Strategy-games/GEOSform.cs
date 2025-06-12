@@ -46,11 +46,11 @@ namespace Game_Enginge_Of_Strategy_games
 
             #region Test data
             //test data
-            List<characterActions> defaultActionSet = new List<characterActions>() { new characterMovement(), new attack(), new magic() };
-            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2), defaultActionSet);
+            //List<characterActions> defaultActionSet = new List<characterActions>() { new characterMovement(), new attack(), new magic() };
+            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2));
             //player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (5, 1), defaultActionSet);
             //player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3), defaultActionSet);
-            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png"), 10, (2, 3), defaultActionSet);
+            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png"), 10, (2, 3));
             //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5), defaultActionSet);
 
             Match = new(Map, [player1, /*player2, player3*/], [enemy1, /*enemy2*/]);
