@@ -5,6 +5,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json;
+using System.Windows.Forms;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -29,6 +30,9 @@ namespace Game_Enginge_Of_Strategy_games
         private actors player3;
         private actors enemy1;
         private actors enemy2;
+        //UI
+        private HScrollBar xScrollBar;
+        private VScrollBar yScrollBar;
         #endregion
 
 
@@ -47,10 +51,10 @@ namespace Game_Enginge_Of_Strategy_games
             #region Test data
             //test data
             //List<characterActions> defaultActionSet = new List<characterActions>() { new characterMovement(), new attack(), new magic() };
-            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png"), 10, (1,2));
+            player1 = new("Index", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 10, (1,2));
             //player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (5, 1), defaultActionSet);
             //player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3), defaultActionSet);
-            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png"), 10, (2, 3));
+            enemy1 = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (2, 3));
             //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5), defaultActionSet);
 
             Match = new(Map, [player1, /*player2, player3*/], [enemy1, /*enemy2*/]);
@@ -64,6 +68,26 @@ namespace Game_Enginge_Of_Strategy_games
             this.MouseDown += GEOSform_MouseDown;
             this.MouseUp += GEOSform_MouseUp;
             this.MouseMove += GEOSform_MouseMove;
+
+            #region UI
+            yScrollBar = new();
+            yScrollBar.Location = new Point(1147, 242);
+            yScrollBar.Size = new(26, 172);
+            yScrollBar.Minimum = -100;
+            yScrollBar.Maximum = 500;
+            yScrollBar.Value = 0;
+            this.Controls.Add(yScrollBar);
+            yScrollBar.Scroll += yScrollBar_Scroll;
+
+            xScrollBar = new();
+            xScrollBar.Location = new Point(508, 618);
+            xScrollBar.Size = new(172, 26);
+            xScrollBar.Minimum = -100;
+            xScrollBar.Maximum = 500;
+            xScrollBar.Value = 0;
+            this.Controls.Add(xScrollBar);
+            xScrollBar.Scroll += xScrollBar_Scroll;
+            #endregion
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)
@@ -86,18 +110,18 @@ namespace Game_Enginge_Of_Strategy_games
 
                     float worldX = c * cameraManager.TileSize;
                     float worldY = r * cameraManager.TileSize;
-                    PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                    (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                     float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                    RectangleF tileHitbox = new RectangleF(screenPos.X, screenPos.Y, size, size);
+                    RectangleF tileHitbox = new RectangleF(screenPos.Item1, screenPos.Item2, size, size);
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
                 }
             }
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan)))
             {
-                PointF screenPos = cameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);
-                g.FillRectangle(brush, screenPos.X, screenPos.Y - 1, cameraManager.TileSize, cameraManager.TileSize);
+                (float, float) screenPos = cameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
+                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, cameraManager.TileSize, cameraManager.TileSize);
             }
             
 
@@ -109,20 +133,20 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
+                g.DrawImage(Image.FromFile(i.Image), screenPos.Item1, screenPos.Item2, size, size);
             }
 
             foreach (actors i in Match.EnemyTeam)
             {
                 float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
+                g.DrawImage(Image.FromFile(i.Image), screenPos.Item1, screenPos.Item2, size, size);
             }
             #endregion
 
@@ -134,10 +158,10 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                playerTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
+                playerTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
             }
 
@@ -146,10 +170,10 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                enemyTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
+                enemyTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
             }
         }
@@ -189,7 +213,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             if (delta > 0)
             {
-                //the + {x} means that it will zoom by {x} much after every mousewheel rub. Math.Min is used for setting a limit
+                //the + {x} means that it will zoom by {x} much after every mousewheel rub and the second number is the limit of zooming
                 cameraManager.TileSize = Math.Min(cameraManager.TileSize + 4, 128);
             }
             else

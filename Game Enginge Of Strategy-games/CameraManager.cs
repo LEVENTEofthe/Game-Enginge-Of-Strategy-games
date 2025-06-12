@@ -22,27 +22,32 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
 
-        public PointF WorldToScreen(float x, float y)   //converting in-game map coordinates to window coordinates
+        public (float, float) WorldToScreen(float x, float y)   //converting in-game map coordinates to window coordinates
         {
-            return new PointF(
+            (float, float) p = (
                 (x * Zoom) + OffsetX,
                 (y * Zoom) + OffsetY
             );
+
+            return p;
         }
-        public PointF WorldToScreen(PointF point)   //converting in-game map coordinates to window coordinates
+        public (float, float) WorldToScreen((float, float) point)   //converting in-game map coordinates to window coordinates
         {
-            return new PointF(
-                (point.X * Zoom) + OffsetX,
-                (point.Y * Zoom) + OffsetY
+            (float, float) p = (
+                (point.Item1 * Zoom) + OffsetX,
+                (point.Item2 * Zoom) + OffsetY
             );
+            return p;
         }
 
-        public PointF ScreenToWorld(float screenX, float screenY)   //converting window coordinates to map-relative coordinates
+        public (float, float) ScreenToWorld(float screenX, float screenY)   //converting window coordinates to map-relative coordinates
         {
-            return new PointF(
+            (float, float) p = (
                 (screenX - OffsetX) / Zoom,
                 (screenY - OffsetY) / Zoom
             );
+
+            return p;
         }
         public float ScreenToWorld(float screen)
         {
@@ -62,8 +67,8 @@ namespace Game_Enginge_Of_Strategy_games
 
         public (decimal, decimal) ScreenToTile(int screenX, int screenY)    //converting window coordinates to tile row/column coordinates
         {
-            decimal col = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).X / TileSize + 1));
-            decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Y / TileSize + 1));
+            decimal col = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Item1 / TileSize + 1));
+            decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Item2 / TileSize + 1));
 
             return (col, row);
         }
@@ -72,17 +77,19 @@ namespace Game_Enginge_Of_Strategy_games
             return decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen / TileSize + 1)));
         }
 
-        public PointF TileToWorld(decimal Col, decimal Row)
+        public (float, float) TileToWorld(decimal Col, decimal Row)
         {
-            float worldX = (float)Col * TileSize;
-            float worldY = (float)Row * TileSize;
+            (float, float) p = (
+                (float)Col * TileSize,
+                (float)Row * TileSize
+            );
 
-            return new PointF(worldX, worldY);
+            return p;
         }
-
-        public PointF TileToScreen(decimal Col, decimal Row)
+        
+        public (float, float) TileToScreen(decimal Col, decimal Row)
         {
-            PointF World = TileToWorld(Col, Row);
+            (float, float) World = TileToWorld(Col, Row);
             return WorldToScreen(World);
         }
 

@@ -5,25 +5,27 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.Design;
+using System.Drawing;
+//using System.Windows.Forms.Design;
+//using System.Windows.Forms.Design;
 
 namespace SRPG_library.actors
 {
-    internal class actors
+    public class actors
     {
         public string Name { get; set; }
-        public string Image { get; set; }
+        public string Image { get; set; }   //Path of image
         public int MaxHP { get; set; }
         private (int, int) mapPosition { get; set; } //Col, Row
-        public List<characterActions> ActionSet { get; set; }   //recently added, need to update the character creator and json reader
+        //public List<characterActions> ActionSet { get; set; }   //recently added, need to update the character creator and json reader
 
-        public actors(string Name, Image Image, int MaxHP, (int, int) MapPosition, List<characterActions> ActionSet)
+        public actors(string Name, string Image, int MaxHP, (int, int) MapPosition/*, List<characterActions> ActionSet*/)
         {
             this.Name = Name;
             this.Image = Image;
             this.MaxHP = MaxHP;
             this.MapPosition = MapPosition;
-            this.ActionSet = ActionSet;
+            //this.ActionSet = ActionSet;
         }
 
         public (int, int) MapPosition
@@ -32,7 +34,7 @@ namespace SRPG_library.actors
             set { mapPosition = (value.Item1 - 1, value.Item2 - 1); }
         }
 
-        public PointF GetScreenPosition(CameraManager cameraManager, int tileSize)
+        public (float, float) GetScreenPosition(CameraManager cameraManager, int tileSize)
         {
             float worldX = MapPosition.Item1 * tileSize;
             float worldY = MapPosition.Item2 * tileSize;

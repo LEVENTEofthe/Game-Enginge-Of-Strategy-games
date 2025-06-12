@@ -30,8 +30,6 @@
         {
             mouseCoordinates = new Label();
             clickedOnPlayerLabel = new Label();
-            xScrollBar = new HScrollBar();
-            yScrollBar = new VScrollBar();
             tileCoords = new Label();
             tilePicker = new Label();
             SuspendLayout();
@@ -53,26 +51,6 @@
             clickedOnPlayerLabel.Size = new Size(128, 20);
             clickedOnPlayerLabel.TabIndex = 7;
             clickedOnPlayerLabel.Text = "clicked on player?";
-            // 
-            // xScrollBar
-            // 
-            xScrollBar.Location = new Point(508, 618);
-            xScrollBar.Maximum = 250;
-            xScrollBar.Minimum = -250;
-            xScrollBar.Name = "xScrollBar";
-            xScrollBar.Size = new Size(172, 26);
-            xScrollBar.TabIndex = 12;
-            xScrollBar.Scroll += xScrollBar_Scroll;
-            // 
-            // yScrollBar
-            // 
-            yScrollBar.Location = new Point(1147, 242);
-            yScrollBar.Maximum = 250;
-            yScrollBar.Minimum = -250;
-            yScrollBar.Name = "yScrollBar";
-            yScrollBar.Size = new Size(26, 161);
-            yScrollBar.TabIndex = 13;
-            yScrollBar.Scroll += yScrollBar_Scroll;
             // 
             // tileCoords
             // 
@@ -100,8 +78,6 @@
             ClientSize = new Size(1182, 653);
             Controls.Add(tilePicker);
             Controls.Add(tileCoords);
-            Controls.Add(yScrollBar);
-            Controls.Add(xScrollBar);
             Controls.Add(clickedOnPlayerLabel);
             Controls.Add(mouseCoordinates);
             DoubleBuffered = true;
@@ -114,8 +90,6 @@
         #endregion
         private Label mouseCoordinates;
         private Label clickedOnPlayerLabel;
-        private HScrollBar xScrollBar;
-        private VScrollBar yScrollBar;
         private Label tileCoords;
         private Label tilePicker;
     }
