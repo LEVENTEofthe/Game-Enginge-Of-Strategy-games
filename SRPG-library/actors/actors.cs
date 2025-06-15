@@ -33,12 +33,5 @@ namespace SRPG_library.actors
             get { return mapPosition; }
             set { mapPosition = (value.Item1 - 1, value.Item2 - 1); }
         }
-
-        public (float, float) GetScreenPosition(CameraManager cameraManager, int tileSize)
-        {
-            float worldX = MapPosition.Item1 * tileSize;
-            float worldY = MapPosition.Item2 * tileSize;
-            return cameraManager.WorldToScreen(worldX, worldY);
-        }
     }
 }

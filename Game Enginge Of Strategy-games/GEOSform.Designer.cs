@@ -32,6 +32,7 @@
             clickedOnPlayerLabel = new Label();
             tileCoords = new Label();
             tilePicker = new Label();
+            returnMiloLoc = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -70,12 +71,22 @@
             tilePicker.TabIndex = 15;
             tilePicker.Text = "tilePicker";
             // 
+            // returnMiloLoc
+            // 
+            returnMiloLoc.AutoSize = true;
+            returnMiloLoc.Location = new Point(959, 612);
+            returnMiloLoc.Name = "returnMiloLoc";
+            returnMiloLoc.Size = new Size(84, 20);
+            returnMiloLoc.TabIndex = 16;
+            returnMiloLoc.Text = "returnActor";
+            // 
             // GEOSform
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
+            Controls.Add(returnMiloLoc);
             Controls.Add(tilePicker);
             Controls.Add(tileCoords);
             Controls.Add(clickedOnPlayerLabel);
@@ -92,5 +103,6 @@
         private Label clickedOnPlayerLabel;
         private Label tileCoords;
         private Label tilePicker;
+        private Label returnMiloLoc;
     }
 }

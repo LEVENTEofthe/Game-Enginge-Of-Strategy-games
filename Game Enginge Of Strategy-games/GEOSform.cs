@@ -54,7 +54,7 @@ namespace Game_Enginge_Of_Strategy_games
             player1 = new("Index", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 10, (1,2));
             //player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (5, 1), defaultActionSet);
             //player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, (1, 3), defaultActionSet);
-            enemy1 = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (2, 3));
+            enemy1 = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (1, 4));
             //enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, (4, 5), defaultActionSet);
 
             Match = new(Map, [player1, /*player2, player3*/], [enemy1, /*enemy2*/]);
@@ -88,6 +88,9 @@ namespace Game_Enginge_Of_Strategy_games
             this.Controls.Add(xScrollBar);
             xScrollBar.Scroll += xScrollBar_Scroll;
             #endregion
+
+            //debug
+            returnMiloLoc.Text = cameraManager.GetActorScreenPosition(enemy1).ToString();
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)
