@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using SRPG_library;
+using SRPG_library.actors;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -14,10 +16,18 @@ namespace Game_Enginge_Of_Strategy_games
         private CameraManager cameraManager;
         private Panel currentActorActionPanel;
 
-        public UIManager(Form Form)
+        public UIManager(Form parentForm, CameraManager cameraManager)
         {
-            parentForm = Form;
+            this.parentForm = parentForm;
+            this.cameraManager = cameraManager;
         }
+
+        //public (float, float) GetActorScreenPosition(actors actor)     //I wonder if it would be an optimal solution to make it so it doesn't only capable of returning the location of actors, but all game objects that fit into a tile, actors included. So game objects might be an origin class for actors and other things
+        //{                                                              //But actually, what is this for in the first place? As I see it, what it actually does at this form is returning the screen position of an actor whose screen position is already known. And why World to Screen?
+        //    float worldX = actor.MapPosition.Item1 + 1;
+        //    float worldY = actor.MapPosition.Item2 + 1;
+        //    return cameraManager.WorldToScreen(worldX, worldY);
+        //}
 
         public void ClosePlayerCharacterActionPanel()
         {

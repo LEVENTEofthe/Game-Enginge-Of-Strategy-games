@@ -27,6 +27,12 @@ namespace SRPG_library.actors
             this.MapPosition = MapPosition;
             //this.ActionSet = ActionSet;
         }
+        public actors(string Name, string Image, int MaxHP)
+        {
+            this.Name = Name;
+            this.Image = Image;
+            this.MaxHP = MaxHP;
+        }
 
         public (int, int) MapPosition
         {

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SRPG_library;
+using SRPG_library.actors;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -98,13 +100,6 @@ namespace Game_Enginge_Of_Strategy_games
         public bool IsInsideMap(int col, int row, int maxColumns, int maxRows)
         {
             return col >= 1 && col <= maxColumns && row >= 1 && row <= maxRows;
-        }
-
-        public (float, float) GetActorScreenPosition(actors actor)     //So I'll transfer this to the UImanager. I wonder if it would be an optimal solution to make it so it doesn't only capable of returning the location of actors, but all game objects that fit into a tile, actors included. So game objects might be an origin class for actors and other things
-        {
-            float worldX = actor.MapPosition.Item1 + 1;
-            float worldY = actor.MapPosition.Item2 + 1;
-            return WorldToScreen(worldX, worldY);
         }
     }
 }

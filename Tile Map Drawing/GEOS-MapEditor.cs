@@ -1,6 +1,8 @@
 using System.Reflection.Metadata;
 using System.Text.Json;
 using Tile_Map_Drawing.MenuRibbons;
+using SRPG_library;
+using GridbaseBattleSystem;
 
 namespace Tile_Map_Drawing
 {
@@ -119,13 +121,15 @@ namespace Tile_Map_Drawing
 
         private void ExportMap(string filePath)
         {
-            Map export = new Map
-            {
-                Columns = columns,
-                Rows = rows,
-                Tileset = $"{tilesetImageSource}",
-                TileData = MapToJaggedArray()
-            };
+            tileMap export = new tileMap(columns, rows, $"{tilesetImageSource}", MapToJaggedArray());
+
+            //tileMap export = new tileMap
+            //{
+            //    Columns = columns,
+            //    Rows = rows,
+            //    Tileset = $"{tilesetImageSource}",
+            //    TileData = MapToJaggedArray()
+            //};
 
             var options = new JsonSerializerOptions { WriteIndented = true };   //what is this option thing for?
             string json = JsonSerializer.Serialize(export, options);

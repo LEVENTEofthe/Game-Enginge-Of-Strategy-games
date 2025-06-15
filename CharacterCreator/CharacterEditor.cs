@@ -1,4 +1,6 @@
 using System.Text.Json;
+using SRPG_library;
+using SRPG_library.actors;
 
 namespace CharacterCreator
 {
