@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    enum mapObjectTypes
+    public enum mapObjectTypes
     {
         wall,
         NellTile

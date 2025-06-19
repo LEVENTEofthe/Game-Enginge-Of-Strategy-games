@@ -5,12 +5,16 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json;
+using System.Windows.Forms;
+using SRPG_library;
+using SRPG_library.actors;
 
 namespace Game_Enginge_Of_Strategy_games
 {
     public partial class GEOSform : Form
     {
-       //System variables
+        #region System variables
+        //System variables
         private UIManager uiManager;
         private CameraManager cameraManager;
         private int defaultTileSize = 16;
@@ -20,8 +24,7 @@ namespace Game_Enginge_Of_Strategy_games
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
-
-       //Testdata variables
+        private (int, int) tileUnderCursorHighlight;
         private match Match;
         private tileMap Map;
         private actors player1;
@@ -29,29 +32,32 @@ namespace Game_Enginge_Of_Strategy_games
         private actors player3;
         private actors enemy1;
         private actors enemy2;
+        //UI
+        private HScrollBar xScrollBar;
+        private VScrollBar yScrollBar;
+        #endregion
 
 
         public GEOSform()
         {
             //What does initialize component do anyway?
             InitializeComponent();
-            uiManager = new UIManager(this);
             cameraManager = new CameraManager(defaultTileSize);
+            uiManager = new UIManager(this, cameraManager);
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS assets/maps/map1.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map6.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
-            mapdata.Text =  Map.TileData.ToString();
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
+            #region Test data
             //test data
-            player1 = new("Index", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(1,2));
-            player2 = new("Sarsio", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(5, 1));
-            player3 = new("Adhela", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder.png"), 10, new tile(1, 3));
-            enemy1 = new("Milo", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, new tile(4, 3));
-            enemy2 = new("Edmond", Image.FromFile("C:/Users/bakos/Documents/GEOS assets/actors/palaceholder2.png"), 10, new tile(4, 5));
+            //WE DON'T YET USE THE JSON FILES DUDE DO MAKE THAT WORK
+            player1 = new("Index", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 10, (1,2));
+            enemy1 = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (1, 4));
 
-            Match = new(Map, [player1, player2, player3], [enemy1, enemy2]);
+            Match = new(Map, [player1], [enemy1]);
+            #endregion
 
             //this is apparently a constructor
             this.DoubleBuffered = true; // Makes drawing smoother
@@ -62,22 +68,40 @@ namespace Game_Enginge_Of_Strategy_games
             this.MouseUp += GEOSform_MouseUp;
             this.MouseMove += GEOSform_MouseMove;
 
-            //debug
-            countRowCol.Text = $"{Match.Map.Rows} rows, {Match.Map.Columns} columns";
+            #region UI
+            yScrollBar = new();
+            yScrollBar.Location = new Point(1147, 242);
+            yScrollBar.Size = new(26, 172);
+            yScrollBar.Minimum = -100;
+            yScrollBar.Maximum = 500;
+            yScrollBar.Value = 0;
+            this.Controls.Add(yScrollBar);
+            yScrollBar.Scroll += yScrollBar_Scroll;
+
+            xScrollBar = new();
+            xScrollBar.Location = new Point(508, 618);
+            xScrollBar.Size = new(172, 26);
+            xScrollBar.Minimum = -100;
+            xScrollBar.Maximum = 500;
+            xScrollBar.Value = 0;
+            this.Controls.Add(xScrollBar);
+            xScrollBar.Scroll += xScrollBar_Scroll;
+            #endregion
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
 
-            //drawing the tile map
+            #region Drawing the map
             int tilesPerRow = tilesetImage.Width / defaultTileSize;
 
             for (int r = 0; r < Match.Map.Rows; r++)
             {
                 for (int c = 0; c < Match.Map.Columns; c++)
                 {
-                    int tileIndex = Match.Map.TileData[r][c];
+                    tile Tile = Match.Map.MapObject[c, r];
+                    int tileIndex = Tile.TilesetIndex;
 
                     int sx = (tileIndex % tilesPerRow) * defaultTileSize;
                     int sy = (tileIndex / tilesPerRow) * defaultTileSize;
@@ -85,80 +109,101 @@ namespace Game_Enginge_Of_Strategy_games
 
                     float worldX = c * cameraManager.TileSize;
                     float worldY = r * cameraManager.TileSize;
-                    PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                    (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                     float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                    RectangleF tileHitbox = new RectangleF(screenPos.X, screenPos.Y, size, size);
+                    RectangleF tileHitbox = new RectangleF(screenPos.Item1, screenPos.Item2, size, size);
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
-
-                    //g.FillRectangle(Brushes.BlueViolet, screenPos.X, screenPos.Y, size, size);
-                    g.DrawRectangle(Pens.Crimson, screenPos.X, screenPos.Y, size, size);
                 }
+            }
+
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan)))
+            {
+                (float, float) screenPos = cameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
+                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, cameraManager.TileSize, cameraManager.TileSize);
             }
             
 
-            //Putting the actors on the grid
+            //Putting the actors' textures on the grid
             (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];
             (int, int)[] enemyPositions = new (int, int)[Match.EnemyTeam.Length];
 
             foreach (actors i in Match.PlayerTeam)
             {
-                float worldX = i.MapPosition.Column * cameraManager.TileSize;
-                float worldY = i.MapPosition.Row * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
+                float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
+                g.DrawImage(Image.FromFile(i.Image), screenPos.Item1, screenPos.Item2, size, size);
             }
 
             foreach (actors i in Match.EnemyTeam)
             {
-                float worldX = i.MapPosition.Column * cameraManager.TileSize;
-                float worldY = i.MapPosition.Row * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
+                float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                g.DrawImage(i.Image, screenPos.X, screenPos.Y, size, size);
+                g.DrawImage(Image.FromFile(i.Image), screenPos.Item1, screenPos.Item2, size, size);
             }
+            #endregion
 
-            //this all bellow is still outdated (I think, not 100% sure)
+            //actor hitboxes
             playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
             enemyTiles = new (actors, Rectangle)[Match.EnemyTeam.Length];
             int counter = 0;
             foreach (actors act in Match.PlayerTeam)
             {
-                float worldX = act.MapPosition.Column * cameraManager.TileSize;
-                float worldY = act.MapPosition.Row * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
+                float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                playerTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
+                playerTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
             }
 
             counter = 0;
             foreach (actors act in Match.EnemyTeam)
             {
-                float worldX = act.MapPosition.Column * cameraManager.TileSize;
-                float worldY = act.MapPosition.Row * cameraManager.TileSize;
-                PointF screenPos = cameraManager.WorldToScreen(worldX, worldY);
+                float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
+                float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                enemyTiles[counter] = (act, new Rectangle((int)screenPos.X, (int)screenPos.Y, (int)size, (int)size));
+                enemyTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
+            }
+        }
+
+        #region Camera
+        private void GEOSform_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                Point currentPoint = e.Location;
+                int dx = currentPoint.X - dragStart.X;
+                int dy = currentPoint.Y - dragStart.Y;
+
+                cameraManager.OffsetX += dx;
+                cameraManager.OffsetY += dy;
+
+                dragStart = currentPoint;
+
+                Invalidate();
+            }
+
+            (decimal, decimal) currentTile = cameraManager.ScreenToTile(e.X, e.Y);
+            if (Match.Map.returnTile(currentTile.Item1, currentTile.Item2) != null)
+            {
+                tileUnderCursorHighlight = (Convert.ToInt32(currentTile.Item1), Convert.ToInt32(currentTile.Item2));
+                Invalidate();
             }
 
             //debugging
-            howManyPlayerCharacters.Text = $"Number of player characters: {playerTiles.Length}";
-        }
-
-        private void Zoom(int size)
-        {
-            if (size > 19 && size < 101)
-            {
-                cameraManager.TileSize = size;
-                Invalidate();
-            }
+            mouseCoordinates.Text = e.Location.ToString();
+            tileCoords.Text = cameraManager.ScreenToTile(e.X, e.Y).ToString();
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)
@@ -167,33 +212,13 @@ namespace Game_Enginge_Of_Strategy_games
 
             if (delta > 0)
             {
-                //the + {x} means that it will zoom by {x} much after every mousewheel rub. Math.Min is used for setting a limit
+                //the + {x} means that it will zoom by {x} much after every mousewheel rub and the second number is the limit of zooming
                 cameraManager.TileSize = Math.Min(cameraManager.TileSize + 4, 128);
             }
             else
                 cameraManager.TileSize = Math.Max(cameraManager.TileSize - 4, 20);
 
             Invalidate();
-        }
-
-        private actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
-        {
-            foreach (var i in playerTiles)
-            {
-                if (i.Item2.Contains(mousePosition))
-                    return i.Item1;
-            }
-            return null;
-        }
-
-        private actors clickedOnEnemyCharacter(Point mousePosition)
-        {
-            foreach (var i in enemyTiles)
-            {
-                if (i.Item2.Contains(mousePosition))
-                    return i.Item1;
-            }
-            return null;
         }
 
         private void GEOSform_MouseDown(object sender, MouseEventArgs e)
@@ -217,28 +242,9 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 clickedOnPlayerLabel.Text = $"You have cilcked on an enemy, {clickedOnEnemyCharacter(e.Location).Name}";
             }
-        }
 
-        private void GEOSform_MouseMove(object sender, MouseEventArgs e)
-        {   
-            if (isDragging)
-            {
-                Point currentPoint = e.Location;
-                int dx = currentPoint.X - dragStart.X;
-                int dy = currentPoint.Y - dragStart.Y;
-
-                cameraManager.OffsetX += dx;
-                cameraManager.OffsetY += dy;
-
-                dragStart = currentPoint;
-
-                Invalidate();
-            }
-
-            PointF currentTile = cameraManager.ScreenToWorld(e.X, e.Y);
-
-            //debugging
-            mouseCoordinates.Text = e.Location.ToString();
+            //debug
+            tilePicker.Text = Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.ToString();
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
@@ -257,5 +263,28 @@ namespace Game_Enginge_Of_Strategy_games
             cameraManager.OffsetY = yScrollBar.Value;
             Invalidate();
         }
+        #endregion
+
+        #region Mouse events
+        private actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
+        {
+            foreach (var i in playerTiles)
+            {
+                if (i.Item2.Contains(mousePosition))
+                    return i.Item1;
+            }
+            return null;
+        }
+
+        private actors clickedOnEnemyCharacter(Point mousePosition)
+        {
+            foreach (var i in enemyTiles)
+            {
+                if (i.Item2.Contains(mousePosition))
+                    return i.Item1;
+            }
+            return null;
+        }
+        #endregion
     }
 }

@@ -30,11 +30,8 @@
         {
             mouseCoordinates = new Label();
             clickedOnPlayerLabel = new Label();
-            xScrollBar = new HScrollBar();
-            yScrollBar = new VScrollBar();
-            howManyPlayerCharacters = new Label();
-            countRowCol = new Label();
-            mapdata = new Label();
+            tileCoords = new Label();
+            tilePicker = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -55,52 +52,23 @@
             clickedOnPlayerLabel.TabIndex = 7;
             clickedOnPlayerLabel.Text = "clicked on player?";
             // 
-            // xScrollBar
+            // tileCoords
             // 
-            xScrollBar.Location = new Point(508, 618);
-            xScrollBar.Maximum = 250;
-            xScrollBar.Minimum = -250;
-            xScrollBar.Name = "xScrollBar";
-            xScrollBar.Size = new Size(172, 26);
-            xScrollBar.TabIndex = 12;
-            xScrollBar.Scroll += xScrollBar_Scroll;
+            tileCoords.AutoSize = true;
+            tileCoords.Location = new Point(158, 624);
+            tileCoords.Name = "tileCoords";
+            tileCoords.Size = new Size(160, 20);
+            tileCoords.TabIndex = 14;
+            tileCoords.Text = "whichTileBellowMouse";
             // 
-            // yScrollBar
+            // tilePicker
             // 
-            yScrollBar.Location = new Point(1147, 242);
-            yScrollBar.Maximum = 250;
-            yScrollBar.Minimum = -250;
-            yScrollBar.Name = "yScrollBar";
-            yScrollBar.Size = new Size(26, 161);
-            yScrollBar.TabIndex = 13;
-            yScrollBar.Scroll += yScrollBar_Scroll;
-            // 
-            // howManyPlayerCharacters
-            // 
-            howManyPlayerCharacters.AutoSize = true;
-            howManyPlayerCharacters.Location = new Point(0, 520);
-            howManyPlayerCharacters.Name = "howManyPlayerCharacters";
-            howManyPlayerCharacters.Size = new Size(193, 20);
-            howManyPlayerCharacters.TabIndex = 14;
-            howManyPlayerCharacters.Text = "how many player characters";
-            // 
-            // countRowCol
-            // 
-            countRowCol.AutoSize = true;
-            countRowCol.Location = new Point(12, 388);
-            countRowCol.Name = "countRowCol";
-            countRowCol.Size = new Size(168, 20);
-            countRowCol.TabIndex = 15;
-            countRowCol.Text = "numberOfRowsColumns";
-            // 
-            // mapdata
-            // 
-            mapdata.AutoSize = true;
-            mapdata.Location = new Point(21, 309);
-            mapdata.Name = "mapdata";
-            mapdata.Size = new Size(69, 20);
-            mapdata.TabIndex = 16;
-            mapdata.Text = "mapdata";
+            tilePicker.AutoSize = true;
+            tilePicker.Location = new Point(0, 553);
+            tilePicker.Name = "tilePicker";
+            tilePicker.Size = new Size(69, 20);
+            tilePicker.TabIndex = 15;
+            tilePicker.Text = "tilePicker";
             // 
             // GEOSform
             // 
@@ -108,11 +76,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
-            Controls.Add(mapdata);
-            Controls.Add(countRowCol);
-            Controls.Add(howManyPlayerCharacters);
-            Controls.Add(yScrollBar);
-            Controls.Add(xScrollBar);
+            Controls.Add(tilePicker);
+            Controls.Add(tileCoords);
             Controls.Add(clickedOnPlayerLabel);
             Controls.Add(mouseCoordinates);
             DoubleBuffered = true;
@@ -125,10 +90,7 @@
         #endregion
         private Label mouseCoordinates;
         private Label clickedOnPlayerLabel;
-        private HScrollBar xScrollBar;
-        private VScrollBar yScrollBar;
-        private Label howManyPlayerCharacters;
-        private Label countRowCol;
-        private Label mapdata;
+        private Label tileCoords;
+        private Label tilePicker;
     }
 }
