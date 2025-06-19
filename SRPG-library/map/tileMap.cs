@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace GridbaseBattleSystem
 {
@@ -13,6 +14,7 @@ namespace GridbaseBattleSystem
         public int Rows { get; private set; }
         public string Tileset { get; set; }
         public int[][] TileData { get; set; }
+        [JsonIgnore]    //MapObject is irrelevant for the MapEditor so we need to ignore it when building the map json files
         public tile[,] MapObject { get; private set; }  //Col, Row
 
         //Looking at it, I'm not sure if it has any protection agains having TileData with unmatching row/col dimensions loaded.

@@ -121,15 +121,15 @@ namespace Tile_Map_Drawing
 
         private void ExportMap(string filePath)
         {
-            tileMap export = new tileMap(columns, rows, $"{tilesetImageSource}", MapToJaggedArray());
+            //tileMap export = new tileMap(columns, rows, $"{tilesetImageSource}", MapToJaggedArray());
 
-            //tileMap export = new tileMap
-            //{
-            //    Columns = columns,
-            //    Rows = rows,
-            //    Tileset = $"{tilesetImageSource}",
-            //    TileData = MapToJaggedArray()
-            //};
+            tileMap export = new tileMap
+            (
+                columns,
+                rows,
+                tilesetImageSource,
+                MapToJaggedArray()
+            );
 
             var options = new JsonSerializerOptions { WriteIndented = true };   //what is this option thing for?
             string json = JsonSerializer.Serialize(export, options);

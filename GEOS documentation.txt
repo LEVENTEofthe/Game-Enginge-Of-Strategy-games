@@ -2,7 +2,7 @@ Map:
 The games are consisting of Matches, and each Match needs one map. Maps are objects of the *tileMap* class, and are loaded from json files that you make with the built in map drawing tool. 
 
 Each map consist of the following
- - Rows and Columns, a map of the size 2 x 3 Will simply have the values 2 and 3 respectively. Private set because [ IDK, we don't want the map to change size without us wanting it specifically to happen, though I'm not yet convinced it it really is needed to be private set ]
+ - Rows and Columns, a map of the size 2 x 3 Will simply have the values 2 and 3 respectively. 
  - Tileset, an image from which the graphics of the map are loaded. The software only stores the file location of the image in a string, meaning that the removal of the file will result in an error. [ I wonder if there is a more elegant and robust solution without having to store them inside the software. ] Each tile shall be [ we'd like to make it compatible with RPG Maker assets, so I'll just look at those specifications later. ]
  - TileData, [ IDK, this is probly the json stuff. Looking at it, it seems to contain the content of the tiles that will be loaded into the map object ]
  - MapObject, basically the instance of the map you created. It's a two-dimensional array of Tile objects that are capable of being filled with map objects such as actors from the Tile data used. It is created in the class constructor by creating it tile-by-tile and respectily giving them the properties of the from TileData. Since the MapObject and TileData are to share column and row dimensions, it is easily done by refering to the same index.
