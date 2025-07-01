@@ -14,7 +14,7 @@ namespace SRPG_library.actors
     public class actors
     {
         public string Name { get; set; }
-        public string Image { get; set; }   //Path of image
+        public string Image { get; set; }   //name of the image in GEOS data library/assets/actor textures
         public int MaxHP { get; set; }
         private (int, int) mapPosition { get; set; } //Col, Row
         //public List<characterActions> ActionSet { get; set; }   //recently added, need to update the character creator and json reader

@@ -27,6 +27,7 @@ namespace Game_Enginge_Of_Strategy_games
         private (int, int) tileUnderCursorHighlight;
         private match Match;
         private tileMap Map;
+        private List<actors> actorList;
         private actors player1;
         private actors player2;
         private actors player3;
@@ -45,7 +46,7 @@ namespace Game_Enginge_Of_Strategy_games
             cameraManager = new CameraManager(defaultTileSize);
             uiManager = new UIManager(this, cameraManager);
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map6.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map7.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
@@ -53,8 +54,14 @@ namespace Game_Enginge_Of_Strategy_games
             #region Test data
             //test data
             //WE DON'T YET USE THE JSON FILES DUDE DO MAKE THAT WORK
-            player1 = new("Index", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 10, (1,2));
-            enemy1 = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (1, 4));
+            //So we'll load all useable actors, be that player, enemy or NPC character, then we implement a party list that contains all currently contained and thus deployable player units. If the player unlock a new deployable unit, then it is simply added to this list
+
+            List<string> actolist = new List<string>("C:/Users/bakos/Documents/GEOS data library/database/actors/Sarsio.json");
+            LoadActorsToMatch("C:/Users/bakos/Documents/GEOS data library/database/actors/Sarsio.json")
+
+
+            player1 = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 10, (1,2));
+            enemy1 = new("Name", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (1, 4));
 
             Match = new(Map, [player1], [enemy1]);
             #endregion
@@ -87,6 +94,42 @@ namespace Game_Enginge_Of_Strategy_games
             this.Controls.Add(xScrollBar);
             xScrollBar.Scroll += xScrollBar_Scroll;
             #endregion
+        }
+
+        public static List<actors> LoadActorsToMatch(IEnumerable<string> actorsFilePath, match match)
+        {
+            var roster = new List<actors>(capacity: match.PlayerTeam.Length);
+
+            foreach (string path in actorsFilePath.Take(match.PlayerTeam.Length))
+            {
+                if (!File.Exists(path))
+                {
+                    throw new FileNotFoundException($"Actor file not found: {path}", path);
+                }
+
+                try
+                {
+                    var json = File.ReadAllText(path);
+                    var actor = JsonSerializer.Deserialize<actors>(json);
+
+                    if (actor == null) 
+                    {
+                        throw new InvalidDataException($"Actors file '{path}' could not be deserialised (null result).");
+                    }
+                    
+                    roster.Add(actor);
+                }
+                catch (JsonException jx)    //For when the json syntax is wrong
+                {
+                    throw new InvalidDataException($"Actor file '{path}' contains invalid JSON: {jx.Message}", jx);
+                }
+                catch (Exception ex)    //For everything else
+                {
+                    Debug.WriteLine($"[ActorLoader] {ex.Message}");
+                    throw;
+                }
+            }
+            return roster;
         }
 
         private void GEOSform_Paint(object sender, PaintEventArgs e)

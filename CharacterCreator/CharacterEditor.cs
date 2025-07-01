@@ -1,4 +1,6 @@
+using System.Security.Cryptography;
 using System.Text.Json;
+using System.Windows.Forms;
 using SRPG_library;
 using SRPG_library.actors;
 
@@ -15,9 +17,11 @@ namespace CharacterCreator
         private void importPicBtn_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
+            ofd.FileName = "";
             ofd.Title = "Select an image";
             ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
             ofd.InitialDirectory = @"C:/Users/bakos/Documents/GEOS data library/assets/actor textures";
+            ofd.RestoreDirectory = true;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -29,7 +33,7 @@ namespace CharacterCreator
                     if (tryImage.Size == new Size(8, 8) || tryImage.Size == new Size(16, 16) || tryImage.Size == new Size(32, 32) || tryImage.Size == new Size(64, 64) || tryImage.Size == new Size(128, 128))
                     {
                         characterImagePicbox.Image = tryImage;
-                        characterImageSource = ofd.FileName;
+                        characterImageSource = ofd.SafeFileName;
                     }
                     else
                     {
@@ -58,9 +62,11 @@ namespace CharacterCreator
         private void exportBtn_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
+            sfd.FileName = "";
             sfd.Filter = "JSON files (*.json)|*.json";
             sfd.InitialDirectory = @"C:/Users/bakos/Documents/GEOS data library/database/actors";
             sfd.FileName = nameTextbox.Text;
+            sfd.RestoreDirectory = true;
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
