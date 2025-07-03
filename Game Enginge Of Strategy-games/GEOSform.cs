@@ -51,20 +51,18 @@ namespace Game_Enginge_Of_Strategy_games
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
-            #region Test data
-            //test data
-            //WE DON'T YET USE THE JSON FILES DUDE DO MAKE THAT WORK
-            //So we'll load all useable actors, be that player, enemy or NPC character, then we implement a party list that contains all currently contained and thus deployable player units. If the player unlock a new deployable unit, then it is simply added to this list
+            actorList = ImportActors("C://Users/bakos/Documents/GEOS data library/database/actors/");
 
-            List<string> actolist = new List<string>("C:/Users/bakos/Documents/GEOS data library/database/actors/Sarsio.json");
-            LoadActorsToMatch("C:/Users/bakos/Documents/GEOS data library/database/actors/Sarsio.json")
+            string player1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Sarsio.actor.json");
+            player1 = JsonSerializer.Deserialize<actors>(player1json);
+            player1.MapPosition = (1, 2);
+            string enemy1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Milo.actor.json");
+            enemy1 = JsonSerializer.Deserialize<actors>(enemy1json);
+            enemy1.MapPosition = (2, 4);
 
-
-            player1 = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 10, (1,2));
-            enemy1 = new("Name", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 10, (1, 4));
-
+            //Now that the actors are red in dynamically, we can't harcode testdata into the Match.
             Match = new(Map, [player1], [enemy1]);
-            #endregion
+
 
             //this is apparently a constructor
             this.DoubleBuffered = true; // Makes drawing smoother
@@ -96,7 +94,47 @@ namespace Game_Enginge_Of_Strategy_games
             #endregion
         }
 
-        public static List<actors> LoadActorsToMatch(IEnumerable<string> actorsFilePath, match match)
+        public static List<actors> ImportActors(string folderpath)
+        {
+            List<actors> redActors = new List<actors>();
+
+            if (!Directory.Exists(folderpath))
+            {
+                Directory.CreateDirectory(folderpath);
+                return redActors;
+            }
+
+            string[] jsonContent = Directory.GetFiles("C://Users/bakos/Documents/GEOS data library/database/actors/", "*.actor.json");
+
+            bool wasThereError = false;
+            string errorMessage = "Failed to read the file(s):\n";
+
+            foreach (var file in jsonContent)
+            {
+                try
+                {
+                    string json = File.ReadAllText(file);
+                    actors? deserialized = JsonSerializer.Deserialize<actors>(json);
+
+                    if (deserialized != null)
+                    {
+                        redActors.Add(deserialized);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    wasThereError = true;
+                    errorMessage += $"{Path.GetFileName(file)}: {ex.Message}\n\n";
+                }
+            }
+
+            if (wasThereError)
+                MessageBox.Show(errorMessage);
+
+            return redActors;
+        }
+
+        public static List<actors> LoadActorsToMatch(IEnumerable<string> actorsFilePath, match match)   //Is this even useful?
         {
             var roster = new List<actors>(capacity: match.PlayerTeam.Length);
 
@@ -126,7 +164,7 @@ namespace Game_Enginge_Of_Strategy_games
                 catch (Exception ex)    //For everything else
                 {
                     Debug.WriteLine($"[ActorLoader] {ex.Message}");
-                    throw;
+                    throw;  //this throw might be dangerous because it terminates the software
                 }
             }
             return roster;
@@ -152,7 +190,7 @@ namespace Game_Enginge_Of_Strategy_games
 
                     float worldX = c * cameraManager.TileSize;
                     float worldY = r * cameraManager.TileSize;
-                    (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
+                    (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
                     float size = cameraManager.TileSize * cameraManager.Zoom;
 
                     RectangleF tileHitbox = new RectangleF(screenPos.Item1, screenPos.Item2, size, size);
@@ -175,20 +213,20 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                g.DrawImage(Image.FromFile(i.Image), screenPos.Item1, screenPos.Item2, size, size);
+                g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
             }
 
             foreach (actors i in Match.EnemyTeam)
             {
                 float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
-                g.DrawImage(Image.FromFile(i.Image), screenPos.Item1, screenPos.Item2, size, size);
+                g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
             }
             #endregion
 
@@ -200,7 +238,7 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
                 playerTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
@@ -212,7 +250,7 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
                 float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);     //
+                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
                 float size = cameraManager.TileSize * cameraManager.Zoom;
 
                 enemyTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));

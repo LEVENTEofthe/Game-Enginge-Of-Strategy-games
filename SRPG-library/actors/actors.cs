@@ -33,6 +33,7 @@ namespace SRPG_library.actors
             this.Image = Image;
             this.MaxHP = MaxHP;
         }
+        public actors() { }
 
         public (int, int) MapPosition
         {

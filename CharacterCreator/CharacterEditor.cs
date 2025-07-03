@@ -65,7 +65,7 @@ namespace CharacterCreator
             sfd.FileName = "";
             sfd.Filter = "JSON files (*.json)|*.json";
             sfd.InitialDirectory = @"C:/Users/bakos/Documents/GEOS data library/database/actors";
-            sfd.FileName = nameTextbox.Text;
+            sfd.FileName = $"{nameTextbox.Text}.actor";
             sfd.RestoreDirectory = true;
 
             if (sfd.ShowDialog() == DialogResult.OK)
