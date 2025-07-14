@@ -8,7 +8,7 @@ namespace Tile_Map_Drawing
 {
     public partial class TileMapEditor : Form
     {
-        private MapParametersRibbon mapParametersRibbon;
+        private Top_MapParametersRibbon mapParametersRibbon;
 
         Size tilesetSizeMustBe = new Size(32, 48);
         int tileSize = 16;
@@ -25,23 +25,11 @@ namespace Tile_Map_Drawing
         public TileMapEditor()
         {
             InitializeComponent();
-            //InitializeEditor();
 
-            mapParametersRibbon = new MapParametersRibbon();
+            mapParametersRibbon = new Top_MapParametersRibbon();
             mapParametersRibbon.clickedInvalidateMapBt += clickedInvalidateMapBtn;
-            ribbonPanel.Controls.Clear();
-            ribbonPanel.Controls.Add(mapParametersRibbon);
-        }
-
-        public void InitializeEditor()
-        {
-            //mapData = new int[columns, rows];
-
-            //MapDrawingField.Width = columns * defaultTileSize;
-            //MapDrawingField.Height = rows * defaultTileSize;
-
-            //tilesetImage = new Bitmap(tilesetImageSource);
-            //TilesetPanel.Image = tilesetImage;
+            Top_ribbonPanel.Controls.Clear();
+            Top_ribbonPanel.Controls.Add(mapParametersRibbon);
         }
 
         private void MapDrawingField_Paint(object sender, PaintEventArgs e)
@@ -89,7 +77,7 @@ namespace Tile_Map_Drawing
             int tilesPerRow = tilesetImage.Width / tileSize;
             selectedTileIndex = y * tilesPerRow + x;
 
-            TilesetPanel.Invalidate();
+            //TilesetPanel.Invalidate();    //
         }
 
         private void MapDrawingField_MouseClick(object sender, MouseEventArgs e)
@@ -121,8 +109,6 @@ namespace Tile_Map_Drawing
 
         private void ExportMap(string filePath)
         {
-            //tileMap export = new tileMap(columns, rows, $"{tilesetImageSource}", MapToJaggedArray());
-
             tileMap export = new tileMap
             (
                 columns,
@@ -161,7 +147,7 @@ namespace Tile_Map_Drawing
             MapDrawingField.Height = rows * tileSize;
 
             tilesetImage = new Bitmap(tilesetImageSource);
-            TilesetPanel.Image = tilesetImage;
+            //TilesetPanel.Image = tilesetImage;    //
 
             MapDrawingField.Invalidate();
         }
@@ -184,7 +170,7 @@ namespace Tile_Map_Drawing
                     {
                         tilesetImageSource = ofd.FileName;
                         tilesetImage = new Bitmap(tilesetImageSource);
-                        TilesetPanel.Image = tilesetImage;
+                        //TilesetPanel.Image = tilesetImage;    //
                         MapDrawingField.Invalidate();
                     }
                     else
@@ -201,23 +187,41 @@ namespace Tile_Map_Drawing
             }
         }
 
+        #region Ribbon Menu Switching
         private void ShowRibbonTab(string RibbonName)
         {
-            ribbonPanel.Controls.Clear();
-            UserControl ribbon = RibbonName switch
-            {
-                "MapParameters" => new MapParametersRibbon(),
-                "Events" => new EventsRibbon(),
-                _ => null
-            };
+            Top_ribbonPanel.Controls.Clear();
+            Side_ribbonPanel.Controls.Clear();
 
-            if (ribbon != null)
+            UserControl Top_ribbon = null;
+            UserControl Side_ribbon = null;
+
+            switch (RibbonName)
             {
-                ribbon.Dock = DockStyle.Fill;
-                ribbonPanel.Controls.Add(ribbon);
+                case "MapParameters":
+                    Top_ribbon = new Top_MapParametersRibbon();
+                    Side_ribbon = new Side_MapParametersRibbon();
+                    break;
+                case "Draw":
+                    Top_ribbon = new Top_TileDrawingRibbon();
+                    Side_ribbon = new Side_TileDrawingRibbon();
+                    break;
+                case "Events":
+                    Top_ribbon = new Top_EventsRibbon();
+                    break;
+            }
+
+            if (Top_ribbon != null)
+            {
+                Top_ribbon.Dock = DockStyle.Fill;
+                Top_ribbonPanel.Controls.Add(Top_ribbon);
+            }
+            if (Side_ribbon != null)
+            {
+                Side_ribbon.Dock = DockStyle.Fill;
+                Side_ribbonPanel.Controls.Add(Side_ribbon);
             }
         }
-
 
         private void mapParameterMenuBtn_Click(object sender, EventArgs e)
         {
@@ -226,12 +230,13 @@ namespace Tile_Map_Drawing
 
         private void drawMenuBtn_Click(object sender, EventArgs e)
         {
-
+            ShowRibbonTab("Draw");
         }
 
         private void eventMenuBtn_Click(object sender, EventArgs e)
         {
             ShowRibbonTab("Events");
         }
+        #endregion
     }
 }

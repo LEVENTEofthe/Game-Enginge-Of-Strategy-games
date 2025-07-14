@@ -1,6 +1,6 @@
-﻿namespace Tile_Map_Drawing
+﻿namespace Tile_Map_Drawing.MenuRibbons
 {
-    partial class EventsRibbon
+    partial class Top_TileDrawingRibbon
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,10 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            label1 = new Label();
+            SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(14, 47);
+            label1.Name = "label1";
+            label1.Size = new Size(90, 20);
+            label1.TabIndex = 0;
+            label1.Text = "top drawing";
+            // 
+            // Top_TileDrawingRibbon
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(label1);
+            Name = "Top_TileDrawingRibbon";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label label1;
     }
 }

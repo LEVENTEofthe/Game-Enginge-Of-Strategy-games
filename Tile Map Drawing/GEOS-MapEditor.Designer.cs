@@ -28,30 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            TilesetPanel = new PictureBox();
             MapDrawingField = new PictureBox();
             exportBtn = new Button();
-            tilesetSelectBtn = new Button();
-            panel1 = new Panel();
+            Side_ribbonPanel = new Panel();
             mapParameterMenuBtn = new Button();
             drawMenuBtn = new Button();
             eventMenuBtn = new Button();
-            ribbonPanel = new Panel();
-            ((System.ComponentModel.ISupportInitialize)TilesetPanel).BeginInit();
+            Top_ribbonPanel = new Panel();
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).BeginInit();
-            panel1.SuspendLayout();
             SuspendLayout();
-            // 
-            // TilesetPanel
-            // 
-            TilesetPanel.BackColor = SystemColors.ControlLightLight;
-            TilesetPanel.Location = new Point(18, 47);
-            TilesetPanel.Name = "TilesetPanel";
-            TilesetPanel.Size = new Size(106, 147);
-            TilesetPanel.TabIndex = 0;
-            TilesetPanel.TabStop = false;
-            TilesetPanel.Paint += TilesetPanel_Paint;
-            TilesetPanel.MouseClick += TilesetPanel_MouseClick;
             // 
             // MapDrawingField
             // 
@@ -74,26 +59,13 @@
             exportBtn.UseVisualStyleBackColor = true;
             exportBtn.Click += exportBtn_Click;
             // 
-            // tilesetSelectBtn
+            // Side_ribbonPanel
             // 
-            tilesetSelectBtn.Font = new Font("Segoe UI", 6F);
-            tilesetSelectBtn.Location = new Point(18, 12);
-            tilesetSelectBtn.Name = "tilesetSelectBtn";
-            tilesetSelectBtn.Size = new Size(106, 29);
-            tilesetSelectBtn.TabIndex = 6;
-            tilesetSelectBtn.Text = "select other tileset";
-            tilesetSelectBtn.UseVisualStyleBackColor = true;
-            tilesetSelectBtn.Click += tilesetSelectBtn_Click;
-            // 
-            // panel1
-            // 
-            panel1.BackColor = SystemColors.ActiveBorder;
-            panel1.Controls.Add(tilesetSelectBtn);
-            panel1.Controls.Add(TilesetPanel);
-            panel1.Location = new Point(10, 116);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(137, 204);
-            panel1.TabIndex = 7;
+            Side_ribbonPanel.BackColor = SystemColors.ActiveBorder;
+            Side_ribbonPanel.Location = new Point(10, 116);
+            Side_ribbonPanel.Name = "Side_ribbonPanel";
+            Side_ribbonPanel.Size = new Size(137, 204);
+            Side_ribbonPanel.TabIndex = 7;
             // 
             // mapParameterMenuBtn
             // 
@@ -128,13 +100,13 @@
             eventMenuBtn.UseVisualStyleBackColor = true;
             eventMenuBtn.Click += eventMenuBtn_Click;
             // 
-            // ribbonPanel
+            // Top_ribbonPanel
             // 
-            ribbonPanel.BackColor = SystemColors.ActiveBorder;
-            ribbonPanel.Location = new Point(10, 32);
-            ribbonPanel.Name = "ribbonPanel";
-            ribbonPanel.Size = new Size(712, 78);
-            ribbonPanel.TabIndex = 11;
+            Top_ribbonPanel.BackColor = SystemColors.ActiveBorder;
+            Top_ribbonPanel.Location = new Point(10, 32);
+            Top_ribbonPanel.Name = "Top_ribbonPanel";
+            Top_ribbonPanel.Size = new Size(712, 78);
+            Top_ribbonPanel.TabIndex = 11;
             // 
             // TileMapEditor
             // 
@@ -142,31 +114,26 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaption;
             ClientSize = new Size(800, 450);
+            Controls.Add(Top_ribbonPanel);
             Controls.Add(mapParameterMenuBtn);
-            Controls.Add(ribbonPanel);
-            Controls.Add(panel1);
+            Controls.Add(Side_ribbonPanel);
             Controls.Add(eventMenuBtn);
             Controls.Add(drawMenuBtn);
             Controls.Add(exportBtn);
             Controls.Add(MapDrawingField);
             Name = "TileMapEditor";
             Text = "GEOS Map Editor";
-            ((System.ComponentModel.ISupportInitialize)TilesetPanel).EndInit();
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).EndInit();
-            panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-
-        private PictureBox TilesetPanel;
         private PictureBox MapDrawingField;
         private Button exportBtn;
-        private Button tilesetSelectBtn;
-        private Panel panel1;
+        private Panel Side_ribbonPanel;
         private Button mapParameterMenuBtn;
         private Button drawMenuBtn;
         private Button eventMenuBtn;
-        private Panel ribbonPanel;
+        private Panel Top_ribbonPanel;
     }
 }
