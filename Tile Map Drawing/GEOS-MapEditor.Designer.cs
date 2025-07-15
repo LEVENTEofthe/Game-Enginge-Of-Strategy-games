@@ -30,11 +30,11 @@
         {
             MapDrawingField = new PictureBox();
             exportBtn = new Button();
-            Side_ribbonPanel = new Panel();
+            Side_SubmenuPanel = new Panel();
             mapParameterMenuBtn = new Button();
             drawMenuBtn = new Button();
             eventMenuBtn = new Button();
-            Top_ribbonPanel = new Panel();
+            Top_SubmenuPanel = new Panel();
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).BeginInit();
             SuspendLayout();
             // 
@@ -61,11 +61,11 @@
             // 
             // Side_ribbonPanel
             // 
-            Side_ribbonPanel.BackColor = SystemColors.ActiveBorder;
-            Side_ribbonPanel.Location = new Point(10, 116);
-            Side_ribbonPanel.Name = "Side_ribbonPanel";
-            Side_ribbonPanel.Size = new Size(137, 204);
-            Side_ribbonPanel.TabIndex = 7;
+            Side_SubmenuPanel.BackColor = SystemColors.ActiveBorder;
+            Side_SubmenuPanel.Location = new Point(10, 116);
+            Side_SubmenuPanel.Name = "Side_ribbonPanel";
+            Side_SubmenuPanel.Size = new Size(137, 204);
+            Side_SubmenuPanel.TabIndex = 7;
             // 
             // mapParameterMenuBtn
             // 
@@ -102,11 +102,11 @@
             // 
             // Top_ribbonPanel
             // 
-            Top_ribbonPanel.BackColor = SystemColors.ActiveBorder;
-            Top_ribbonPanel.Location = new Point(10, 32);
-            Top_ribbonPanel.Name = "Top_ribbonPanel";
-            Top_ribbonPanel.Size = new Size(712, 78);
-            Top_ribbonPanel.TabIndex = 11;
+            Top_SubmenuPanel.BackColor = SystemColors.ActiveBorder;
+            Top_SubmenuPanel.Location = new Point(10, 32);
+            Top_SubmenuPanel.Name = "Top_ribbonPanel";
+            Top_SubmenuPanel.Size = new Size(712, 78);
+            Top_SubmenuPanel.TabIndex = 11;
             // 
             // TileMapEditor
             // 
@@ -114,9 +114,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaption;
             ClientSize = new Size(800, 450);
-            Controls.Add(Top_ribbonPanel);
+            Controls.Add(Top_SubmenuPanel);
             Controls.Add(mapParameterMenuBtn);
-            Controls.Add(Side_ribbonPanel);
+            Controls.Add(Side_SubmenuPanel);
             Controls.Add(eventMenuBtn);
             Controls.Add(drawMenuBtn);
             Controls.Add(exportBtn);
@@ -130,10 +130,10 @@
         #endregion
         private PictureBox MapDrawingField;
         private Button exportBtn;
-        private Panel Side_ribbonPanel;
+        private Panel Side_SubmenuPanel;
         private Button mapParameterMenuBtn;
         private Button drawMenuBtn;
         private Button eventMenuBtn;
-        private Panel Top_ribbonPanel;
+        private Panel Top_SubmenuPanel;
     }
 }

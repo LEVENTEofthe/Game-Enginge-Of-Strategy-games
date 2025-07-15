@@ -1,6 +1,6 @@
 ﻿namespace Tile_Map_Drawing.MenuRibbons
 {
-    partial class Side_TileDrawingRibbon
+    partial class Side_TileDrawingUC
     {
         /// <summary> 
         /// Required designer variable.

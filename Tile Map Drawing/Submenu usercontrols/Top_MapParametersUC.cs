@@ -10,18 +10,27 @@ using System.Windows.Forms;
 
 namespace Tile_Map_Drawing.MenuRibbons
 {
-    public partial class Top_MapParametersRibbon : UserControl
+    public partial class Top_MapParametersUC : UserControl
     {
         public int mapColumns;
         public int mapRows;
         public EventHandler clickedInvalidateMapBt;
 
-        public Top_MapParametersRibbon()
+        public Top_MapParametersUC()
         {
             InitializeComponent();
 
             mapColumns = Convert.ToInt32(mapColumnsNumupdown.Value);
             mapRows = Convert.ToInt32(mapRowsNumupdown.Value);
+        }
+
+        public Top_MapParametersUC(int mapColumns, int mapRows)
+        {
+            InitializeComponent();
+            this.mapColumns = mapColumns;
+            this.mapRows = mapRows;
+            mapColumnsNumupdown.Value = mapColumns;
+            mapRowsNumupdown.Value = mapRows;
         }
 
         private void mapColumnsNumupdown_ValueChanged(object sender, EventArgs e)

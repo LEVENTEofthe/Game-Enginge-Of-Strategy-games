@@ -1,6 +1,6 @@
 ﻿namespace Tile_Map_Drawing.MenuRibbons
 {
-    partial class Top_TileDrawingRibbon
+    partial class Side_MapParametersUC
     {
         /// <summary> 
         /// Required designer variable.
@@ -34,18 +34,18 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(14, 47);
+            label1.Location = new Point(0, 41);
             label1.Name = "label1";
-            label1.Size = new Size(90, 20);
+            label1.Size = new Size(210, 20);
             label1.TabIndex = 0;
-            label1.Text = "top drawing";
+            label1.Text = "This here is the Mapparameter";
             // 
-            // Top_TileDrawingRibbon
+            // Side_MapParametersRibbon
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(label1);
-            Name = "Top_TileDrawingRibbon";
+            Name = "Side_MapParametersRibbon";
             ResumeLayout(false);
             PerformLayout();
         }

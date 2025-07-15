@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Tile_Map_Drawing.MenuRibbons
+namespace Tile_Map_Drawing
 {
-    public partial class Side_TileDrawingRibbon : UserControl
+    public partial class Top_EventsUC : UserControl
     {
-        public Side_TileDrawingRibbon()
+        public Top_EventsUC()
         {
             InitializeComponent();
         }
