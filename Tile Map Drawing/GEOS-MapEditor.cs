@@ -16,14 +16,15 @@ namespace Tile_Map_Drawing
         private Side_MapParametersUC sideMapParametersRibbon;
         private Top_TileDrawingUC topTileDrawingRibbon;
         private Side_TileDrawingUC sideTileDrawingRibbon;
+        string tilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/tileset-16px-2x3.png";  //We have to change so it will use the same source Side_TileDrawingUC does
+        Bitmap tilesetImage;
+
         private Top_EventsUC topEventsRibbon;
         #endregion
 
         Size tilesetSizeMustBe = new Size(32, 48);
         int tileSize = 16;
 
-        string tilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/tileset-16px-2x3.png";  //default
-        Bitmap tilesetImage;
         int selectedTileIndex = 0;
 
         int[,] mapData;
@@ -153,14 +154,7 @@ namespace Tile_Map_Drawing
                 MapDrawingField.Width = columns * tileSize;
                 MapDrawingField.Height = rows * tileSize;
 
-
-
-                ////This was moved to side_tiledrawingUC
-                //tilesetImage = new Bitmap(tilesetImageSource);
-                ////TilesetPanel.Image = tilesetImage;    //
-
-
-
+                tilesetImage = new Bitmap(tilesetImageSource);
 
                 MapDrawingField.Invalidate();
             }
@@ -215,7 +209,7 @@ namespace Tile_Map_Drawing
                 case "MapParameters":
                     var topribbon = new Top_MapParametersUC(MapParameterColumns, MapParameterRows);
                     var sideribbon = new Side_MapParametersUC();
-                    //subscribing to events
+                    //subscribing to events     //I wonder if we need to do unsubscribing as well
                     topribbon.clickedInvalidateMapBt += clickedInvalidateMapBtn;
 
                     TopUC = topribbon;
