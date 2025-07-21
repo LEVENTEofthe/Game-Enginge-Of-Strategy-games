@@ -224,7 +224,7 @@ namespace Tile_Map_Drawing
         private void drawMenuBtn_Click(object sender, EventArgs e)
         {
             ShowSubmenu("Draw");
-            activeTool = new TileDrawingTool(tileSize, columns, rows, sideTileDrawingRibbon.SelectedTileIndex);
+            activeTool = new TileDrawingTool(tileSize, sideTileDrawingRibbon.SelectedTileIndex);
         }
 
         private void eventMenuBtn_Click(object sender, EventArgs e)
