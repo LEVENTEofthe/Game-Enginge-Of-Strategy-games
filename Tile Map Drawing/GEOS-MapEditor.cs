@@ -25,17 +25,17 @@ namespace Tile_Map_Drawing
         Size tilesetSizeMustBe = new Size(32, 48);
         int tileSize = 16;
 
-        int selectedTileIndex = 0;
-
         int[,] mapData;
         public int columns = 2;
         int rows = 2;
+
+        private ITool? activeTool; 
 
         public TileMapEditor()
         {
             InitializeComponent();
 
-            ShowSubmenu("MapParameters");
+            ShowSubmenu("MapParameters");   //Default
         }
 
         private void MapDrawingField_Paint(object sender, PaintEventArgs e)
@@ -63,39 +63,13 @@ namespace Tile_Map_Drawing
             }
         }
 
-        private void TilesetPanel_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            if (tilesetImage == null) return;
-
-            int tilesPerRow = tilesetImage.Width / tileSize;
-            int SelX = (selectedTileIndex % tilesPerRow) * tileSize;
-            int SelY = (selectedTileIndex / tilesPerRow) * tileSize;
-
-            g.DrawRectangle(Pens.Black, SelX, SelY, tileSize, tileSize);
-        }
-
-        private void TilesetPanel_MouseClick(object sender, MouseEventArgs e)
-        {
-            int x = e.X / tileSize;
-            int y = e.Y / tileSize;
-
-            int tilesPerRow = tilesetImage.Width / tileSize;
-            selectedTileIndex = y * tilesPerRow + x;
-
-            //TilesetPanel.Invalidate();    //
-        }
-
         private void MapDrawingField_MouseClick(object sender, MouseEventArgs e)
         {
-            int x = e.X / tileSize;
-            int y = e.Y / tileSize;
+            if (activeTool == null) return;
 
-            if (x >= 0 && y >= 0 && x < columns && y < rows)
-            {
-                mapData[x, y] = selectedTileIndex;
-                MapDrawingField.Invalidate();
-            }
+            activeTool.HandleMouseClick(e, mapData, sideTileDrawingRibbon.SelectedTileIndex);
+
+            MapDrawingField.Invalidate();
         }
 
         private int[][] MapToJaggedArray()
@@ -214,12 +188,17 @@ namespace Tile_Map_Drawing
 
                     TopUC = topribbon;
                     SideUC = sideribbon;
+                    break;
 
-                    break;
                 case "Draw":
+                    var drawSideRibbon = new Side_TileDrawingUC();
+
                     TopUC = new Top_TileDrawingUC();
-                    SideUC = new Side_TileDrawingUC();
+                    SideUC = drawSideRibbon;
+
+                    sideTileDrawingRibbon = drawSideRibbon;
                     break;
+
                 case "Events":
                     TopUC = new Top_EventsUC();
                     break;
@@ -245,6 +224,7 @@ namespace Tile_Map_Drawing
         private void drawMenuBtn_Click(object sender, EventArgs e)
         {
             ShowSubmenu("Draw");
+            activeTool = new TileDrawingTool(tileSize, columns, rows, sideTileDrawingRibbon.SelectedTileIndex);
         }
 
         private void eventMenuBtn_Click(object sender, EventArgs e)
