@@ -64,13 +64,15 @@
             TilesetPanel.Size = new Size(106, 147);
             TilesetPanel.TabIndex = 0;
             TilesetPanel.TabStop = false;
+            TilesetPanel.Paint += TilesetPanel_Paint;
+            TilesetPanel.MouseClick += TilesetPanel_MouseClick;
             // 
-            // Side_TileDrawingRibbon
+            // Side_TileDrawingUC
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(panel1);
-            Name = "Side_TileDrawingRibbon";
+            Name = "Side_TileDrawingUC";
             Size = new Size(143, 204);
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)TilesetPanel).EndInit();
