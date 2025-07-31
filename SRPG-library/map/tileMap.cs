@@ -13,8 +13,8 @@ namespace GridbaseBattleSystem
         public int Columns { get; private set; }
         public int Rows { get; private set; }
         public string Tileset { get; set; }
-        public int[][] TileData { get; set; }
-        [JsonIgnore]    //MapObject is irrelevant for the MapEditor so we need to ignore it when building the map json files
+        public int[][] TileData { get; set; }   //We are using jagged array instead of a simple 2D array because it works better with json serialization. Though I can imagine that in the future, we'd want to have it also converted to a 2D array for stuff that works less good with jagged
+        [JsonIgnore]    //MapObject is irrelevant for the MapEditor so we need to ignore it when building the map json files        
         public tile[,] MapObject { get; private set; }  //Col, Row
 
         //Looking at it, I'm not sure if it has any protection agains having TileData with unmatching row/col dimensions loaded.

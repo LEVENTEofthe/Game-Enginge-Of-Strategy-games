@@ -8,6 +8,8 @@ using System.Text.Json;
 using System.Windows.Forms;
 using SRPG_library;
 using SRPG_library.actors;
+using System.Diagnostics.Tracing;
+using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -46,7 +48,7 @@ namespace Game_Enginge_Of_Strategy_games
             cameraManager = new CameraManager(defaultTileSize);
             uiManager = new UIManager(this, cameraManager);
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/mapp2.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map32.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
@@ -150,11 +152,11 @@ namespace Game_Enginge_Of_Strategy_games
                     var json = File.ReadAllText(path);
                     var actor = JsonSerializer.Deserialize<actors>(json);
 
-                    if (actor == null) 
+                    if (actor == null)
                     {
                         throw new InvalidDataException($"Actors file '{path}' could not be deserialised (null result).");
                     }
-                    
+
                     roster.Add(actor);
                 }
                 catch (JsonException jx)    //For when the json syntax is wrong
@@ -203,7 +205,7 @@ namespace Game_Enginge_Of_Strategy_games
                 (float, float) screenPos = cameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
                 g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, cameraManager.TileSize, cameraManager.TileSize);
             }
-            
+
 
             //Putting the actors' textures on the grid
             (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];

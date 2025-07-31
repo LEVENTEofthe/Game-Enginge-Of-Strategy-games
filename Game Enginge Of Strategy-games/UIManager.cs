@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using SRPG_library;
 using SRPG_library.actors;
+using Microsoft.VisualBasic.ApplicationServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Reflection.Metadata;
+using System.Text.Json;
+using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    public class UIManager    //this class will make the main form's work easier by handling all UI releated processes. That's good because now the main form will only need to be responsible for the app and "high level events" logic while the UI logics will be separated here, making it way more clean and easier to customise.
+    public class UIManager : IEventUiManager
     {
         private Form parentForm;
         private CameraManager cameraManager;
@@ -79,5 +84,103 @@ namespace Game_Enginge_Of_Strategy_games
                 g.FillRectangle(brush, highlight);
             }
         }
+
+        #region Actor chooser
+        public List<ActorJsonMenuObjects> LoadActorChooserData(string jsonFolderPath)
+        {
+            var actorJsonsList = new List<ActorJsonMenuObjects>();
+            var files = Directory.GetFiles(jsonFolderPath, "*.json");
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    string json = File.ReadAllText(file);
+                    var data = JsonSerializer.Deserialize<ActorJsonMenuObjects>(json);
+                    if (data != null)
+                        actorJsonsList.Add(data);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
+            return actorJsonsList;
+        }
+
+        public Panel CreateActorCard(string imageFolderPath,ActorJsonMenuObjects actorJsonObject)
+        {
+            var panel = new Panel
+            {
+                Width = 120,
+                Height = 150,
+                Margin = new Padding(5),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            var image = new PictureBox
+            {
+                Width = 100,
+                Height = 100,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                ImageLocation = Path.Combine(imageFolderPath, actorJsonObject.Image),
+                Left = 10,
+                Top = 10
+            };
+
+            var label = new Label
+            {
+                Text = actorJsonObject.Name,
+                AutoSize = false,
+                Width = 100,
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Left = 10,
+                Top = 115,
+            };
+
+            panel.Controls.Add(image);
+            panel.Controls.Add(label);
+
+            return panel;
+        }
+
+        public void ActorChooser(string jsonFolderPath, string imageFolderPath)
+        {
+            var form = new Form
+            {
+                Text = "Actor Chooser",
+                Width = 800,
+                Height = 600
+            };
+
+            var flow = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true
+            };
+
+            var actorObjects = LoadActorChooserData(jsonFolderPath);
+            foreach (var Object in actorObjects)
+            {
+                var panel = CreateActorCard(imageFolderPath, Object);
+                flow.Controls.Add(panel);
+            }
+
+            form.Controls.Add(flow);
+            form.Show();
+        }
     }
+
+    public class ActorJsonMenuObjects
+    {
+        public string Name { get; set; }
+        public string Image {  get; set; }
+        public int MaxHP { get; set; }
+        public (int, int) MapPosition { get; set; }
+    }
+
+    #endregion
 }
