@@ -31,6 +31,7 @@ namespace Tile_Map_Drawing
         int rows = 2;
         string Event;
 
+        private ToolContext toolContext = new();
         private ITool? activeTool; 
 
         public TileMapEditor()
@@ -70,7 +71,7 @@ namespace Tile_Map_Drawing
         {
             if (activeTool == null) return;
 
-            activeTool.HandleMouseClick(e, mapData, sideTileDrawingRibbon.SelectedTileIndex);
+            activeTool.HandleMouseClick(e, mapData, toolContext);
 
             MapDrawingField.Invalidate();
         }
@@ -201,7 +202,7 @@ namespace Tile_Map_Drawing
                     break;
 
                 case "Draw":
-                    var drawSideRibbon = new Side_TileDrawingUC();
+                    var drawSideRibbon = new Side_TileDrawingUC(toolContext);
 
                     TopUC = new Top_TileDrawingUC();
                     SideUC = drawSideRibbon;
@@ -210,7 +211,7 @@ namespace Tile_Map_Drawing
                     break;
 
                 case "Events":
-                    TopUC = new Top_EventsUC();
+                    TopUC = new Top_EventsUC(toolContext);
                     break;
             }
 
@@ -234,12 +235,13 @@ namespace Tile_Map_Drawing
         private void drawMenuBtn_Click(object sender, EventArgs e)
         {
             ShowSubmenu("Draw");
-            activeTool = new TileDrawingTool(tileSize, sideTileDrawingRibbon.SelectedTileIndex);
+            activeTool = new TileDrawingTool(tileSize, toolContext.PickedTileIndex);
         }
 
         private void eventMenuBtn_Click(object sender, EventArgs e)
         {
             ShowSubmenu("Events");
+            activeTool = new EventDrawingTool(tileSize, toolContext.EventId);
         }
         #endregion
     }

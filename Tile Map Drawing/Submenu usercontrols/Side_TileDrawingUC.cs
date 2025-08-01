@@ -14,13 +14,14 @@ namespace Tile_Map_Drawing.MenuRibbons
     {
         private Bitmap tilesetImage;
         private string tilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/tileset-16px-2x3.png";  //default
-        public int SelectedTileIndex { get; set; }
+        private ToolContext ToolContext { get; set; }
         public int tileSize = 16;   //only sets the tile size inside the tile picker //still, there might be a chance that we will need to make this be syncthronized with the variable of the same name on the main form
 
-        public Side_TileDrawingUC()
+        public Side_TileDrawingUC(ToolContext toolContext)
         {
             InitializeComponent();
 
+            this.ToolContext = toolContext;
             tilesetImage = new Bitmap(tilesetImageSource);
             TilesetPanel.Image = tilesetImage;
         }
@@ -31,8 +32,8 @@ namespace Tile_Map_Drawing.MenuRibbons
             if (tilesetImage == null) return;
 
             int tilesPerRow = tilesetImage.Width / tileSize;
-            int SelX = (SelectedTileIndex % tilesPerRow) * tileSize;
-            int SelY = (SelectedTileIndex / tilesPerRow) * tileSize;
+            int SelX = (ToolContext.PickedTileIndex % tilesPerRow) * tileSize;
+            int SelY = (ToolContext.PickedTileIndex / tilesPerRow) * tileSize;
 
             g.DrawRectangle(Pens.Black, SelX, SelY, tileSize, tileSize);
         }
@@ -43,7 +44,7 @@ namespace Tile_Map_Drawing.MenuRibbons
             int y = e.Y / tileSize;
 
             int tilesPerRow = tilesetImage.Width / tileSize;
-            SelectedTileIndex = y * tilesPerRow + x;
+            ToolContext.PickedTileIndex = y * tilesPerRow + x;
 
             TilesetPanel.Invalidate();
         }

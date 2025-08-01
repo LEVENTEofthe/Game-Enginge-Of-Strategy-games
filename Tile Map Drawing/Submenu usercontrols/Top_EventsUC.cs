@@ -12,21 +12,23 @@ namespace Tile_Map_Drawing
 {
     public partial class Top_EventsUC : UserControl
     {
-        private string tool;
+        private ToolContext toolContext;
 
-        public Top_EventsUC()
+        public Top_EventsUC(ToolContext toolContext)
         {
             InitializeComponent();
+
+            this.toolContext = toolContext;
         }
 
         private void playerUnitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tool = "playerChooserField";
+            toolContext.EventId = "playerChooserField";
         }
 
         private void setDirectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tool = "playerDirect";
+            toolContext.EventId = "playerDirect";
         }
     }
 }
