@@ -12,9 +12,21 @@ namespace Tile_Map_Drawing
 {
     public partial class Top_EventsUC : UserControl
     {
+        private string tool;
+
         public Top_EventsUC()
         {
             InitializeComponent();
+        }
+
+        private void playerUnitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tool = "playerChooserField";
+        }
+
+        private void setDirectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tool = "playerDirect";
         }
     }
 }

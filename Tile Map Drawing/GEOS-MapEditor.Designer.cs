@@ -59,11 +59,11 @@
             exportBtn.UseVisualStyleBackColor = true;
             exportBtn.Click += exportBtn_Click;
             // 
-            // Side_ribbonPanel
+            // Side_SubmenuPanel
             // 
             Side_SubmenuPanel.BackColor = SystemColors.ActiveBorder;
             Side_SubmenuPanel.Location = new Point(10, 116);
-            Side_SubmenuPanel.Name = "Side_ribbonPanel";
+            Side_SubmenuPanel.Name = "Side_SubmenuPanel";
             Side_SubmenuPanel.Size = new Size(137, 204);
             Side_SubmenuPanel.TabIndex = 7;
             // 
@@ -74,7 +74,7 @@
             mapParameterMenuBtn.Name = "mapParameterMenuBtn";
             mapParameterMenuBtn.Size = new Size(94, 29);
             mapParameterMenuBtn.TabIndex = 8;
-            mapParameterMenuBtn.Text = "Set map parameters";
+            mapParameterMenuBtn.Text = "Map parameters";
             mapParameterMenuBtn.UseVisualStyleBackColor = true;
             mapParameterMenuBtn.Click += mapParameterMenuBtn_Click;
             // 
@@ -96,15 +96,15 @@
             eventMenuBtn.Name = "eventMenuBtn";
             eventMenuBtn.Size = new Size(94, 29);
             eventMenuBtn.TabIndex = 10;
-            eventMenuBtn.Text = "Place events";
+            eventMenuBtn.Text = "Events";
             eventMenuBtn.UseVisualStyleBackColor = true;
             eventMenuBtn.Click += eventMenuBtn_Click;
             // 
-            // Top_ribbonPanel
+            // Top_SubmenuPanel
             // 
             Top_SubmenuPanel.BackColor = SystemColors.ActiveBorder;
             Top_SubmenuPanel.Location = new Point(10, 32);
-            Top_SubmenuPanel.Name = "Top_ribbonPanel";
+            Top_SubmenuPanel.Name = "Top_SubmenuPanel";
             Top_SubmenuPanel.Size = new Size(712, 78);
             Top_SubmenuPanel.TabIndex = 11;
             // 

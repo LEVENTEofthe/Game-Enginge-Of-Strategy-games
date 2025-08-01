@@ -1,9 +1,11 @@
 ﻿using GridbaseBattleSystem;
 using SRPG_library.actors;
+using SRPG_library.events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Game_Enginge_Of_Strategy_games
@@ -12,20 +14,26 @@ namespace Game_Enginge_Of_Strategy_games
     {
         private int column;
         private int row;
-        public int TilesetIndex { get; set; }     //which texture from the tileset is used
-        public mapObject MapObject { get; set; }
+        public int TilesetIndex { get; set; }           //which texture from the tileset is used
+        public string Event {  get; set; }              //Only stores the ID of Events
+        public List<string> MoreEvents {  get; set; }   //In case of wanting multiple events on a single tile
+        public mapObject MapObject { get; set; }        //Not sure we'd be needing map objects now that we have events.
         public actors ActorStandsHere { get; set; }
 
-        public tile(int Column, int Row, int TilesetIndex)
+        [JsonConstructor]
+        public tile(int Column, int Row, int TilesetIndex, string Event)
         {
             this.Column = Column;
             this.Row = Row;
             this.TilesetIndex = TilesetIndex;
+            this.Event = Event;
         }
-        public tile(int Column, int Row)
+        public tile(int Column, int Row, string Event)
         {
             this.Column = Column;
             this.Row = Row;
+            this.Event = Event;
+            TilesetIndex = 0;
         }
 
         public int Column
@@ -37,6 +45,11 @@ namespace Game_Enginge_Of_Strategy_games
         {
             get { return row; }
             set { row = value + 1; }
+        }
+
+        public (int, int) returnTilePosition()
+        {
+            return (column, row);
         }
 
         public bool CanStepHere()

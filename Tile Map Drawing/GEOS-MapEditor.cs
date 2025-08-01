@@ -3,6 +3,7 @@ using System.Text.Json;
 using Tile_Map_Drawing.MenuRibbons;
 using SRPG_library;
 using GridbaseBattleSystem;
+using Game_Enginge_Of_Strategy_games;
 
 namespace Tile_Map_Drawing
 {
@@ -25,9 +26,10 @@ namespace Tile_Map_Drawing
         Size tilesetSizeMustBe = new Size(32, 48);
         int tileSize = 16;
 
-        int[,] mapData;
+        tile[,] mapData;
         public int columns = 2;
         int rows = 2;
+        string Event;
 
         private ITool? activeTool; 
 
@@ -50,7 +52,8 @@ namespace Tile_Map_Drawing
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    int tileIndex = mapData[x, y];
+                    int tileIndex = 0;
+                    tileIndex = mapData[x, y].TilesetIndex;
                     int sx = (tileIndex % tilesPerRow) * tileSize;
                     int sy = (tileIndex / tilesPerRow) * tileSize;
 
@@ -72,13 +75,13 @@ namespace Tile_Map_Drawing
             MapDrawingField.Invalidate();
         }
 
-        private int[][] MapToJaggedArray()
+        private tile[][] MapToJaggedArray()
         {
-            int[][] jagged = new int[rows][];
+            tile[][] jagged = new tile[rows][];
 
             for (int y = 0; y < rows; y++)
             {
-                jagged[y] = new int[columns];
+                jagged[y] = new tile[columns];
                 for (int x = 0; x < columns; x++)
                 {
                     jagged[y][x] = mapData[x, y];
@@ -122,8 +125,15 @@ namespace Tile_Map_Drawing
             {
                 columns = MapParameterColumns = Ribbon.mapColumns;
                 rows = MapParameterRows = Ribbon.mapRows;
-                
-                mapData = new int[columns, rows];
+                mapData = new tile[columns, rows];
+
+                for (int y = 0; y < rows; y++)
+                {
+                    for (int x = 0; x < columns; x++)
+                    {
+                        mapData[x, y] = new tile(x, y, null);
+                    }
+                }
 
                 MapDrawingField.Width = columns * tileSize;
                 MapDrawingField.Height = rows * tileSize;

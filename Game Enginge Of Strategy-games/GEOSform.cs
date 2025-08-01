@@ -48,7 +48,7 @@ namespace Game_Enginge_Of_Strategy_games
             cameraManager = new CameraManager(defaultTileSize);
             uiManager = new UIManager(this, cameraManager);
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map32.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/mappp2.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
