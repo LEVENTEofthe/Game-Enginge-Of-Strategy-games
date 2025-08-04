@@ -48,7 +48,7 @@ namespace Game_Enginge_Of_Strategy_games
             cameraManager = new CameraManager(defaultTileSize);
             uiManager = new UIManager(this, cameraManager);
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/mappp2.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map1.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
@@ -328,6 +328,8 @@ namespace Game_Enginge_Of_Strategy_games
 
             //debug
             tilePicker.Text = Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.ToString();
+            tileInfoLabel.Text = $"Actor stands here: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.ActorStandsHere}, Event: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.Event}, Can step here: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2).CanStepHere}, position: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.returnTilePosition()}";
+            //This above shows that actors don't really step into the tiles, their graphics are simply drawn above it. 
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)

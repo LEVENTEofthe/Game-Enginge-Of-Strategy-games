@@ -18,6 +18,7 @@ namespace Tile_Map_Drawing
         private Top_TileDrawingUC topTileDrawingRibbon;
         private Side_TileDrawingUC sideTileDrawingRibbon;
         string tilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/tileset-16px-2x3.png";  //We have to change so it will use the same source Side_TileDrawingUC does
+        string eventTilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/events1-16px-2x3.png";
         Bitmap tilesetImage;
 
         private Top_EventsUC topEventsRibbon;
@@ -54,11 +55,13 @@ namespace Tile_Map_Drawing
                 for (int x = 0; x < columns; x++)
                 {
                     int tileIndex = 0;
+                    string eventID = "";
                     tileIndex = mapData[x, y].TilesetIndex;
-                    int sx = (tileIndex % tilesPerRow) * tileSize;
-                    int sy = (tileIndex / tilesPerRow) * tileSize;
+                    eventID = mapData[x, y].Event;
+                    int sourcex = (tileIndex % tilesPerRow) * tileSize;
+                    int sourcey = (tileIndex / tilesPerRow) * tileSize;
 
-                    Rectangle src = new Rectangle(sx, sy, tileSize, tileSize);
+                    Rectangle src = new Rectangle(sourcex, sourcey, tileSize, tileSize);
                     Rectangle tileHitbox = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize);
 
                     g.DrawImage(tilesetImage, tileHitbox, src, GraphicsUnit.Pixel);

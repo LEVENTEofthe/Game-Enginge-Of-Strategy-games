@@ -8,20 +8,20 @@ namespace SRPG_library.events
 {
     public abstract class EventCommands
     {
-        public abstract string Type { get; }
+        public abstract string ID { get; }
         public abstract void Execute();
     }
 
-    public class deployActor : EventCommands
+    public class actorChooser : EventCommands
     {
-        public override string Type => "DeployActor";
+        public override string ID => "ActorChooser";
         public readonly IEventUiManager uiManager;
         public override void Execute()
         {
             uiManager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors", "C://Users/bakos/Documents/GEOS data library/assets/actor textures");
         }
 
-        public deployActor(IEventUiManager uiManager)
+        public actorChooser(IEventUiManager uiManager)
         {
             this.uiManager = uiManager ?? throw new ArgumentNullException(nameof(uiManager));
         }
