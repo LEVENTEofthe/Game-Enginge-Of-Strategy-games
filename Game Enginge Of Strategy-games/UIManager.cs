@@ -103,7 +103,7 @@ namespace Game_Enginge_Of_Strategy_games
                 catch (Exception)
                 {
 
-                    throw;  //We need yet to do some exception catching
+                    throw;
                 }
             }
 
@@ -112,8 +112,7 @@ namespace Game_Enginge_Of_Strategy_games
 
         public Panel CreateActorCard(string imageFolderPath,ActorJsonMenuObjects actorJsonObject)
         {
-
-            Panel panel = new Panel
+            var panel = new Panel
             {
                 Width = 120,
                 Height = 150,
@@ -131,7 +130,7 @@ namespace Game_Enginge_Of_Strategy_games
                 Top = 10
             };
 
-            Label label = new Label
+            var label = new Label
             {
                 Text = actorJsonObject.Name,
                 AutoSize = false,
@@ -142,18 +141,10 @@ namespace Game_Enginge_Of_Strategy_games
                 Top = 115,
             };
 
-            panel.Tag = actorJsonObject.Name;
-
-            panel.Click += ActorCard_Click;
             panel.Controls.Add(image);
             panel.Controls.Add(label);
 
             return panel;
-        }
-
-        private void ActorCard_Click(object? sender, EventArgs e)
-        {
-            return 
         }
 
         public void ActorChooser(string jsonFolderPath, string imageFolderPath)

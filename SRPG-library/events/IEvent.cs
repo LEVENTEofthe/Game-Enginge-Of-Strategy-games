@@ -14,6 +14,4 @@ namespace SRPG_library.events
 
         void Trigger();
     }
-
-
 }
