@@ -207,7 +207,8 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
 
-            //Putting the actors' textures on the grid
+            //Putting the actors' textures on the grid  //this here is how it not should be working
+            /*
             (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];
             (int, int)[] enemyPositions = new (int, int)[Match.EnemyTeam.Length];
 
@@ -230,9 +231,10 @@ namespace Game_Enginge_Of_Strategy_games
 
                 g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
             }
+            */
             #endregion
 
-            //actor hitboxes
+            //actor hitboxes    //this here's also bad
             playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
             enemyTiles = new (actors, Rectangle)[Match.EnemyTeam.Length];
             int counter = 0;

@@ -2,6 +2,7 @@ using System.Reflection.Metadata;
 using System.Text.Json;
 using Tile_Map_Drawing.MenuRibbons;
 using SRPG_library;
+using SRPG_library.events;
 using GridbaseBattleSystem;
 using Game_Enginge_Of_Strategy_games;
 
@@ -38,6 +39,8 @@ namespace Tile_Map_Drawing
         public TileMapEditor()
         {
             InitializeComponent();
+
+            EventGraphics.LoadImages("C:/Users/bakos/Documents/GEOS data library/assets/event textures");   //It appears you can use these handler classes without creating an instance of them if you set the class to static. We might want to try if it works with the ui managers.
 
             ShowSubmenu("MapParameters");   //Default
         }

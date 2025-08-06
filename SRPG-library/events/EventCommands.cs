@@ -14,7 +14,7 @@ namespace SRPG_library.events
 
     public class actorChooser : EventCommands
     {
-        public override string ID => "ActorChooser";
+        public override string ID => "actorChooser";
         public readonly IEventUiManager uiManager;
         public override void Execute()
         {
