@@ -17,24 +17,7 @@ namespace Game_Enginge_Of_Strategy_games
 {
     public static class UIManager
     {
-        //private static Form parentForm;
-        //private CameraManager cameraManager;
         private static Panel currentActorActionPanel;
-
-        /*
-        public UIManager(Form parentForm, CameraManager cameraManager)
-        {
-            this.parentForm = parentForm;
-            this.cameraManager = cameraManager;
-        }
-        */
-
-        //public (float, float) GetActorScreenPosition(actors actor)     //I wonder if it would be an optimal solution to make it so it doesn't only capable of returning the location of actors, but all game objects that fit into a tile, actors included. So game objects might be an origin class for actors and other things
-        //{                                                              //But actually, what is this for in the first place? As I see it, what it actually does at this form is returning the screen position of an actor whose screen position is already known. And why World to Screen?
-        //    float worldX = actor.MapPosition.Item1 + 1;
-        //    float worldY = actor.MapPosition.Item2 + 1;
-        //    return cameraManager.WorldToScreen(worldX, worldY);
-        //}
 
         public static void ClosePlayerCharacterActionPanel(Control parentForm)
         {
@@ -89,9 +72,9 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         #region Actor chooser
-        public static List<ActorJsonMenuObjects> LoadActorChooserData(string jsonFolderPath)
+        public static List<actors> LoadActorChooserData(string jsonFolderPath)
         {
-            var actorJsonsList = new List<ActorJsonMenuObjects>();
+            var actorJsonsList = new List<actors>();
             var files = Directory.GetFiles(jsonFolderPath, "*.json");
 
             foreach (var file in files)
@@ -99,13 +82,13 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     string json = File.ReadAllText(file);
-                    var data = JsonSerializer.Deserialize<ActorJsonMenuObjects>(json);
+                    var data = JsonSerializer.Deserialize<actors>(json);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }
                 catch (Exception)
                 {
-
+                    //Still need to handle expections
                     throw;
                 }
             }
@@ -113,7 +96,7 @@ namespace Game_Enginge_Of_Strategy_games
             return actorJsonsList;
         }
 
-        public static Panel CreateActorCard(string imageFolderPath,ActorJsonMenuObjects actorJsonObject)
+        public static Panel CreateActorCard(string imageFolderPath, actors actorObject)
         {
             var panel = new Panel
             {
@@ -128,14 +111,14 @@ namespace Game_Enginge_Of_Strategy_games
                 Width = 100,
                 Height = 100,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                ImageLocation = Path.Combine(imageFolderPath, actorJsonObject.Image),
+                ImageLocation = Path.Combine(imageFolderPath, actorObject.Image),
                 Left = 10,
                 Top = 10
             };
 
             var label = new Label
             {
-                Text = actorJsonObject.Name,
+                Text = actorObject.Name,
                 AutoSize = false,
                 Width = 100,
                 Height = 30,
@@ -146,12 +129,15 @@ namespace Game_Enginge_Of_Strategy_games
 
             panel.Controls.Add(image);
             panel.Controls.Add(label);
+            
+            panel.Tag = actorObject;
 
             return panel;
         }
 
-        public static void ActorChooser(string jsonFolderPath, string imageFolderPath)
+        public static actors ActorChooser(string jsonFolderPath, string imageFolderPath)
         {
+            int index = -1;
             var form = new Form
             {
                 Text = "Actor Chooser",
@@ -169,20 +155,32 @@ namespace Game_Enginge_Of_Strategy_games
             foreach (var Object in actorObjects)
             {
                 var panel = CreateActorCard(imageFolderPath, Object);
+
+                EventHandler panelClick = (s, e) =>
+                {
+                    index = actorObjects.IndexOf(Object);
+                    form.DialogResult = DialogResult.OK;
+                    form.Close();
+                };
+
+                panel.Click += panelClick;                  //adding the click event to the panel itself
+                foreach (Control ctrl in panel.Controls)    //adding the click event to all items on the panel
+                {
+                    ctrl.Click += panelClick;
+                }
+
                 flow.Controls.Add(panel);
             }
-
             form.Controls.Add(flow);
-            form.Show();
+
+            var result = form.ShowDialog();
+
+            if (result == DialogResult.OK && index >= 0)
+            {
+                return actorObjects[index];
+            }
+            return null;
         }
         #endregion
-    }
-
-    public class ActorJsonMenuObjects
-    {
-        public string Name { get; set; }
-        public string Image {  get; set; }
-        public int MaxHP { get; set; }
-        public (int, int) MapPosition { get; set; }
     }
 }

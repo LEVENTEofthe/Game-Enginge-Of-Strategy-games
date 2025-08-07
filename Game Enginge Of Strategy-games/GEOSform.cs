@@ -367,10 +367,5 @@ namespace Game_Enginge_Of_Strategy_games
             return null;
         }
         #endregion
-
-        private void ActorWindowBtn_Click(object sender, EventArgs e)
-        {
-            //ActorWindowBtn.Text = uiManager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors/", $"C:/Users/bakos/Documents/GEOS data library/assets/actor textures/");
-        }
     }
 }
