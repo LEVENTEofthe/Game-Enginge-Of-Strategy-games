@@ -15,19 +15,17 @@ using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    public static class UIManager
+    public class UIManager : IEventUiManager
     {
-        //private static Form parentForm;
-        //private CameraManager cameraManager;
-        private static Panel currentActorActionPanel;
+        private Form parentForm;
+        private CameraManager cameraManager;
+        private Panel currentActorActionPanel;
 
-        /*
         public UIManager(Form parentForm, CameraManager cameraManager)
         {
             this.parentForm = parentForm;
             this.cameraManager = cameraManager;
         }
-        */
 
         //public (float, float) GetActorScreenPosition(actors actor)     //I wonder if it would be an optimal solution to make it so it doesn't only capable of returning the location of actors, but all game objects that fit into a tile, actors included. So game objects might be an origin class for actors and other things
         //{                                                              //But actually, what is this for in the first place? As I see it, what it actually does at this form is returning the screen position of an actor whose screen position is already known. And why World to Screen?
@@ -36,7 +34,7 @@ namespace Game_Enginge_Of_Strategy_games
         //    return cameraManager.WorldToScreen(worldX, worldY);
         //}
 
-        public static void ClosePlayerCharacterActionPanel(Control parentForm)
+        public void ClosePlayerCharacterActionPanel()
         {
             if (currentActorActionPanel != null)
             {
@@ -46,9 +44,9 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, actors actor, Point location)
+        public void OpenNewPlayerCharacterActionPanel(actors actor, Point location)
         {
-            ClosePlayerCharacterActionPanel(parentForm);
+            ClosePlayerCharacterActionPanel();
 
             Panel panel = new Panel //I wonder if we could make a built in customizable panel creator. Let's not linger on it yet, but it sure would be nice in the future
             {
@@ -72,15 +70,14 @@ namespace Game_Enginge_Of_Strategy_games
             //}
 
             parentForm.Controls.Add(currentActorActionPanel);
-            
         }
 
-        public static void highlightTile(tile selectedTile, Color color, Graphics g, int TileSize)
+        public void highlightTile(tile selectedTile, Color color, Graphics g)
         {
             if (selectedTile == null)
                 return;
 
-            Rectangle highlight = new Rectangle(selectedTile.Column * TileSize, selectedTile.Row * TileSize, TileSize, TileSize);
+            Rectangle highlight = new Rectangle(selectedTile.Column * cameraManager.TileSize, selectedTile.Row * cameraManager.TileSize, cameraManager.TileSize, cameraManager.TileSize);
 
             using (Brush brush = new SolidBrush(color))
             {
@@ -89,7 +86,7 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         #region Actor chooser
-        public static List<ActorJsonMenuObjects> LoadActorChooserData(string jsonFolderPath)
+        public List<ActorJsonMenuObjects> LoadActorChooserData(string jsonFolderPath)
         {
             var actorJsonsList = new List<ActorJsonMenuObjects>();
             var files = Directory.GetFiles(jsonFolderPath, "*.json");
@@ -106,16 +103,17 @@ namespace Game_Enginge_Of_Strategy_games
                 catch (Exception)
                 {
 
-                    throw;
+                    throw;  //We need yet to do some exception catching
                 }
             }
 
             return actorJsonsList;
         }
 
-        public static Panel CreateActorCard(string imageFolderPath,ActorJsonMenuObjects actorJsonObject)
+        public Panel CreateActorCard(string imageFolderPath,ActorJsonMenuObjects actorJsonObject)
         {
-            var panel = new Panel
+
+            Panel panel = new Panel
             {
                 Width = 120,
                 Height = 150,
@@ -133,7 +131,7 @@ namespace Game_Enginge_Of_Strategy_games
                 Top = 10
             };
 
-            var label = new Label
+            Label label = new Label
             {
                 Text = actorJsonObject.Name,
                 AutoSize = false,
@@ -144,13 +142,21 @@ namespace Game_Enginge_Of_Strategy_games
                 Top = 115,
             };
 
+            panel.Tag = actorJsonObject.Name;
+
+            panel.Click += ActorCard_Click;
             panel.Controls.Add(image);
             panel.Controls.Add(label);
 
             return panel;
         }
 
-        public static void ActorChooser(string jsonFolderPath, string imageFolderPath)
+        private void ActorCard_Click(object? sender, EventArgs e)
+        {
+            return 
+        }
+
+        public void ActorChooser(string jsonFolderPath, string imageFolderPath)
         {
             var form = new Form
             {
@@ -175,7 +181,6 @@ namespace Game_Enginge_Of_Strategy_games
             form.Controls.Add(flow);
             form.Show();
         }
-        #endregion
     }
 
     public class ActorJsonMenuObjects
@@ -185,4 +190,6 @@ namespace Game_Enginge_Of_Strategy_games
         public int MaxHP { get; set; }
         public (int, int) MapPosition { get; set; }
     }
+
+    #endregion
 }

@@ -17,9 +17,7 @@ namespace Game_Enginge_Of_Strategy_games
     {
         #region System variables
         //System variables
-        private UIManager uiManager;
-        private CameraManager cameraManager;
-        private int defaultTileSize = 16;
+        private int tilesetSize = 16;   //the dimension of a single tile in the tileset image, in pixels
         private (actors, Rectangle)[] playerTiles;
         private (actors, Rectangle)[] enemyTiles;
         Bitmap tilesetImage;
@@ -45,8 +43,6 @@ namespace Game_Enginge_Of_Strategy_games
         {
             //What does initialize component do anyway?
             InitializeComponent();
-            cameraManager = new CameraManager(defaultTileSize);
-            uiManager = new UIManager(this, cameraManager);
 
             string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map1.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
@@ -177,7 +173,7 @@ namespace Game_Enginge_Of_Strategy_games
             Graphics g = e.Graphics;
 
             #region Drawing the map
-            int tilesPerRow = tilesetImage.Width / defaultTileSize;
+            int tilesPerRow = tilesetImage.Width / tilesetSize;
 
             for (int r = 0; r < Match.Map.Rows; r++)
             {
@@ -186,14 +182,14 @@ namespace Game_Enginge_Of_Strategy_games
                     tile Tile = Match.Map.MapObject[c, r];
                     int tileIndex = Tile.TilesetIndex;
 
-                    int sx = (tileIndex % tilesPerRow) * defaultTileSize;
-                    int sy = (tileIndex / tilesPerRow) * defaultTileSize;
-                    Rectangle tilesetSrc = new Rectangle(sx, sy, defaultTileSize, defaultTileSize);
+                    int sx = (tileIndex % tilesPerRow) * tilesetSize;
+                    int sy = (tileIndex / tilesPerRow) * tilesetSize;
+                    Rectangle tilesetSrc = new Rectangle(sx, sy, tilesetSize, tilesetSize);
 
-                    float worldX = c * cameraManager.TileSize;
-                    float worldY = r * cameraManager.TileSize;
-                    (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
-                    float size = cameraManager.TileSize * cameraManager.Zoom;
+                    float worldX = c * CameraManager.TileSize;
+                    float worldY = r * CameraManager.TileSize;
+                    (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
+                    float size = CameraManager.TileSize * CameraManager.Zoom;
 
                     RectangleF tileHitbox = new RectangleF(screenPos.Item1, screenPos.Item2, size, size);
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
@@ -202,8 +198,8 @@ namespace Game_Enginge_Of_Strategy_games
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan)))
             {
-                (float, float) screenPos = cameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
-                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, cameraManager.TileSize, cameraManager.TileSize);
+                (float, float) screenPos = CameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
+                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, CameraManager.TileSize, CameraManager.TileSize);
             }
 
 
@@ -213,20 +209,20 @@ namespace Game_Enginge_Of_Strategy_games
 
             foreach (actors i in Match.PlayerTeam)
             {
-                float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
-                float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
-                float size = cameraManager.TileSize * cameraManager.Zoom;
+                float worldX = i.MapPosition.Item1 * CameraManager.TileSize;
+                float worldY = i.MapPosition.Item2 * CameraManager.TileSize;
+                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
+                float size = CameraManager.TileSize * CameraManager.Zoom;
 
                 g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
             }
 
             foreach (actors i in Match.EnemyTeam)
             {
-                float worldX = i.MapPosition.Item1 * cameraManager.TileSize;
-                float worldY = i.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
-                float size = cameraManager.TileSize * cameraManager.Zoom;
+                float worldX = i.MapPosition.Item1 * CameraManager.TileSize;
+                float worldY = i.MapPosition.Item2 * CameraManager.TileSize;
+                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
+                float size = CameraManager.TileSize * CameraManager.Zoom;
 
                 g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
             }
@@ -238,10 +234,10 @@ namespace Game_Enginge_Of_Strategy_games
             int counter = 0;
             foreach (actors act in Match.PlayerTeam)
             {
-                float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
-                float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
-                float size = cameraManager.TileSize * cameraManager.Zoom;
+                float worldX = act.MapPosition.Item1 * CameraManager.TileSize;
+                float worldY = act.MapPosition.Item2 * CameraManager.TileSize;
+                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
+                float size = CameraManager.TileSize * CameraManager.Zoom;
 
                 playerTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
@@ -250,10 +246,10 @@ namespace Game_Enginge_Of_Strategy_games
             counter = 0;
             foreach (actors act in Match.EnemyTeam)
             {
-                float worldX = act.MapPosition.Item1 * cameraManager.TileSize;
-                float worldY = act.MapPosition.Item2 * cameraManager.TileSize;
-                (float, float) screenPos = cameraManager.WorldToScreen(worldX, worldY);
-                float size = cameraManager.TileSize * cameraManager.Zoom;
+                float worldX = act.MapPosition.Item1 * CameraManager.TileSize;
+                float worldY = act.MapPosition.Item2 * CameraManager.TileSize;
+                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
+                float size = CameraManager.TileSize * CameraManager.Zoom;
 
                 enemyTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
@@ -269,15 +265,15 @@ namespace Game_Enginge_Of_Strategy_games
                 int dx = currentPoint.X - dragStart.X;
                 int dy = currentPoint.Y - dragStart.Y;
 
-                cameraManager.OffsetX += dx;
-                cameraManager.OffsetY += dy;
+                CameraManager.OffsetX += dx;
+                CameraManager.OffsetY += dy;
 
                 dragStart = currentPoint;
 
                 Invalidate();
             }
 
-            (decimal, decimal) currentTile = cameraManager.ScreenToTile(e.X, e.Y);
+            (decimal, decimal) currentTile = CameraManager.ScreenToTile(e.X, e.Y);
             if (Match.Map.returnTile(currentTile.Item1, currentTile.Item2) != null)
             {
                 tileUnderCursorHighlight = (Convert.ToInt32(currentTile.Item1), Convert.ToInt32(currentTile.Item2));
@@ -286,7 +282,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             //debugging
             mouseCoordinates.Text = e.Location.ToString();
-            tileCoords.Text = cameraManager.ScreenToTile(e.X, e.Y).ToString();
+            tileCoords.Text = CameraManager.ScreenToTile(e.X, e.Y).ToString();
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)
@@ -296,10 +292,10 @@ namespace Game_Enginge_Of_Strategy_games
             if (delta > 0)
             {
                 //the + {x} means that it will zoom by {x} much after every mousewheel rub and the second number is the limit of zooming
-                cameraManager.TileSize = Math.Min(cameraManager.TileSize + 4, 128);
+                CameraManager.TileSize = Math.Min(CameraManager.TileSize + 4, 128);
             }
             else
-                cameraManager.TileSize = Math.Max(cameraManager.TileSize - 4, 20);
+                CameraManager.TileSize = Math.Max(CameraManager.TileSize - 4, 20);
 
             Invalidate();
         }
@@ -317,7 +313,7 @@ namespace Game_Enginge_Of_Strategy_games
             if (clickedOnPlayerCharacter(e.Location) != null)
             {
                 clickedOnPlayerLabel.Text = $"You have just clicked on {clickedOnPlayerCharacter(e.Location).Name}";
-                uiManager.OpenNewPlayerCharacterActionPanel(clickedOnPlayerCharacter(e.Location), e.Location);
+                UIManager.OpenNewPlayerCharacterActionPanel(this, clickedOnPlayerCharacter(e.Location), e.Location);
 
             }
 
@@ -327,8 +323,8 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //debug
-            tilePicker.Text = Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.ToString();
-            tileInfoLabel.Text = $"Actor stands here: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.ActorStandsHere}, Event: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.Event}, Can step here: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2).CanStepHere}, position: {Match.Map.returnTile(cameraManager.ScreenToTile(e.X, e.Y).Item1, cameraManager.ScreenToTile(e.X, e.Y).Item2)?.returnTilePosition()}";
+            tilePicker.Text = Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.ToString();
+            tileInfoLabel.Text = $"Actor stands here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.ActorStandsHere}, Event: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.Event}, Can step here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.CanStepHere()} position: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.returnTilePosition()}";
             //This above shows that actors don't really step into the tiles, their graphics are simply drawn above it. 
         }
 
@@ -339,13 +335,13 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void xScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
-            cameraManager.OffsetX = xScrollBar.Value;
+            CameraManager.OffsetX = xScrollBar.Value;
             Invalidate();
         }
 
         private void yScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
-            cameraManager.OffsetY = yScrollBar.Value;
+            CameraManager.OffsetY = yScrollBar.Value;
             Invalidate();
         }
         #endregion
@@ -371,5 +367,10 @@ namespace Game_Enginge_Of_Strategy_games
             return null;
         }
         #endregion
+
+        private void ActorWindowBtn_Click(object sender, EventArgs e)
+        {
+            //ActorWindowBtn.Text = uiManager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors/", $"C:/Users/bakos/Documents/GEOS data library/assets/actor textures/");
+        }
     }
 }

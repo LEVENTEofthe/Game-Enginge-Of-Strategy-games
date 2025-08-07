@@ -10,22 +10,23 @@ using SRPG_library.actors;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    public class CameraManager
+    public static class CameraManager
     {
-        public float OffsetX { get; set; }
-        public float OffsetY { get; set; }
-        public float Zoom { get; set; } = 1f;
-        public int TileSize { get; set; }
+        public static float OffsetX { get; set; } = 255f;
+        public static float OffsetY { get; set; } = 200f;   //The default position of the camera
+        public static float Zoom { get; set; } = 1f;
+        public static int TileSize { get; set; } = 64;      //How zoomed in the map is by default
+        
 
-
-        public CameraManager(int TileSize)
+        public static void SetCameraPosition(float offsetX, float offsetY, float zoom)
         {
-            this.TileSize = TileSize;
+            OffsetX = offsetX;
+            OffsetY = offsetY;
+            Zoom = zoom;
         }
 
-
         #region screenConvertion
-        public (float, float) WorldToScreen(float x, float y)   //converting in-game map coordinates to window coordinates
+        public static (float, float) WorldToScreen(float x, float y)   //converting in-game map coordinates to window coordinates
         {
             (float, float) p = (
                 (x * Zoom) + OffsetX,
@@ -34,7 +35,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             return p;
         }
-        public (float, float) WorldToScreen((float, float) point)   //converting in-game map coordinates to window coordinates
+        public static (float, float) WorldToScreen((float, float) point)   //converting in-game map coordinates to window coordinates
         {
             (float, float) p = (
                 (point.Item1 * Zoom) + OffsetX,
@@ -43,7 +44,7 @@ namespace Game_Enginge_Of_Strategy_games
             return p;
         }
 
-        public (float, float) ScreenToWorld(float screenX, float screenY)   //converting window coordinates to map-relative coordinates
+        public static (float, float) ScreenToWorld(float screenX, float screenY)   //converting window coordinates to map-relative coordinates
         {
             (float, float) p = (
                 (screenX - OffsetX) / Zoom,
@@ -52,7 +53,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             return p;
         }
-        public float ScreenToWorld(float screen)
+        public static float ScreenToWorld(float screen)
         {
             return (screen - OffsetY) / Zoom;
         }
@@ -68,19 +69,19 @@ namespace Game_Enginge_Of_Strategy_games
         //    return (tileColumn, tileRow);
         //}
 
-        public (decimal, decimal) ScreenToTile(int screenX, int screenY)    //converting window coordinates to tile row/column coordinates
+        public static (decimal, decimal) ScreenToTile(int screenX, int screenY)    //converting window coordinates to tile row/column coordinates
         {
             decimal col = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Item1 / TileSize + 1));
             decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screenX, screenY).Item2 / TileSize + 1));
 
             return (col, row);
         }
-        public decimal ScreenToTile(int screen)
+        public static decimal ScreenToTile(int screen)
         {
             return decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen / TileSize + 1)));
         }
 
-        public (float, float) TileToWorld(decimal Col, decimal Row)
+        public static (float, float) TileToWorld(decimal Col, decimal Row)
         {
             (float, float) p = (
                 (float)Col * TileSize,
@@ -90,14 +91,14 @@ namespace Game_Enginge_Of_Strategy_games
             return p;
         }
         
-        public (float, float) TileToScreen(decimal Col, decimal Row)
+        public static (float, float) TileToScreen(decimal Col, decimal Row)
         {
             (float, float) World = TileToWorld(Col, Row);
             return WorldToScreen(World);
         }
         #endregion
 
-        public bool IsInsideMap(int col, int row, int maxColumns, int maxRows)
+        public static bool IsInsideMap(int col, int row, int maxColumns, int maxRows)
         {
             return col >= 1 && col <= maxColumns && row >= 1 && row <= maxRows;
         }
