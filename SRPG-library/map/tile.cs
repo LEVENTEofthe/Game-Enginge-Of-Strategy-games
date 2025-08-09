@@ -18,11 +18,12 @@ namespace SRPG_library
         public actors ActorStandsHere { get; set; }
 
         [JsonConstructor]
-        public tile(int Column, int Row, int TilesetIndex, string Event)
+        public tile(int Column, int Row, int TilesetIndex, actors ActorStandsHere, string Event)
         {
             this.Column = Column;
             this.Row = Row;
             this.TilesetIndex = TilesetIndex;
+            this.ActorStandsHere = ActorStandsHere;
             this.Event = Event;
         }
         public tile(int Column, int Row, string Event)
@@ -42,6 +43,14 @@ namespace SRPG_library
         {
             get { return row; }
             set { row = value + 1; }
+        }
+
+        public void tile_click(object Sender, EventArgs e)
+        {
+            if (ActorStandsHere != null)
+            {
+
+            }
         }
 
         public (int, int) returnTilePosition()

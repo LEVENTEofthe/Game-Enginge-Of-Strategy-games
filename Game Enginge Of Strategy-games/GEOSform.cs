@@ -41,7 +41,7 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map1.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map3.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
@@ -190,6 +190,8 @@ namespace Game_Enginge_Of_Strategy_games
 
                     RectangleF tileHitbox = new RectangleF(screenPos.Item1, screenPos.Item2, size, size);
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
+                    if (Tile.ActorStandsHere != null)
+                        g.DrawImage(Image.FromFile(Tile.ActorStandsHere.Image), screenPos.Item1, screenPos.Item2, size, size);
                 }
             }
 
@@ -198,34 +200,10 @@ namespace Game_Enginge_Of_Strategy_games
                 (float, float) screenPos = CameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
                 g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, CameraManager.TileSize, CameraManager.TileSize);
             }
-
-
-            //Putting the actors' textures on the grid
-            (int, int)[] playerPositions = new (int, int)[Match.PlayerTeam.Length];
-            (int, int)[] enemyPositions = new (int, int)[Match.EnemyTeam.Length];
-
-            foreach (actors i in Match.PlayerTeam)
-            {
-                float worldX = i.MapPosition.Item1 * CameraManager.TileSize;
-                float worldY = i.MapPosition.Item2 * CameraManager.TileSize;
-                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
-                float size = CameraManager.TileSize * CameraManager.Zoom;
-
-                g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
-            }
-
-            foreach (actors i in Match.EnemyTeam)
-            {
-                float worldX = i.MapPosition.Item1 * CameraManager.TileSize;
-                float worldY = i.MapPosition.Item2 * CameraManager.TileSize;
-                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
-                float size = CameraManager.TileSize * CameraManager.Zoom;
-
-                g.DrawImage(Image.FromFile($"C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures\\{i.Image}"), screenPos.Item1, screenPos.Item2, size, size);
-            }
             #endregion
 
             //actor hitboxes
+            /*
             playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
             enemyTiles = new (actors, Rectangle)[Match.EnemyTeam.Length];
             int counter = 0;
@@ -251,6 +229,7 @@ namespace Game_Enginge_Of_Strategy_games
                 enemyTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
                 counter++;
             }
+            */
         }
 
         #region Camera
@@ -367,6 +346,7 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void button1_Click(object sender, EventArgs e)
         {
+            button1.Text = UIManager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors", "C://Users/bakos/Documents/GEOS data library/assets/actor textures").Name;
             //actors nem = new actors("nem", "C://Users/bakos/Documents/GEOS data library/database/actors/Milo2.actor.json", 15, (2,2));
             //button1.Text = "clicked";
         }

@@ -32,12 +32,24 @@ namespace SRPG_library
             this.Image = Image;
             this.MaxHP = MaxHP;
         }
+        public actors(tile tile)
+        {
+            Name = tile.ActorStandsHere.Name;
+            Image = tile.ActorStandsHere.Image;
+            MaxHP = tile.ActorStandsHere.MaxHP;
+            mapPosition = tile.ActorStandsHere.MapPosition;
+        }
         public actors() { }
 
         public (int, int) MapPosition
         {
             get { return mapPosition; }
             set { mapPosition = (value.Item1 - 1, value.Item2 - 1); }
+        }
+
+        public override string ToString()
+        {
+            return $"{Name}, {mapPosition}";
         }
     }
 }

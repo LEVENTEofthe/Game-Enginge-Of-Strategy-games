@@ -25,7 +25,10 @@ namespace SRPG_library
             MapObject = new tile[Columns, Rows];
             for (int r = 0; r < Rows; r++)
                 for (int c = 0; c < Columns; c++)
-                    MapObject[c, r] = new tile(c, r, TileData[r][c].TilesetIndex, TileData[r][c].Event);
+                    if (TileData[r][c].ActorStandsHere == null)
+                        MapObject[c, r] = new tile(c, r, TileData[r][c].TilesetIndex, null, TileData[r][c].Event);
+                    else
+                        MapObject[c, r] = new tile(c, r, TileData[r][c].TilesetIndex, TileData[r][c].ActorStandsHere = new actors(TileData[r][c]), TileData[r][c].Event);
         }
 
         public tile? returnTile(decimal column, decimal row)

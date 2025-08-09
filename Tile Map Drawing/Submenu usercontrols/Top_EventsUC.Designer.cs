@@ -66,7 +66,7 @@
             // 
             setDirectToolStripMenuItem.Name = "setDirectToolStripMenuItem";
             setDirectToolStripMenuItem.Size = new Size(242, 26);
-            setDirectToolStripMenuItem.Text = " Set direct player unit";
+            setDirectToolStripMenuItem.Text = "Set direct player unit";
             setDirectToolStripMenuItem.Click += setDirectToolStripMenuItem_Click;
             // 
             // setEnemyUnitToolStripMenuItem

@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Windows.Forms;
 using SRPG_library;
-using SRPG_library.actors;
 
 namespace CharacterCreator
 {
@@ -33,7 +32,7 @@ namespace CharacterCreator
                     if (tryImage.Size == new Size(8, 8) || tryImage.Size == new Size(16, 16) || tryImage.Size == new Size(32, 32) || tryImage.Size == new Size(64, 64) || tryImage.Size == new Size(128, 128))
                     {
                         characterImagePicbox.Image = tryImage;
-                        characterImageSource = ofd.SafeFileName;
+                        characterImageSource = $"{ofd.InitialDirectory}/{ofd.SafeFileName}";
                     }
                     else
                     {

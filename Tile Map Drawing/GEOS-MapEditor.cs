@@ -31,7 +31,7 @@ namespace Tile_Map_Drawing
         string Event;
 
         private ToolContext toolContext = new();
-        private ITool? activeTool; 
+        private ITool? activeTool;
 
         public TileMapEditor()
         {
@@ -245,5 +245,10 @@ namespace Tile_Map_Drawing
             activeTool = new EventDrawingTool(tileSize);
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button1.Text = UImanager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors", "C://Users/bakos/Documents/GEOS data library/assets/actor textures").Name;
+        }
     }
 }

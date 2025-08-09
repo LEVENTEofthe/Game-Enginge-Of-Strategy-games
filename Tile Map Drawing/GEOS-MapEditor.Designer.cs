@@ -35,6 +35,7 @@
             drawMenuBtn = new Button();
             eventMenuBtn = new Button();
             Top_SubmenuPanel = new Panel();
+            button1 = new Button();
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).BeginInit();
             SuspendLayout();
             // 
@@ -108,12 +109,23 @@
             Top_SubmenuPanel.Size = new Size(712, 78);
             Top_SubmenuPanel.TabIndex = 11;
             // 
+            // button1
+            // 
+            button1.Location = new Point(343, 413);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 12;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // TileMapEditor
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaption;
             ClientSize = new Size(800, 450);
+            Controls.Add(button1);
             Controls.Add(Top_SubmenuPanel);
             Controls.Add(mapParameterMenuBtn);
             Controls.Add(Side_SubmenuPanel);
@@ -135,5 +147,6 @@
         private Button drawMenuBtn;
         private Button eventMenuBtn;
         private Panel Top_SubmenuPanel;
+        private Button button1;
     }
 }

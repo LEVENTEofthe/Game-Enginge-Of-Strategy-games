@@ -59,7 +59,12 @@ namespace Tile_Map_Drawing
 
             if (x >= 0 && y >= 0 && x < mapData.GetLength(0) && y < mapData.GetLength(1))
             {
-                mapData[x, y].ActorStandsHere =
+                if (toolContext.EventId == "setDirectPlayer")
+                {
+                    mapData[x, y].ActorStandsHere = UImanager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors/", "C://Users/bakos/Documents/GEOS data library/assets/actor textures");
+                    return;
+                }
+                mapData[x, y].Event = toolContext.EventId;
             }
         }
 
