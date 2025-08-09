@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SRPG_library.events
+namespace Game_Enginge_Of_Strategy_games
 {
     public abstract class Events
     {

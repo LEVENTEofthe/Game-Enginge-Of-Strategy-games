@@ -1,73 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using SRPG_library;
-using Microsoft.VisualBasic.ApplicationServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Reflection.Metadata;
 using System.Text.Json;
+using System.Threading.Tasks;
+using SRPG_library;
+using Label = System.Windows.Forms.Label;
 
-namespace Game_Enginge_Of_Strategy_games
+namespace Tile_Map_Drawing
 {
-    public class UIManager  //For the game system
+    public static class UImanager   //For the map drawing
     {
-        private static Panel currentActorActionPanel;
-
-        public static void ClosePlayerCharacterActionPanel(Control parentForm)
-        {
-            if (currentActorActionPanel != null)
-            {
-                parentForm.Controls.Remove(currentActorActionPanel);
-                currentActorActionPanel.Dispose();
-                currentActorActionPanel = null;
-            }
-        }
-
-        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, actors actor, Point location)
-        {
-            ClosePlayerCharacterActionPanel(parentForm);
-
-            Panel panel = new Panel //I wonder if we could make a built in customizable panel creator. Let's not linger on it yet, but it sure would be nice in the future
-            {
-                Size = new Size(200, 100),
-                BackColor = Color.FromArgb(205, 127, 50),
-                Location = location,
-                Visible = true
-            };
-
-            currentActorActionPanel = panel;
-
-            TextBox nameText = new TextBox { Text = $"{actor.Name}", Location = new Point(5, 5), Size = new Size(90, 30) };
-            currentActorActionPanel.Controls.Add(nameText);
-
-            Point point = new(5, 30);
-            //foreach (var i in actor.ActionSet)
-            //{
-            //    Button btn = new Button { Text = i.Name, Location = point, Size = new(90, 27)};
-            //    point.Y += 25;
-            //    currentActorActionPanel.Controls.Add(btn);
-            //}
-
-            parentForm.Controls.Add(currentActorActionPanel);
-            
-        }
-
-        public static void highlightTile(tile selectedTile, Color color, Graphics g, int TileSize)
-        {
-            if (selectedTile == null)
-                return;
-
-            Rectangle highlight = new Rectangle(selectedTile.Column * TileSize, selectedTile.Row * TileSize, TileSize, TileSize);
-
-            using (Brush brush = new SolidBrush(color))
-            {
-                g.FillRectangle(brush, highlight);
-            }
-        }
-
         #region Actor chooser
         public static actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
         {
@@ -173,7 +118,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             panel.Controls.Add(image);
             panel.Controls.Add(label);
-            
+
             panel.Tag = actorObject;
 
             return panel;

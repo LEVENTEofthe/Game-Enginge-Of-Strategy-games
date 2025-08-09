@@ -2,8 +2,6 @@ using System.Reflection.Metadata;
 using System.Text.Json;
 using Tile_Map_Drawing.MenuRibbons;
 using SRPG_library;
-using GridbaseBattleSystem;
-using Game_Enginge_Of_Strategy_games;
 
 namespace Tile_Map_Drawing
 {
@@ -244,7 +242,7 @@ namespace Tile_Map_Drawing
         private void eventMenuBtn_Click(object sender, EventArgs e)
         {
             ShowSubmenu("Events");
-            activeTool = new EventDrawingTool(tileSize, toolContext.EventId);
+            activeTool = new EventDrawingTool(tileSize);
         }
         #endregion
     }

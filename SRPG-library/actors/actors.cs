@@ -1,5 +1,4 @@
-﻿using Game_Enginge_Of_Strategy_games;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,7 +8,7 @@ using System.Drawing;
 //using System.Windows.Forms.Design;
 //using System.Windows.Forms.Design;
 
-namespace SRPG_library.actors
+namespace SRPG_library
 {
     public class actors
     {

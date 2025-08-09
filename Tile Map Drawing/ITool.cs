@@ -1,9 +1,9 @@
-﻿using Game_Enginge_Of_Strategy_games;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SRPG_library;
 
 namespace Tile_Map_Drawing
 {
@@ -44,12 +44,12 @@ namespace Tile_Map_Drawing
     public class EventDrawingTool : ITool
     {
         private int tileSize;
-        private string EventID;
+        //private string EventID;
 
-        public EventDrawingTool(int tileSize, string EventID)
+        public EventDrawingTool(int tileSize/*, string EventID*/)
         {
             this.tileSize = tileSize;
-            this.EventID = EventID;
+            //this.EventID = EventID;
         }
 
         public void HandleMouseClick(MouseEventArgs e, tile[,] mapData, ToolContext toolContext)
@@ -59,7 +59,7 @@ namespace Tile_Map_Drawing
 
             if (x >= 0 && y >= 0 && x < mapData.GetLength(0) && y < mapData.GetLength(1))
             {
-                mapData[x, y].Event = toolContext.EventId;
+                mapData[x, y].ActorStandsHere =
             }
         }
 

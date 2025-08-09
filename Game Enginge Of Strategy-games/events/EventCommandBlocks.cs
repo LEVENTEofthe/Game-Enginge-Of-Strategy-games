@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SRPG_library;
 
-namespace SRPG_library.events
+namespace Game_Enginge_Of_Strategy_games
 {
     public abstract class EventCommandBlocks
     {
@@ -16,7 +17,7 @@ namespace SRPG_library.events
     public class actorChooser : EventCommandBlocks
     {
         public override string ID => "ActorChooser";
-        public actors.actors actor {  get; private set; }
+        public actors actor {  get; private set; }
         public string actorPool { get; private set; }
 
         public actorChooser(string actorPool)

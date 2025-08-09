@@ -28,7 +28,7 @@ namespace Tile_Map_Drawing
 
         private void setDirectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            toolContext.EventId = "playerDirect";
+            toolContext.EventId = "setDirectPlayer";
         }
     }
 }
