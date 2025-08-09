@@ -367,5 +367,11 @@ namespace Game_Enginge_Of_Strategy_games
             return null;
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //actors nem = new actors("nem", "C://Users/bakos/Documents/GEOS data library/database/actors/Milo2.actor.json", 15, (2,2));
+            //button1.Text = "clicked";
+        }
     }
 }

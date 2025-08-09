@@ -1,6 +1,5 @@
 ﻿using GridbaseBattleSystem;
 using SRPG_library.actors;
-using SRPG_library.events;
 using System;
 using System.Collections.Generic;
 using System.Linq;

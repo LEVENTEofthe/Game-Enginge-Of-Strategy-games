@@ -33,6 +33,7 @@
             tileCoords = new Label();
             tilePicker = new Label();
             tileInfoLabel = new Label();
+            button1 = new Button();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -80,12 +81,23 @@
             tileInfoLabel.TabIndex = 16;
             tileInfoLabel.Text = "tile info";
             // 
+            // button1
+            // 
+            button1.Location = new Point(1034, 602);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 17;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // GEOSform
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
+            Controls.Add(button1);
             Controls.Add(tileInfoLabel);
             Controls.Add(tilePicker);
             Controls.Add(tileCoords);
@@ -104,5 +116,6 @@
         private Label tileCoords;
         private Label tilePicker;
         private Label tileInfoLabel;
+        private Button button1;
     }
 }

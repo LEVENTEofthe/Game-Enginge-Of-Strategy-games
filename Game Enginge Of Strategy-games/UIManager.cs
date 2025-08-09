@@ -15,7 +15,7 @@ using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    public static class UIManager
+    public class UIManager
     {
         private static Panel currentActorActionPanel;
 
@@ -72,6 +72,53 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         #region Actor chooser
+        public static actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
+        {
+            int index = -1;
+            var form = new Form
+            {
+                Text = "Actor Chooser",
+                Width = 800,
+                Height = 600
+            };
+
+            var flow = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true
+            };
+
+            var actorObjects = LoadActorChooserData(jsonFolderPath);
+            foreach (var Object in actorObjects)
+            {
+                var panel = CreateActorCard(imageFolderPath, Object);
+
+                EventHandler panelClick = (s, e) =>
+                {
+                    index = actorObjects.IndexOf(Object);
+                    form.DialogResult = DialogResult.OK;
+                    form.Close();
+                };
+
+                panel.Click += panelClick;                  //adding the click event to the panel itself
+                foreach (Control ctrl in panel.Controls)    //adding the click event to all items on the panel
+                {
+                    ctrl.Click += panelClick;
+                }
+
+                flow.Controls.Add(panel);
+            }
+            form.Controls.Add(flow);
+
+            var result = form.ShowDialog();
+
+            if (result == DialogResult.OK && index >= 0)
+            {
+                return actorObjects[index];
+            }
+            return null;
+        }
+
         public static List<actors> LoadActorChooserData(string jsonFolderPath)
         {
             var actorJsonsList = new List<actors>();
@@ -133,53 +180,6 @@ namespace Game_Enginge_Of_Strategy_games
             panel.Tag = actorObject;
 
             return panel;
-        }
-
-        public static actors ActorChooser(string jsonFolderPath, string imageFolderPath)
-        {
-            int index = -1;
-            var form = new Form
-            {
-                Text = "Actor Chooser",
-                Width = 800,
-                Height = 600
-            };
-
-            var flow = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                AutoScroll = true
-            };
-
-            var actorObjects = LoadActorChooserData(jsonFolderPath);
-            foreach (var Object in actorObjects)
-            {
-                var panel = CreateActorCard(imageFolderPath, Object);
-
-                EventHandler panelClick = (s, e) =>
-                {
-                    index = actorObjects.IndexOf(Object);
-                    form.DialogResult = DialogResult.OK;
-                    form.Close();
-                };
-
-                panel.Click += panelClick;                  //adding the click event to the panel itself
-                foreach (Control ctrl in panel.Controls)    //adding the click event to all items on the panel
-                {
-                    ctrl.Click += panelClick;
-                }
-
-                flow.Controls.Add(panel);
-            }
-            form.Controls.Add(flow);
-
-            var result = form.ShowDialog();
-
-            if (result == DialogResult.OK && index >= 0)
-            {
-                return actorObjects[index];
-            }
-            return null;
         }
         #endregion
     }
