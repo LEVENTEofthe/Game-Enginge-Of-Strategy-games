@@ -74,6 +74,13 @@ namespace Game_Enginge_Of_Strategy_games
 
             return (col, row);
         }
+        public static (decimal, decimal) ScreenToTile(Point screen)    //converting window coordinates to tile row/column coordinates
+        {
+            decimal col = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen.X, screen.Y).Item1 / TileSize + 1));
+            decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen.X, screen.Y).Item2 / TileSize + 1));
+
+            return (col, row);
+        }
         public static decimal ScreenToTile(int screen)
         {
             return decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen / TileSize + 1)));

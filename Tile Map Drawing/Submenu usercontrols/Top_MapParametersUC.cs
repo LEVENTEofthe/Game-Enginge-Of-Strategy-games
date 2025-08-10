@@ -10,13 +10,13 @@ using System.Windows.Forms;
 
 namespace Tile_Map_Drawing.MenuRibbons
 {
-    public partial class Top_MapParametersUC : UserControl
+    public partial class Top_PropertiesUC : UserControl
     {
         public int mapColumns;
         public int mapRows;
         public EventHandler clickedInvalidateMapBt;
 
-        public Top_MapParametersUC()
+        public Top_PropertiesUC()
         {
             InitializeComponent();
 
@@ -24,7 +24,7 @@ namespace Tile_Map_Drawing.MenuRibbons
             mapRows = Convert.ToInt32(mapRowsNumupdown.Value);
         }
 
-        public Top_MapParametersUC(int mapColumns, int mapRows)
+        public Top_PropertiesUC(int mapColumns, int mapRows)
         {
             InitializeComponent();
             this.mapColumns = mapColumns;

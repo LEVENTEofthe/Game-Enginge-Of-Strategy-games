@@ -60,14 +60,14 @@
             playerUnitToolStripMenuItem.Name = "playerUnitToolStripMenuItem";
             playerUnitToolStripMenuItem.Size = new Size(242, 26);
             playerUnitToolStripMenuItem.Text = "Player unit choice field";
-            playerUnitToolStripMenuItem.Click += playerUnitToolStripMenuItem_Click;
+            playerUnitToolStripMenuItem.Click += playerChooserFieldStripMenuItem_Click;
             // 
             // setDirectToolStripMenuItem
             // 
             setDirectToolStripMenuItem.Name = "setDirectToolStripMenuItem";
             setDirectToolStripMenuItem.Size = new Size(242, 26);
             setDirectToolStripMenuItem.Text = "Set direct player unit";
-            setDirectToolStripMenuItem.Click += setDirectToolStripMenuItem_Click;
+            setDirectToolStripMenuItem.Click += setDirectPlayerStripMenuItem_Click;
             // 
             // setEnemyUnitToolStripMenuItem
             // 

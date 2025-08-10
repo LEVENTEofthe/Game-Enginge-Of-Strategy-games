@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Drawing;
 
 namespace SRPG_library
 {
@@ -31,11 +32,11 @@ namespace SRPG_library
                         MapObject[c, r] = new tile(c, r, TileData[r][c].TilesetIndex, TileData[r][c].ActorStandsHere = new actors(TileData[r][c]), TileData[r][c].Event);
         }
 
-        public tile? returnTile(decimal column, decimal row)
+        public tile? returnTile((decimal, decimal) point)
         {
             foreach (var tile in MapObject)
             {
-                if (tile.Column == column && tile.Row == row)
+                if (tile.Column == point.Item1 && tile.Row == point.Item2)
                     return tile;
             }
             return null;

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Tile_Map_Drawing.MenuRibbons
 {
-    public partial class Side_MapParametersUC : UserControl
+    public partial class Side_PropertiesUC : UserControl
     {
-        public Side_MapParametersUC()
+        public Side_PropertiesUC()
         {
             InitializeComponent();
         }

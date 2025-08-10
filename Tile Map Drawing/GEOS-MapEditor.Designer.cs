@@ -29,14 +29,17 @@
         private void InitializeComponent()
         {
             MapDrawingField = new PictureBox();
-            exportBtn = new Button();
             Side_SubmenuPanel = new Panel();
             mapParameterMenuBtn = new Button();
             drawMenuBtn = new Button();
             eventMenuBtn = new Button();
             Top_SubmenuPanel = new Panel();
-            button1 = new Button();
+            menuStrip1 = new MenuStrip();
+            fileMenuStrip = new ToolStripMenuItem();
+            exportMapToolStripMenuItem = new ToolStripMenuItem();
+            imToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // MapDrawingField
@@ -50,16 +53,6 @@
             MapDrawingField.Paint += MapDrawingField_Paint;
             MapDrawingField.MouseClick += MapDrawingField_MouseClick;
             // 
-            // exportBtn
-            // 
-            exportBtn.Location = new Point(628, 409);
-            exportBtn.Name = "exportBtn";
-            exportBtn.Size = new Size(94, 29);
-            exportBtn.TabIndex = 2;
-            exportBtn.Text = "Export map";
-            exportBtn.UseVisualStyleBackColor = true;
-            exportBtn.Click += exportBtn_Click;
-            // 
             // Side_SubmenuPanel
             // 
             Side_SubmenuPanel.BackColor = SystemColors.ActiveBorder;
@@ -70,19 +63,19 @@
             // 
             // mapParameterMenuBtn
             // 
-            mapParameterMenuBtn.Font = new Font("Segoe UI", 5F);
-            mapParameterMenuBtn.Location = new Point(12, 3);
+            mapParameterMenuBtn.Font = new Font("Segoe UI", 8.25F);
+            mapParameterMenuBtn.Location = new Point(110, 1);
             mapParameterMenuBtn.Name = "mapParameterMenuBtn";
             mapParameterMenuBtn.Size = new Size(94, 29);
             mapParameterMenuBtn.TabIndex = 8;
-            mapParameterMenuBtn.Text = "Map parameters";
+            mapParameterMenuBtn.Text = "Properties";
             mapParameterMenuBtn.UseVisualStyleBackColor = true;
-            mapParameterMenuBtn.Click += mapParameterMenuBtn_Click;
+            mapParameterMenuBtn.Click += propertiesBtn_Click;
             // 
             // drawMenuBtn
             // 
             drawMenuBtn.Font = new Font("Segoe UI", 8F);
-            drawMenuBtn.Location = new Point(110, 3);
+            drawMenuBtn.Location = new Point(210, 1);
             drawMenuBtn.Name = "drawMenuBtn";
             drawMenuBtn.Size = new Size(94, 29);
             drawMenuBtn.TabIndex = 9;
@@ -93,7 +86,7 @@
             // eventMenuBtn
             // 
             eventMenuBtn.Font = new Font("Segoe UI", 8F);
-            eventMenuBtn.Location = new Point(210, 3);
+            eventMenuBtn.Location = new Point(310, 1);
             eventMenuBtn.Name = "eventMenuBtn";
             eventMenuBtn.Size = new Size(94, 29);
             eventMenuBtn.TabIndex = 10;
@@ -109,15 +102,36 @@
             Top_SubmenuPanel.Size = new Size(712, 78);
             Top_SubmenuPanel.TabIndex = 11;
             // 
-            // button1
+            // menuStrip1
             // 
-            button1.Location = new Point(343, 413);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 12;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            menuStrip1.Dock = DockStyle.None;
+            menuStrip1.ImageScalingSize = new Size(20, 20);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileMenuStrip });
+            menuStrip1.Location = new Point(10, 1);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(54, 28);
+            menuStrip1.TabIndex = 13;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // fileMenuStrip
+            // 
+            fileMenuStrip.DropDownItems.AddRange(new ToolStripItem[] { exportMapToolStripMenuItem, imToolStripMenuItem });
+            fileMenuStrip.Name = "fileMenuStrip";
+            fileMenuStrip.Size = new Size(46, 24);
+            fileMenuStrip.Text = "File";
+            // 
+            // exportMapToolStripMenuItem
+            // 
+            exportMapToolStripMenuItem.Name = "exportMapToolStripMenuItem";
+            exportMapToolStripMenuItem.Size = new Size(224, 26);
+            exportMapToolStripMenuItem.Text = "Export map";
+            exportMapToolStripMenuItem.Click += exportMapToolStripMenuItem_Click;
+            // 
+            // imToolStripMenuItem
+            // 
+            imToolStripMenuItem.Name = "imToolStripMenuItem";
+            imToolStripMenuItem.Size = new Size(224, 26);
+            imToolStripMenuItem.Text = "Import map";
             // 
             // TileMapEditor
             // 
@@ -125,28 +139,33 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaption;
             ClientSize = new Size(800, 450);
-            Controls.Add(button1);
+            Controls.Add(menuStrip1);
             Controls.Add(Top_SubmenuPanel);
             Controls.Add(mapParameterMenuBtn);
             Controls.Add(Side_SubmenuPanel);
             Controls.Add(eventMenuBtn);
             Controls.Add(drawMenuBtn);
-            Controls.Add(exportBtn);
             Controls.Add(MapDrawingField);
+            MainMenuStrip = menuStrip1;
             Name = "TileMapEditor";
             Text = "GEOS Map Editor";
             ((System.ComponentModel.ISupportInitialize)MapDrawingField).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
         private PictureBox MapDrawingField;
-        private Button exportBtn;
         private Panel Side_SubmenuPanel;
         private Button mapParameterMenuBtn;
         private Button drawMenuBtn;
         private Button eventMenuBtn;
         private Panel Top_SubmenuPanel;
-        private Button button1;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileMenuStrip;
+        private ToolStripMenuItem exportMapToolStripMenuItem;
+        private ToolStripMenuItem imToolStripMenuItem;
     }
 }

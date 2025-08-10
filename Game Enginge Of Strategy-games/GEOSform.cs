@@ -24,7 +24,7 @@ namespace Game_Enginge_Of_Strategy_games
         private (int, int) tileUnderCursorHighlight;
         private match Match;
         private tileMap Map;
-        private List<actors> actorList;
+        //private List<actors> actorList;
         private actors player1;
         private actors player2;
         private actors player3;
@@ -41,22 +41,22 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map3.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map2.json");
             Map = JsonSerializer.Deserialize<tileMap>(mapjson);
 
             tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
-            actorList = ImportActors("C://Users/bakos/Documents/GEOS data library/database/actors/");
+            //actorList = ImportActors("C://Users/bakos/Documents/GEOS data library/database/actors/");
 
-            string player1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Sarsio.actor.json");
-            player1 = JsonSerializer.Deserialize<actors>(player1json);
-            player1.MapPosition = (1, 2);
-            string enemy1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Milo.actor.json");
-            enemy1 = JsonSerializer.Deserialize<actors>(enemy1json);
-            enemy1.MapPosition = (2, 4);
+            //string player1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Sarsio.actor.json");
+            //player1 = JsonSerializer.Deserialize<actors>(player1json);
+            //player1.MapPosition = (1, 2);
+            //string enemy1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Milo.actor.json");
+            //enemy1 = JsonSerializer.Deserialize<actors>(enemy1json);
+            //enemy1.MapPosition = (2, 4);
 
             //Now that the actors are red in dynamically, we can't harcode testdata into the Match.
-            Match = new(Map, [player1], [enemy1]);
+            Match = new(Map);
 
 
             //this is apparently a constructor
@@ -89,7 +89,7 @@ namespace Game_Enginge_Of_Strategy_games
             #endregion
         }
 
-        public static List<actors> ImportActors(string folderpath)
+        public static List<actors> ImportActors(string folderpath)  //Is this even useful?
         {
             List<actors> redActors = new List<actors>();
 
@@ -197,8 +197,8 @@ namespace Game_Enginge_Of_Strategy_games
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan)))
             {
-                (float, float) screenPos = CameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);      //
-                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2 - 1, CameraManager.TileSize, CameraManager.TileSize);
+                (float, float) screenPos = CameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);
+                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2, CameraManager.TileSize, CameraManager.TileSize);
             }
             #endregion
 
@@ -250,7 +250,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             (decimal, decimal) currentTile = CameraManager.ScreenToTile(e.X, e.Y);
-            if (Match.Map.returnTile(currentTile.Item1, currentTile.Item2) != null)
+            if (Match.Map.returnTile(currentTile) != null)
             {
                 tileUnderCursorHighlight = (Convert.ToInt32(currentTile.Item1), Convert.ToInt32(currentTile.Item2));
                 Invalidate();
@@ -299,9 +299,8 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //debug
-            tilePicker.Text = Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.ToString();
-            tileInfoLabel.Text = $"Actor stands here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.ActorStandsHere}, Event: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.Event}, Can step here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.CanStepHere()} position: {Match.Map.returnTile(CameraManager.ScreenToTile(e.X, e.Y).Item1, CameraManager.ScreenToTile(e.X, e.Y).Item2)?.returnTilePosition()}";
-            //This above shows that actors don't really step into the tiles, their graphics are simply drawn above it. 
+            tilePicker.Text = Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
+            tileInfoLabel.Text = $"Actor stands here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
@@ -325,21 +324,16 @@ namespace Game_Enginge_Of_Strategy_games
         #region Mouse events
         private actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
         {
-            foreach (var i in playerTiles)
+            if (Match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere != null)
             {
-                if (i.Item2.Contains(mousePosition))
-                    return i.Item1;
+                return Match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere;
             }
             return null;
         }
 
         private actors clickedOnEnemyCharacter(Point mousePosition)
         {
-            foreach (var i in enemyTiles)
-            {
-                if (i.Item2.Contains(mousePosition))
-                    return i.Item1;
-            }
+
             return null;
         }
         #endregion

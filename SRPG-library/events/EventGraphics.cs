@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game_Enginge_Of_Strategy_games
+namespace SRPG_library
 {
     public static class EventGraphics
     {

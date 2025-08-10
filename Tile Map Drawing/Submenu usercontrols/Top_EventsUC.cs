@@ -21,12 +21,12 @@ namespace Tile_Map_Drawing
             this.toolContext = toolContext;
         }
 
-        private void playerUnitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void playerChooserFieldStripMenuItem_Click(object sender, EventArgs e)
         {
             toolContext.EventId = "playerChooserField";
         }
 
-        private void setDirectToolStripMenuItem_Click(object sender, EventArgs e)
+        private void setDirectPlayerStripMenuItem_Click(object sender, EventArgs e)
         {
             toolContext.EventId = "setDirectPlayer";
         }

@@ -1,6 +1,6 @@
 ﻿namespace Tile_Map_Drawing.MenuRibbons
 {
-    partial class Top_MapParametersUC
+    partial class Top_PropertiesUC
     {
         /// <summary> 
         /// Required designer variable.

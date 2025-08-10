@@ -16,6 +16,7 @@ namespace SRPG_library
         public List<string> MoreEvents {  get; set; }   //In case of wanting multiple events on a single tile
         public mapObject MapObject { get; set; }        //Not sure we'd be needing map objects now that we have events.
         public actors ActorStandsHere { get; set; }
+        //public string[] Tags { get; set; }            //For variable things
 
         [JsonConstructor]
         public tile(int Column, int Row, int TilesetIndex, actors ActorStandsHere, string Event)
@@ -37,20 +38,12 @@ namespace SRPG_library
         public int Column
         {
             get { return column; }
-            set { column = value + 1; }  //+1 because otherwise we would have to index rows and columns starting from number 0 (shouldn't this be -1 instead? like the machine starts counting from zero, so if we want to refer to the first object by saying 1 it would need to get 0, so 1 -1)
-        }
+            set { column = value + 1; }     //+1 because the computer starts indexing from 0 but 1th column makes more sense than 0th column
+        }  
         public int Row
         {
             get { return row; }
             set { row = value + 1; }
-        }
-
-        public void tile_click(object Sender, EventArgs e)
-        {
-            if (ActorStandsHere != null)
-            {
-
-            }
         }
 
         public (int, int) returnTilePosition()

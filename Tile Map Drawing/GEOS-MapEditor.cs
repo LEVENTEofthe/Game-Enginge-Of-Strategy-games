@@ -2,17 +2,18 @@ using System.Reflection.Metadata;
 using System.Text.Json;
 using Tile_Map_Drawing.MenuRibbons;
 using SRPG_library;
+using System.Diagnostics;
 
 namespace Tile_Map_Drawing
 {
     public partial class TileMapEditor : Form
     {
         #region submenu instances
-        private Top_MapParametersUC topMapParametersRibbon;
-        private int MapParameterColumns = 2;
-        private int MapParameterRows = 2;
+        private Top_PropertiesUC topPropertiesRibbon;
+        private int mapColumns = 2;
+        private int mapRows = 2;
 
-        private Side_MapParametersUC sideMapParametersRibbon;
+        private Side_PropertiesUC sidepropertiesRibbon;
         private Top_TileDrawingUC topTileDrawingRibbon;
         private Side_TileDrawingUC sideTileDrawingRibbon;
         string tilesetImageSource = "C:/Users/bakos/Documents/GEOS data library/assets/tilesets/tileset-16px-2x3.png";  //We have to change so it will use the same source Side_TileDrawingUC does
@@ -37,10 +38,12 @@ namespace Tile_Map_Drawing
         {
             InitializeComponent();
 
-            ShowSubmenu("MapParameters");   //Default
+            ShowSubmenu("Properties");   //Default
+
+            EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
         }
 
-        private void MapDrawingField_Paint(object sender, PaintEventArgs e)
+        private void MapDrawingField_Paint(object sender, PaintEventArgs e)     //Gotta copy here the GEOS map drawing
         {
             Graphics g = e.Graphics;
 
@@ -64,6 +67,17 @@ namespace Tile_Map_Drawing
 
                     g.DrawImage(tilesetImage, tileHitbox, src, GraphicsUnit.Pixel);
                     g.DrawRectangle(Pens.Gray, tileHitbox);
+
+                    if (mapData[x, y].Event != null)
+                    {
+                        var img = EventGraphics.GetImage(mapData[x, y].Event);
+                        g.DrawImage(img, tileHitbox);
+                    }
+
+                    if (mapData[x, y].ActorStandsHere != null)
+                        g.DrawImage(Image.FromFile(mapData[x, y].ActorStandsHere.Image), tileHitbox, src, GraphicsUnit.Pixel);
+
+                    //If more than one item (like actor + event or more than one event) are on the same tile, the graphics should show that somehow. Like some red mark on the upper right corner
                 }
             }
         }
@@ -92,41 +106,16 @@ namespace Tile_Map_Drawing
             return jagged;
         }
 
-        private void ExportMap(string filePath)
-        {
-            tileMap export = new tileMap
-            (
-                columns,
-                rows,
-                tilesetImageSource,
-                MapToJaggedArray()
-            );
+        
 
-            var options = new JsonSerializerOptions { WriteIndented = true };   //what is this option thing for?
-            string json = JsonSerializer.Serialize(export, options);
-            File.WriteAllText(filePath, json);
-        }
 
-        private void exportBtn_Click(object sender, EventArgs e)
-        {
-            using (SaveFileDialog sfd = new SaveFileDialog())
-            {
-                sfd.Filter = "JSON files (*.json)|*.json";
-                sfd.InitialDirectory = @"C:\Users\bakos\Documents\GEOS data library/database/maps/";
-
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    ExportMap(sfd.FileName);
-                }
-            }
-        }
 
         private void clickedInvalidateMapBtn(object sender, EventArgs e)
         {
-            if (sender is Top_MapParametersUC Ribbon)
+            if (sender is Top_PropertiesUC Ribbon)
             {
-                columns = MapParameterColumns = Ribbon.mapColumns;
-                rows = MapParameterRows = Ribbon.mapRows;
+                columns = mapColumns = Ribbon.mapColumns;
+                rows = mapRows = Ribbon.mapRows;
                 mapData = new tile[columns, rows];
 
                 for (int y = 0; y < rows; y++)
@@ -180,6 +169,34 @@ namespace Tile_Map_Drawing
                 }
             }
         }
+        private void ExportMap(string filePath)
+        {
+            tileMap export = new tileMap
+            (
+                columns,
+                rows,
+                tilesetImageSource,
+                MapToJaggedArray()
+            );
+
+            var options = new JsonSerializerOptions { WriteIndented = true };   //what is this option thing for?
+            string json = JsonSerializer.Serialize(export, options);
+            File.WriteAllText(filePath, json);
+        }
+
+        private void exportMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "JSON files (*.json)|*.json";
+                sfd.InitialDirectory = @"C:\Users\bakos\Documents\GEOS data library/database/maps/";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    ExportMap(sfd.FileName);
+                }
+            }
+        }
 
         #region Submenu Switching
         private void ShowSubmenu(string SubmenuName)
@@ -192,9 +209,9 @@ namespace Tile_Map_Drawing
 
             switch (SubmenuName)
             {
-                case "MapParameters":
-                    var topribbon = new Top_MapParametersUC(MapParameterColumns, MapParameterRows);
-                    var sideribbon = new Side_MapParametersUC();
+                case "Properties":
+                    var topribbon = new Top_PropertiesUC(mapColumns, mapRows);
+                    var sideribbon = new Side_PropertiesUC();
                     //subscribing to events     //I wonder if we need to do unsubscribing as well
                     topribbon.clickedInvalidateMapBt += clickedInvalidateMapBtn;
 
@@ -228,9 +245,9 @@ namespace Tile_Map_Drawing
             }
         }
 
-        private void mapParameterMenuBtn_Click(object sender, EventArgs e)
+        private void propertiesBtn_Click(object sender, EventArgs e)
         {
-            ShowSubmenu("MapParameters");
+            ShowSubmenu("Properties");
         }
 
         private void drawMenuBtn_Click(object sender, EventArgs e)
@@ -246,9 +263,6 @@ namespace Tile_Map_Drawing
         }
         #endregion
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            button1.Text = UImanager.ActorChooser("C://Users/bakos/Documents/GEOS data library/database/actors", "C://Users/bakos/Documents/GEOS data library/assets/actor textures").Name;
-        }
+
     }
 }

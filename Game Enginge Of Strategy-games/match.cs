@@ -14,9 +14,13 @@ namespace Game_Enginge_Of_Strategy_games
         public actors[] EnemyTeam { get; set; }
         public match(tileMap map, actors[] playerTeam, actors[] enemyTeam)
         {
-            this.Map = map;
-            this.PlayerTeam = playerTeam;
-            this.EnemyTeam = enemyTeam;
+            Map = map;
+            PlayerTeam = playerTeam;
+            EnemyTeam = enemyTeam;
+        }
+        public match(tileMap map)
+        {
+            Map = map;
         }
     }
 }
