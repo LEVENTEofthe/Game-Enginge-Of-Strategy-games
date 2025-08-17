@@ -9,7 +9,7 @@ namespace Tile_Map_Drawing
 {
     public interface ITool
     {
-        void HandleMouseClick(MouseEventArgs e, tile[,] mapData, ToolContext toolContext);
+        void HandleMouseClick(MouseEventArgs e, Tile[,] mapData, ToolContext toolContext);
         void HandleMouseMove(MouseEventArgs e);
     }
 
@@ -24,7 +24,7 @@ namespace Tile_Map_Drawing
             this.selectedTileIndex = selectedTileIndex;
         }
 
-        public void HandleMouseClick(MouseEventArgs e, tile[,] mapData, ToolContext toolContext)
+        public void HandleMouseClick(MouseEventArgs e, Tile[,] mapData, ToolContext toolContext)
         {
             int x = e.X / tileSize;     //It would be nice if we could make it so the tiles had built in mouse hovering function, like it would feel better than these calculations of their location. Though I can see that it would might be less optimal. 
             int y = e.Y / tileSize;
@@ -52,7 +52,7 @@ namespace Tile_Map_Drawing
             //this.EventID = EventID;
         }
 
-        public void HandleMouseClick(MouseEventArgs e, tile[,] mapData, ToolContext toolContext)
+        public void HandleMouseClick(MouseEventArgs e, Tile[,] mapData, ToolContext toolContext)
         {
             int x = e.X / tileSize;
             int y = e.Y / tileSize;

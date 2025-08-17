@@ -7,12 +7,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-//using System.Windows.Forms.Design;
-//using System.Windows.Forms.Design;
 
 namespace SRPG_library
 {
-    public class actors
+    public class Actors
     {
         public string Name { get; set; }
         public string Image { get; set; }   //name of the image in GEOS data library/assets/actor textures
@@ -21,35 +19,30 @@ namespace SRPG_library
         private int row;
         //public List<characterActions> ActionSet { get; set; }   //recently added, need to update the character creator and json reader
 
-        public actors(string Name, string Image, int MaxHP, int Column, int Row/*, List<characterActions> ActionSet*/)
+        [JsonConstructor]
+        public Actors(string Name, string Image, int MaxHP, int Column, int Row/*, List<characterActions> ActionSet*/)
         {
             this.Name = Name;
             this.Image = Image;
             this.MaxHP = MaxHP;
-            this.Column = Column;
-            this.Row = Row;
+            column = Column;    //The actor objects in the JSONs are already 1 indexed, so we don't want the capital Column/Row fields to offset them again
+            row = Row;
             //this.ActionSet = ActionSet;
         }
-        //public actors(string Name, string Image, int MaxHP)
-        //{
-        //    this.Name = Name;
-        //    this.Image = Image;
-        //    this.MaxHP = MaxHP;
-        //}
-        public actors(tile tile)
+        public Actors(Tile tile)
         {
             Name = tile.ActorStandsHere.Name;
             Image = tile.ActorStandsHere.Image;
             MaxHP = tile.ActorStandsHere.MaxHP;
-            Column = tile.ActorStandsHere.Column;
-            Row = tile.ActorStandsHere.Row;
+            Column = tile.ActorStandsHere.Column - 1;   //We are indexing the columns & rows from 1, but the computer does from 0, so we have to offset the indexing back
+            Row = tile.ActorStandsHere.Row - 1;
         }
-        public actors() { }
+        public Actors() { }
 
         public int Column
         {
             get { return column; }
-            set { column = value + 1; }     //+1 because the computer starts indexing from 0 but 1th column makes more sense than 0th column
+            set { column = value + 1; }     //+1 because the computer starts indexing from 0, but in the context of a game map, 1th column makes more sense than 0th column. But with this approach, in every code that uses user imput actors/tiles, we have to use -1 for their value.
         }
         public int Row
         {
@@ -57,15 +50,12 @@ namespace SRPG_library
             set { row = value + 1; }
         }
 
-        public void moveToRelativeMapPosition(int addCol, int addRow)
-        {
-            Column = Column + addCol;
-            Row = Row + addRow;
-        }
-
         public override string ToString()
         {
             return $"{Name}, Col: {Column}, Row: {Row}";
         }
+
+
+        
     }
 }

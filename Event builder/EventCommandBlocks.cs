@@ -16,7 +16,7 @@ namespace Event_builder
     public class actorChooser : EventCommandBlocks
     {
         public override string ID => "ActorChooser";
-        public actors actor {  get; private set; }
+        public Actors actor {  get; private set; }
         public string actorPool { get; private set; }
 
         public actorChooser(string actorPool)

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public interface IcharacterActions
+    public interface ICharacterActions
     {
         public string Name { get; }
         public string Description { get; }
 
-        public abstract void Execute(actors user, actionContext context);
+        public abstract void Execute(Actors user, ActionContext context);
 
         public bool canBeExecuted();
 
-        public virtual bool IsValidTarget(actors target)
+        public virtual bool IsValidTarget(Actors target)
         {
             // Default to allowing any target
             return true;

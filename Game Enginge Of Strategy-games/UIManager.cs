@@ -26,7 +26,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, actors actor, Point location)
+        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actors actor, Point location)
         {
             ClosePlayerCharacterActionPanel(parentForm);
 
@@ -55,7 +55,7 @@ namespace Game_Enginge_Of_Strategy_games
             
         }
 
-        public static void highlightTile(tile selectedTile, Color color, Graphics g, int TileSize)
+        public static void highlightTile(Tile selectedTile, Color color, Graphics g, int TileSize)
         {
             if (selectedTile == null)
                 return;
@@ -69,7 +69,7 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         #region Actor chooser
-        public static actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
+        public static Actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
         {
             int index = -1;
             var form = new Form
@@ -116,9 +116,9 @@ namespace Game_Enginge_Of_Strategy_games
             return null;
         }
 
-        public static List<actors> LoadActorChooserData(string jsonFolderPath)
+        public static List<Actors> LoadActorChooserData(string jsonFolderPath)
         {
-            var actorJsonsList = new List<actors>();
+            var actorJsonsList = new List<Actors>();
             var files = Directory.GetFiles(jsonFolderPath, "*.json");
 
             foreach (var file in files)
@@ -126,7 +126,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     string json = File.ReadAllText(file);
-                    var data = JsonSerializer.Deserialize<actors>(json);
+                    var data = JsonSerializer.Deserialize<Actors>(json);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }
@@ -140,7 +140,7 @@ namespace Game_Enginge_Of_Strategy_games
             return actorJsonsList;
         }
 
-        public static Panel CreateActorCard(string imageFolderPath, actors actorObject)
+        public static Panel CreateActorCard(string imageFolderPath, Actors actorObject)
         {
             var panel = new Panel
             {

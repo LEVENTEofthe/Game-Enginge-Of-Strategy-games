@@ -51,7 +51,7 @@ namespace CharacterCreator
 
         private void exportChar(string filePath)
         {
-            actors createdChara = new actors(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), -1, -1);
+            Actors createdChara = new Actors(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), -1, -1);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(createdChara, options);

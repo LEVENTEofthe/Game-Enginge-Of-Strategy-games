@@ -12,13 +12,14 @@ using System.Xml.Linq;
 using Microsoft.VisualBasic.ApplicationServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.Metadata;
+using System.Diagnostics;
 
 namespace Tile_Map_Drawing
 {
     public static class UImanager   //For the map drawing
     {
         #region Actor chooser
-        public static actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
+        public static Actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
         {
             int index = -1;
             var form = new Form
@@ -65,31 +66,55 @@ namespace Tile_Map_Drawing
             return null;
         }
 
-        public static List<actors> LoadActorChooserData(string jsonFolderPath)
+        public static List<Actors> LoadActorChooserData(string jsonFolderPath)
         {
-            var actorJsonsList = new List<actors>();
+            var actorJsonsList = new List<Actors>();
             var files = Directory.GetFiles(jsonFolderPath, "*.json");
+
+            List<string> errorList = new List<string>();
 
             foreach (var file in files)
             {
                 try
                 {
                     string json = File.ReadAllText(file);
-                    var data = JsonSerializer.Deserialize<actors>(json);
+
+                    if (string.IsNullOrWhiteSpace(file))
+                    {
+                        errorList.Add(json);
+                        continue;
+                    }
+
+                    var data = JsonSerializer.Deserialize<Actors>(json);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }
-                catch (Exception)
+                catch (JsonException Exception)
                 {
-                    //Still need to handle expections
-                    throw;
+                    errorList.Add($"{file}: {Exception.Message}");
+                    Debug.WriteLine($"JSON exception with the file '{file}': {Exception}");
                 }
+                catch (Exception Exception)
+                {
+                    errorList.Add($"{file}: {Exception.Message}");
+                    Debug.WriteLine($"Exception with the file '{file}': {Exception}");
+                }
+            }
+
+            if (errorList.Any())
+            {
+                string errors = string.Join("\n", errorList);
+                MessageBox.Show(
+                            $"There were errors with the following files:\n\n{errors}",
+                            "File Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
             }
 
             return actorJsonsList;
         }
 
-        public static Panel CreateActorCard(string imageFolderPath, actors actorObject)
+        public static Panel CreateActorCard(string imageFolderPath, Actors actorObject)
         {
             var panel = new Panel
             {

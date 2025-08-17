@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public enum mapObjectTypes
+    public enum MapObjectTypes
     {
         wall,
         NellTile

@@ -26,7 +26,7 @@ namespace Tile_Map_Drawing
         Size tilesetSizeMustBe = new Size(32, 48);
         int tileSize = 16;
 
-        tile[,] mapData;
+        Tile[,] mapData;
         public int columns = 2;
         int rows = 2;
         string Event;
@@ -91,13 +91,13 @@ namespace Tile_Map_Drawing
             MapDrawingField.Invalidate();
         }
 
-        private tile[][] MapToJaggedArray()
+        private Tile[][] MapToJaggedArray()
         {
-            tile[][] jagged = new tile[rows][];
+            Tile[][] jagged = new Tile[rows][];
 
             for (int y = 0; y < rows; y++)
             {
-                jagged[y] = new tile[columns];
+                jagged[y] = new Tile[columns];
                 for (int x = 0; x < columns; x++)
                 {
                     jagged[y][x] = mapData[x, y];
@@ -116,13 +116,13 @@ namespace Tile_Map_Drawing
             {
                 columns = mapColumns = Ribbon.mapColumns;
                 rows = mapRows = Ribbon.mapRows;
-                mapData = new tile[columns, rows];
+                mapData = new Tile[columns, rows];
 
                 for (int y = 0; y < rows; y++)
                 {
                     for (int x = 0; x < columns; x++)
                     {
-                        mapData[x, y] = new tile(x, y, null);
+                        mapData[x, y] = new Tile(x, y, null);
                     }
                 }
 
@@ -171,7 +171,7 @@ namespace Tile_Map_Drawing
         }
         private void ExportMap(string filePath)
         {
-            tileMap export = new tileMap
+            TileMap export = new TileMap
             (
                 columns,
                 rows,

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public class mapObject //Interactable things that occupy tiles
+    public class TileInteractables //Interactable things that occupy tiles
     {
-        public mapObjectTypes MapEventType { get; set; }
-        public tile MapPosition { get; set; }
+        public MapObjectTypes MapEventType { get; set; }
+        public Tile MapPosition { get; set; }
         public bool CanStandOnIt { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Game_Enginge_Of_Strategy_games
 {
-    public enum targetType
+    public enum TargetType
     {
         none,
         self,

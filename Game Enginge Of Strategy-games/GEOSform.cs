@@ -15,21 +15,21 @@ namespace Game_Enginge_Of_Strategy_games
         #region System variables
         //System variables
         private int tilesetSize = 16;   //the dimension of a single tile in the tileset image, in pixels
-        private (actors, Rectangle)[] playerTiles;
-        private (actors, Rectangle)[] enemyTiles;
+        private (Actors, Rectangle)[] playerTiles;
+        private (Actors, Rectangle)[] enemyTiles;
         Bitmap tilesetImage;
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
         private (int, int) tileUnderCursorHighlight;
-        private match Match;
-        private tileMap Map;
+        private Match match;
+        //private TileMap map;
         //private List<actors> actorList;
-        private actors player1;
-        private actors player2;
-        private actors player3;
-        private actors enemy1;
-        private actors enemy2;
+        private Actors player1;
+        private Actors player2;
+        private Actors player3;
+        private Actors enemy1;
+        private Actors enemy2;
         //UI
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
@@ -42,28 +42,16 @@ namespace Game_Enginge_Of_Strategy_games
             InitializeComponent();
 
             string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map2.json");
-            Map = JsonSerializer.Deserialize<tileMap>(mapjson);
+            TileMap map = JsonSerializer.Deserialize<TileMap>(mapjson);
 
-            tilesetImage = new Bitmap(Map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
+            tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
-            //actorList = ImportActors("C://Users/bakos/Documents/GEOS data library/database/actors/");
+            match = new(map);
 
-            //string player1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Sarsio.actor.json");
-            //player1 = JsonSerializer.Deserialize<actors>(player1json);
-            //player1.MapPosition = (1, 2);
-            //string enemy1json = File.ReadAllText("C://Users/bakos/Documents/GEOS data library/database/actors/Milo.actor.json");
-            //enemy1 = JsonSerializer.Deserialize<actors>(enemy1json);
-            //enemy1.MapPosition = (2, 4);
-
-            //Now that the actors are red in dynamically, we can't harcode testdata into the Match.
-            Match = new(Map);
-
-
-            //this is apparently a constructor
             this.DoubleBuffered = true; // Makes drawing smoother
-            this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event(??)
-            this.MouseWheel += GEOSform_MouseWheel;
+            this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event
             //moving the screen
+            this.MouseWheel += GEOSform_MouseWheel;
             this.MouseDown += GEOSform_MouseDown;
             this.MouseUp += GEOSform_MouseUp;
             this.MouseMove += GEOSform_MouseMove;
@@ -89,9 +77,9 @@ namespace Game_Enginge_Of_Strategy_games
             #endregion
         }
 
-        public static List<actors> ImportActors(string folderpath)  //Is this even useful?
+        public static List<Actors> ImportActors(string folderpath)  //Is this even useful?
         {
-            List<actors> redActors = new List<actors>();
+            List<Actors> redActors = new List<Actors>();
 
             if (!Directory.Exists(folderpath))
             {
@@ -109,7 +97,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     string json = File.ReadAllText(file);
-                    actors? deserialized = JsonSerializer.Deserialize<actors>(json);
+                    Actors? deserialized = JsonSerializer.Deserialize<Actors>(json);
 
                     if (deserialized != null)
                     {
@@ -129,9 +117,9 @@ namespace Game_Enginge_Of_Strategy_games
             return redActors;
         }
 
-        public static List<actors> LoadActorsToMatch(IEnumerable<string> actorsFilePath, match match)   //Is this even useful?
+        public static List<Actors> LoadActorsToMatch(IEnumerable<string> actorsFilePath, Match match)   //Is this even useful?
         {
-            var roster = new List<actors>(capacity: match.PlayerTeam.Length);
+            var roster = new List<Actors>(capacity: match.PlayerTeam.Length);
 
             foreach (string path in actorsFilePath.Take(match.PlayerTeam.Length))
             {
@@ -143,7 +131,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     var json = File.ReadAllText(path);
-                    var actor = JsonSerializer.Deserialize<actors>(json);
+                    var actor = JsonSerializer.Deserialize<Actors>(json);
 
                     if (actor == null)
                     {
@@ -172,11 +160,11 @@ namespace Game_Enginge_Of_Strategy_games
             #region Drawing the map
             int tilesPerRow = tilesetImage.Width / tilesetSize;
 
-            for (int r = 0; r < Match.Map.Rows; r++)
+            for (int r = 0; r < match.Map.Rows; r++)
             {
-                for (int c = 0; c < Match.Map.Columns; c++)
+                for (int c = 0; c < match.Map.Columns; c++)
                 {
-                    tile Tile = Match.Map.MapObject[c, r];
+                    Tile Tile = match.Map.MapObject[c, r];
                     int tileIndex = Tile.TilesetIndex;
 
                     int sx = (tileIndex % tilesPerRow) * tilesetSize;
@@ -250,7 +238,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             (decimal, decimal) currentTile = CameraManager.ScreenToTile(e.X, e.Y);
-            if (Match.Map.returnTile(currentTile) != null)
+            if (match.Map.returnTile(currentTile) != null)
             {
                 tileUnderCursorHighlight = (Convert.ToInt32(currentTile.Item1), Convert.ToInt32(currentTile.Item2));
                 Invalidate();
@@ -299,8 +287,8 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //debug
-            tilePicker.Text = Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
-            tileInfoLabel.Text = $"Actor stands here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {Match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
+            tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
+            tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
@@ -322,16 +310,17 @@ namespace Game_Enginge_Of_Strategy_games
         #endregion
 
         #region Mouse events
-        private actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
+        private Actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
         {
-            if (Match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere != null)
+            if (match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere != null)
             {
-                return Match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere;
+                actorMoveToRelativeMapPosition(match.Map.MapObject, match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere, 2, 2);
+                ////return match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere;
             }
             return null;
         }
 
-        private actors clickedOnEnemyCharacter(Point mousePosition)
+        private Actors clickedOnEnemyCharacter(Point mousePosition)
         {
 
             return null;
@@ -340,8 +329,22 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Match.Map.returnTile((1,1)).ActorStandsHere.moveToRelativeMapPosition(2, 2);
             
+        }
+
+        //To the events
+        public void actorMoveToRelativeMapPosition(Tile[,] mapObject, Actors actor, int addCol, int addRow)
+        {
+            Debug.WriteLine($"column: {actor.Column}, row: {actor.Row}, mapObject length: {mapObject.Length}");
+
+            //if (mapObject[actor.Column, actor.Row].ActorStandsHere == actor)
+            //    mapObject[actor.Column, actor.Row].ActorStandsHere = null;
+
+            //actor.Column += addCol;
+            //actor.Row += addRow;
+
+            //mapObject[actor.Column, actor.Row].ActorStandsHere = actor;
+                
         }
     }
 }
