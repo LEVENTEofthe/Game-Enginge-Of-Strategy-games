@@ -55,17 +55,22 @@ namespace Game_Enginge_Of_Strategy_games
             
         }
 
-        public static void highlightTile(Tile selectedTile, Color color, Graphics g, int TileSize)
+        public static void highlightTile(Tile tile, Brush brush, Graphics g)
         {
-            if (selectedTile == null)
+            if (tile.Column < 1 || tile.Row < 1)
                 return;
 
-            Rectangle highlight = new Rectangle(selectedTile.Column * TileSize, selectedTile.Row * TileSize, TileSize, TileSize);
+            (float, float) screenPos = CameraManager.TileToScreen(tile.Column - 1, tile.Row - 1);
+            g.FillRectangle(brush, screenPos.Item1, screenPos.Item2, CameraManager.TileSize, CameraManager.TileSize);
+        }
 
-            using (Brush brush = new SolidBrush(color))
-            {
-                g.FillRectangle(brush, highlight);
-            }
+        public static void highlightTile(int tileCol, int tileRow, Brush brush, Graphics g)
+        {
+            if (tileCol < 1 || tileRow < 1)
+                return;
+
+            (float, float) screenPos = CameraManager.TileToScreen(tileCol - 1, tileRow - 1);
+            g.FillRectangle(brush, screenPos.Item1, screenPos.Item2, CameraManager.TileSize, CameraManager.TileSize);
         }
 
         #region Actor chooser

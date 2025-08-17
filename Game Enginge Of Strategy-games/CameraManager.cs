@@ -1,10 +1,11 @@
-﻿using System;
+﻿using SRPG_library;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using SRPG_library;
+using System.Windows.Forms;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -84,6 +85,19 @@ namespace Game_Enginge_Of_Strategy_games
         public static decimal ScreenToTile(int screen)
         {
             return decimal.Truncate(Convert.ToDecimal(ScreenToWorld(screen / TileSize + 1)));
+        }
+
+        public static Tile? ReturnTileUnderCursor(Point cursor, TileMap map)
+        {
+            decimal col = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(cursor.X, cursor.Y).Item1 / TileSize + 1));
+            decimal row = decimal.Truncate(Convert.ToDecimal(ScreenToWorld(cursor.X, cursor.Y).Item2 / TileSize + 1));
+
+            foreach (var tile in map.MapObject)
+            {
+                if (tile.Column == col && tile.Row == row)
+                    return map.MapObject[Convert.ToInt32(col - 1), Convert.ToInt32(row - 1)];
+            }
+            return null;
         }
 
         public static (float, float) TileToWorld(decimal Col, decimal Row)

@@ -21,7 +21,8 @@ namespace Game_Enginge_Of_Strategy_games
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
-        private (int, int) tileUnderCursorHighlight;
+        //private (int, int) tileUnderCursor;
+        private Tile tileUnderCursor;
         private Match match;
         //private TileMap map;
         //private List<actors> actorList;
@@ -183,10 +184,10 @@ namespace Game_Enginge_Of_Strategy_games
                 }
             }
 
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan)))
+            if (tileUnderCursor != null)
             {
-                (float, float) screenPos = CameraManager.TileToScreen(tileUnderCursorHighlight.Item1 - 1, tileUnderCursorHighlight.Item2 - 1);
-                g.FillRectangle(brush, screenPos.Item1, screenPos.Item2, CameraManager.TileSize, CameraManager.TileSize);
+                SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan));
+                UIManager.highlightTile(tileUnderCursor.Column, tileUnderCursor.Row, brush, g);
             }
             #endregion
 
@@ -240,13 +241,16 @@ namespace Game_Enginge_Of_Strategy_games
             (decimal, decimal) currentTile = CameraManager.ScreenToTile(e.X, e.Y);
             if (match.Map.returnTile(currentTile) != null)
             {
-                tileUnderCursorHighlight = (Convert.ToInt32(currentTile.Item1), Convert.ToInt32(currentTile.Item2));
-                Invalidate();
+                tileUnderCursor = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
             }
+            else
+                tileUnderCursor = null;
 
-            //debugging
-            mouseCoordinates.Text = e.Location.ToString();
-            tileCoords.Text = CameraManager.ScreenToTile(e.X, e.Y).ToString();
+            Invalidate();
+
+                //debugging
+                mouseCoordinates.Text = e.Location.ToString();
+            tileCoords.Text = $"old: {CameraManager.ScreenToTile(e.X, e.Y)}, new: {CameraManager.ReturnTileUnderCursor(e.Location, match.Map)}";
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)

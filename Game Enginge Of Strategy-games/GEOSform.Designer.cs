@@ -57,7 +57,7 @@
             // tileCoords
             // 
             tileCoords.AutoSize = true;
-            tileCoords.Location = new Point(158, 624);
+            tileCoords.Location = new Point(165, 602);
             tileCoords.Name = "tileCoords";
             tileCoords.Size = new Size(160, 20);
             tileCoords.TabIndex = 14;
