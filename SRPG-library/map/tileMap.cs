@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Diagnostics;
 //using System.Drawing;
 
 namespace SRPG_library
@@ -32,7 +33,7 @@ namespace SRPG_library
                         MapObject[c, r] = new Tile(c, r, TileData[r][c].TilesetIndex, TileData[r][c].ActorStandsHere = new Actors(TileData[r][c]), TileData[r][c].Event);
         }
 
-        public Tile? returnTile((decimal, decimal) point)
+        public Tile? returnTile((decimal, decimal) point)   //I wonder if there is any reason to keep it decimal instead of int
         {
             foreach (var tile in MapObject)
             {
@@ -40,6 +41,19 @@ namespace SRPG_library
                     return tile;
             }
             return null;
+        }
+
+        public void placeActor(Actors actor, int column, int row)
+        {
+            if (MapObject[column -1, row -1].ActorStandsHere != null)
+            {
+                Debug.WriteLine($"There is already an actor standing on ({column},{row}) hence {actor.Name} can't be planted");
+                return;
+            }
+            actor.Column = column;
+            actor.Row = row;
+            MapObject[column -1, row -1].ActorStandsHere = actor;
+            return;
         }
 
         public override string ToString()

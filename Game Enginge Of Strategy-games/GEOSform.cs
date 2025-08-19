@@ -42,7 +42,7 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map2.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map1010.json");
             TileMap map = JsonSerializer.Deserialize<TileMap>(mapjson);
 
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
@@ -183,42 +183,14 @@ namespace Game_Enginge_Of_Strategy_games
                         g.DrawImage(Image.FromFile(Tile.ActorStandsHere.Image), screenPos.Item1, screenPos.Item2, size, size);
                 }
             }
-
-            if (tileUnderCursor != null)
-            {
-                SolidBrush brush = new SolidBrush(Color.FromArgb(60, Color.Cyan));
-                UIManager.highlightTile(tileUnderCursor.Column, tileUnderCursor.Row, brush, g);
-            }
             #endregion
 
-            //actor hitboxes
-            /*
-            playerTiles = new (actors, Rectangle)[Match.PlayerTeam.Length];
-            enemyTiles = new (actors, Rectangle)[Match.EnemyTeam.Length];
-            int counter = 0;
-            foreach (actors act in Match.PlayerTeam)
+            //highlight tile under cursor
+            if (tileUnderCursor != null)
             {
-                float worldX = act.MapPosition.Item1 * CameraManager.TileSize;
-                float worldY = act.MapPosition.Item2 * CameraManager.TileSize;
-                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
-                float size = CameraManager.TileSize * CameraManager.Zoom;
-
-                playerTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
-                counter++;
+                SolidBrush brush = new(Color.FromArgb(60, Color.Cyan));
+                UIManager.highlightTile(tileUnderCursor.Column, tileUnderCursor.Row, brush, g);
             }
-
-            counter = 0;
-            foreach (actors act in Match.EnemyTeam)
-            {
-                float worldX = act.MapPosition.Item1 * CameraManager.TileSize;
-                float worldY = act.MapPosition.Item2 * CameraManager.TileSize;
-                (float, float) screenPos = CameraManager.WorldToScreen(worldX, worldY);
-                float size = CameraManager.TileSize * CameraManager.Zoom;
-
-                enemyTiles[counter] = (act, new Rectangle((int)screenPos.Item1, (int)screenPos.Item2, (int)size, (int)size));
-                counter++;
-            }
-            */
         }
 
         #region Camera
@@ -238,19 +210,17 @@ namespace Game_Enginge_Of_Strategy_games
                 Invalidate();
             }
 
-            (decimal, decimal) currentTile = CameraManager.ScreenToTile(e.X, e.Y);
-            if (match.Map.returnTile(currentTile) != null)
+            if (CameraManager.ReturnTileUnderCursor(e.Location, match.Map) != null)
             {
                 tileUnderCursor = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
             }
             else
                 tileUnderCursor = null;
-
             Invalidate();
 
-                //debugging
-                mouseCoordinates.Text = e.Location.ToString();
-            tileCoords.Text = $"old: {CameraManager.ScreenToTile(e.X, e.Y)}, new: {CameraManager.ReturnTileUnderCursor(e.Location, match.Map)}";
+            //debugging
+            mouseCoordinates.Text = e.Location.ToString();
+            tileCoords.Text = CameraManager.ReturnTileUnderCursor(e.Location, match.Map)?.ToString();
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)
@@ -268,38 +238,6 @@ namespace Game_Enginge_Of_Strategy_games
             Invalidate();
         }
 
-        private void GEOSform_MouseDown(object sender, MouseEventArgs e)
-        {
-            dragStart = e.Location;
-
-            if (clickedOnPlayerCharacter(e.Location) == null)
-            {
-                isDragging = true;
-                dragStart = e.Location;
-            }
-
-            if (clickedOnPlayerCharacter(e.Location) != null)
-            {
-                clickedOnPlayerLabel.Text = $"You have just clicked on {clickedOnPlayerCharacter(e.Location).Name}";
-                UIManager.OpenNewPlayerCharacterActionPanel(this, clickedOnPlayerCharacter(e.Location), e.Location);
-
-            }
-
-            if (clickedOnEnemyCharacter(e.Location) != null)
-            {
-                clickedOnPlayerLabel.Text = $"You have cilcked on an enemy, {clickedOnEnemyCharacter(e.Location).Name}";
-            }
-
-            //debug
-            tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
-            tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
-        }
-
-        private void GEOSform_MouseUp(object sender, MouseEventArgs e)
-        {
-            isDragging = false;
-        }
-
         private void xScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
             CameraManager.OffsetX = xScrollBar.Value;
@@ -314,12 +252,46 @@ namespace Game_Enginge_Of_Strategy_games
         #endregion
 
         #region Mouse events
-        private Actors clickedOnPlayerCharacter(Point mousePosition)  //checking if you are trying to drag on the player
+        private void GEOSform_MouseDown(object sender, MouseEventArgs e)
         {
-            if (match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere != null)
+            dragStart = e.Location;
+
+            if (clickedOnPlayerCharacter(e.Location) == null)
             {
-                actorMoveToRelativeMapPosition(match.Map.MapObject, match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere, 2, 2);
-                ////return match.Map.returnTile(CameraManager.ScreenToTile(mousePosition))?.ActorStandsHere;
+                isDragging = true;
+                dragStart = e.Location;
+            }
+
+            if (clickedOnPlayerCharacter(e.Location) != null)
+            {
+                UIManager.OpenNewPlayerCharacterActionPanel(this, clickedOnPlayerCharacter(e.Location), e.Location, match.Map);
+
+                //debug
+                clickedOnPlayerLabel.Text = $"You have just clicked on {clickedOnPlayerCharacter(e.Location).Name}";
+            }
+
+            if (clickedOnEnemyCharacter(e.Location) != null)
+            {
+
+                //debug
+                clickedOnPlayerLabel.Text = $"You have cilcked on an enemy, {clickedOnEnemyCharacter(e.Location).Name}";
+            }
+
+            //debug
+            tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
+            tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
+        }
+
+        private void GEOSform_MouseUp(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
+        }
+
+        private Actors clickedOnPlayerCharacter(Point mousePosition)
+        {
+            if (CameraManager.ReturnTileUnderCursor(mousePosition, match.Map)?.ActorStandsHere != null)
+            {
+                return CameraManager.ReturnTileUnderCursor(mousePosition, match.Map)?.ActorStandsHere;
             }
             return null;
         }
@@ -333,22 +305,25 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            List<SingleAction> actlist = new List<SingleAction>();
+            actorMovement actmove = new();
+            actlist.Add(actmove);
+
+            Actors act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 1, 1, actlist);
+            match.Map.placeActor(act, 1, 1);
         }
 
         //To the events
-        public void actorMoveToRelativeMapPosition(Tile[,] mapObject, Actors actor, int addCol, int addRow)
-        {
-            Debug.WriteLine($"column: {actor.Column}, row: {actor.Row}, mapObject length: {mapObject.Length}");
+        //public void actorMoveToRelativeMapPosition(Tile[,] mapObject, Actors actor, int addCol, int addRow)
+        //{
+        //    if (mapObject[actor.Column - 1, actor.Row - 1].ActorStandsHere == actor)
+        //        mapObject[actor.Column - 1, actor.Row - 1].ActorStandsHere = null;
 
-            //if (mapObject[actor.Column, actor.Row].ActorStandsHere == actor)
-            //    mapObject[actor.Column, actor.Row].ActorStandsHere = null;
+        //    actor.Column += addCol;
+        //    actor.Row += addRow;
 
-            //actor.Column += addCol;
-            //actor.Row += addRow;
+        //    mapObject[actor.Column - 1, actor.Row - 1].ActorStandsHere = actor;
 
-            //mapObject[actor.Column, actor.Row].ActorStandsHere = actor;
-                
-        }
+        //}
     }
 }

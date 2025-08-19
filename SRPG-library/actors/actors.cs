@@ -17,17 +17,17 @@ namespace SRPG_library
         public int MaxHP { get; set; }
         private int column;
         private int row;
-        //public List<characterActions> ActionSet { get; set; }   //recently added, need to update the character creator and json reader
+        public List<SingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
 
         [JsonConstructor]
-        public Actors(string Name, string Image, int MaxHP, int Column, int Row/*, List<characterActions> ActionSet*/)
+        public Actors(string Name, string Image, int MaxHP, int Column, int Row, List<SingleAction> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;
             this.MaxHP = MaxHP;
             column = Column;    //The actor objects in the JSONs are already 1 indexed, so we don't want the capital Column/Row fields to offset them again
             row = Row;
-            //this.ActionSet = ActionSet;
+            this.ActionSet = ActionSet;
         }
         public Actors(Tile tile)
         {

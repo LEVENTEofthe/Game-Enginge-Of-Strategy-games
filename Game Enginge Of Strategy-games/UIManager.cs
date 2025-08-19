@@ -9,6 +9,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -26,13 +27,13 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actors actor, Point location)
+        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actors actor, Point location, TileMap map)
         {
             ClosePlayerCharacterActionPanel(parentForm);
 
             Panel panel = new Panel //I wonder if we could make a built in customizable panel creator. Let's not linger on it yet, but it sure would be nice in the future
             {
-                Size = new Size(200, 100),
+                Size = new Size(210, 160),
                 BackColor = Color.FromArgb(205, 127, 50),
                 Location = location,
                 Visible = true
@@ -40,16 +41,25 @@ namespace Game_Enginge_Of_Strategy_games
 
             currentActorActionPanel = panel;
 
-            TextBox nameText = new TextBox { Text = $"{actor.Name}", Location = new Point(5, 5), Size = new Size(90, 30) };
+            TextBox nameText = new TextBox { Text = $"{actor.Name}", Location = new Point(5, 5), Size = new(90, 30) };
             currentActorActionPanel.Controls.Add(nameText);
 
-            Point point = new(5, 30);
-            //foreach (var i in actor.ActionSet)
-            //{
-            //    Button btn = new Button { Text = i.Name, Location = point, Size = new(90, 27)};
-            //    point.Y += 25;
-            //    currentActorActionPanel.Controls.Add(btn);
-            //}
+            NumericUpDown MoveCol = new NumericUpDown { Location = new Point(100, 5), Size = new(90, 30), Value = 2 };
+            NumericUpDown MoveRow = new NumericUpDown { Location = new Point(100, 32), Size = new(90, 30), Value = 5 };
+            currentActorActionPanel.Controls.Add(MoveCol);
+            currentActorActionPanel.Controls.Add(MoveRow);
+
+            Point point = new(5, 32);
+
+            ActionContext moveActContext = new(actor, map, null, (MoveCol.Value, MoveRow.Value));
+
+            foreach (var i in actor.ActionSet)
+            {
+                Button btn = new Button { Text = i.ID, Location = point, Size = new(90, 27) };
+                btn.Click += (sender, e) => i.Execute(moveActContext);
+                currentActorActionPanel.Controls.Add(btn);
+                point.Y += 25;
+            }
 
             parentForm.Controls.Add(currentActorActionPanel);
             

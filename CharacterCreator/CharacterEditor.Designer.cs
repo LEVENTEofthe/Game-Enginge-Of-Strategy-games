@@ -35,6 +35,7 @@
             importPicBtn = new Button();
             exportBtn = new Button();
             HPNumupdown = new NumericUpDown();
+            actorActions = new CheckedListBox();
             ((System.ComponentModel.ISupportInitialize)characterImagePicbox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)HPNumupdown).BeginInit();
             SuspendLayout();
@@ -99,11 +100,21 @@
             HPNumupdown.Size = new Size(125, 27);
             HPNumupdown.TabIndex = 10;
             // 
+            // actorActions
+            // 
+            actorActions.FormattingEnabled = true;
+            actorActions.Location = new Point(170, 12);
+            actorActions.Name = "actorActions";
+            actorActions.Size = new Size(150, 114);
+            actorActions.TabIndex = 12;
+            actorActions.ItemCheck += actorActions_ItemCheck;
+            // 
             // CharacterEditor
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(actorActions);
             Controls.Add(HPNumupdown);
             Controls.Add(exportBtn);
             Controls.Add(importPicBtn);
@@ -128,5 +139,7 @@
         private Button importPicBtn;
         private Button exportBtn;
         private NumericUpDown HPNumupdown;
+        private ListBox listBox1;
+        private CheckedListBox actorActions;
     }
 }
