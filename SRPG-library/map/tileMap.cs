@@ -52,7 +52,7 @@ namespace SRPG_library
             }
             actor.Column = column;
             actor.Row = row;
-            MapObject[column -1, row -1].ActorStandsHere = actor;
+            MapObject[actor.columnIndex, actor.rowIndex].ActorStandsHere = actor;
             return;
         }
 

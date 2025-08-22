@@ -27,7 +27,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actors actor, Point location, TileMap map)
+        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actors actor, Point location, TileMap map, List<Button> buttons)
         {
             ClosePlayerCharacterActionPanel(parentForm);
 
@@ -44,20 +44,12 @@ namespace Game_Enginge_Of_Strategy_games
             TextBox nameText = new TextBox { Text = $"{actor.Name}", Location = new Point(5, 5), Size = new(90, 30) };
             currentActorActionPanel.Controls.Add(nameText);
 
-            NumericUpDown MoveCol = new NumericUpDown { Location = new Point(100, 5), Size = new(90, 30), Value = 2 };
-            NumericUpDown MoveRow = new NumericUpDown { Location = new Point(100, 32), Size = new(90, 30), Value = 5 };
-            currentActorActionPanel.Controls.Add(MoveCol);
-            currentActorActionPanel.Controls.Add(MoveRow);
-
             Point point = new(5, 32);
 
-            ActionContext moveActContext = new(actor, map, null, (MoveCol.Value, MoveRow.Value));
-
-            foreach (var i in actor.ActionSet)
+            foreach (Button button in buttons)
             {
-                Button btn = new Button { Text = i.ID, Location = point, Size = new(90, 27) };
-                btn.Click += (sender, e) => i.Execute(moveActContext);
-                currentActorActionPanel.Controls.Add(btn);
+                button.Location = point;
+                currentActorActionPanel.Controls.Add(button);
                 point.Y += 25;
             }
 

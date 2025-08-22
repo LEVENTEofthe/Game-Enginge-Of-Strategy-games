@@ -46,6 +46,17 @@ namespace SRPG_library
             set { row = value + 1; }
         }
 
+        public int columnIndex      //The columns/rows are one-indexed, but since C# arrays are zero-indexed, we'd need an instance of Zero-indexed columns&rows
+        {
+            get { return Column - 1; }
+            set { Column = value + 1; }
+        }
+        public int rowIndex
+        {
+            get { return Row - 1; }
+            set { Row = value + 1; }
+        }
+
         public (int, int) returnTilePosition()
         {
             return (column, row);

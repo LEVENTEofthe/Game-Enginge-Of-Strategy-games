@@ -15,18 +15,21 @@ namespace SRPG_library
         public string Name { get; set; }
         public string Image { get; set; }   //name of the image in GEOS data library/assets/actor textures
         public int MaxHP { get; set; }
-        private int column;
-        private int row;
+        public int Movement { get; set; }
+        //public int TurnSpeed { get; set; }
+        public int Column { get; set; }
+        public int Row { get; set; }
         public List<SingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
 
         [JsonConstructor]
-        public Actors(string Name, string Image, int MaxHP, int Column, int Row, List<SingleAction> ActionSet)
+        public Actors(string Name, string Image, int MaxHP, int Movement, int Column, int Row, List<SingleAction> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;
             this.MaxHP = MaxHP;
-            column = Column;    //The actor objects in the JSONs are already 1 indexed, so we don't want the capital Column/Row fields to offset them again
-            row = Row;
+            this.Movement = Movement;
+            this.Column = Column;
+            this.Row = Row;
             this.ActionSet = ActionSet;
         }
         public Actors(Tile tile)
@@ -34,28 +37,25 @@ namespace SRPG_library
             Name = tile.ActorStandsHere.Name;
             Image = tile.ActorStandsHere.Image;
             MaxHP = tile.ActorStandsHere.MaxHP;
-            Column = tile.ActorStandsHere.Column - 1;   //We are indexing the columns & rows from 1, but the computer does from 0, so we have to offset the indexing back
-            Row = tile.ActorStandsHere.Row - 1;
+            Column = tile.ActorStandsHere.Column;
+            Row = tile.ActorStandsHere.Row;
         }
         public Actors() { }
 
-        public int Column
+        public int columnIndex      //The columns/rows are one-indexed, but since C# arrays are zero-indexed, we'd need an instance of Zero-indexed columns&rows
         {
-            get { return column; }
-            set { column = value + 1; }     //+1 because the computer starts indexing from 0, but in the context of a game map, 1th column makes more sense than 0th column. But with this approach, in every code that uses user imput actors/tiles, we have to use -1 for their value.
+            get { return Column - 1; }
+            set { Column = value + 1; }    
         }
-        public int Row
+        public int rowIndex
         {
-            get { return row; }
-            set { row = value + 1; }
+            get { return Row - 1; }
+            set { Row = value + 1; }
         }
 
         public override string ToString()
         {
             return $"{Name}, Col: {Column}, Row: {Row}";
         }
-
-
-        
     }
 }

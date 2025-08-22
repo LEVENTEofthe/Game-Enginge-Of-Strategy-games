@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using SRPG_library;
 using System.Diagnostics.Tracing;
+using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -18,24 +19,23 @@ namespace Game_Enginge_Of_Strategy_games
         private (Actors, Rectangle)[] playerTiles;
         private (Actors, Rectangle)[] enemyTiles;
         Bitmap tilesetImage;
+        string actionToExecute = "";
+        ActionContext actionContext = new();
+        List<Tile> selectableActionTiles = new List<Tile>();
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
-        //private (int, int) tileUnderCursor;
         private Tile tileUnderCursor;
         private Match match;
         //private TileMap map;
-        //private List<actors> actorList;
-        private Actors player1;
-        private Actors player2;
-        private Actors player3;
-        private Actors enemy1;
-        private Actors enemy2;
         //UI
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
         #endregion
-
+        
+        //About the actor actions, what if we had/loaded in a default list of actions that might be used in the match, and when an actor would like to use them, they just call it by the ID and the rest is executed IDK how?
+        //We could have them in the Match class object, that would make sense since the actions are only used in matches. The question is, do we put all action logic in the match or we dynamically give them it somehow?
+        //As I currently see it, the action's context should be created insinde the GEOSform, cuz here you can reach both the SRPG-library and the UI manager. But it is gettin to spread to too many places.
 
         public GEOSform()
         {
@@ -48,6 +48,7 @@ namespace Game_Enginge_Of_Strategy_games
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             match = new(map);
+            actionContext.Map = match.Map;
 
             this.DoubleBuffered = true; // Makes drawing smoother
             this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event
@@ -188,8 +189,15 @@ namespace Game_Enginge_Of_Strategy_games
             //highlight tile under cursor
             if (tileUnderCursor != null)
             {
-                SolidBrush brush = new(Color.FromArgb(60, Color.Cyan));
-                UIManager.highlightTile(tileUnderCursor.Column, tileUnderCursor.Row, brush, g);
+                SolidBrush cursorBrush = new(Color.FromArgb(60, Color.Cyan));
+                UIManager.highlightTile(tileUnderCursor.Column, tileUnderCursor.Row, cursorBrush, g);
+            }
+
+            //highlight action tiles
+            SolidBrush eventBrush = new(Color.FromArgb(60, Color.Purple));
+            foreach (Tile tile in selectableActionTiles)
+            {
+                UIManager.highlightTile(tile, eventBrush, g);
             }
         }
 
@@ -264,10 +272,33 @@ namespace Game_Enginge_Of_Strategy_games
 
             if (clickedOnPlayerCharacter(e.Location) != null)
             {
-                UIManager.OpenNewPlayerCharacterActionPanel(this, clickedOnPlayerCharacter(e.Location), e.Location, match.Map);
+                List<Button> buttons = new List<Button>();
 
+                foreach (var i in clickedOnPlayerCharacter(e.Location).ActionSet)
+                {
+                    Button button = new Button { Name = i.ID, Text = i.ID, Size = new(90, 27) };
+                    button.Click += (s, ev) => 
+                    {
+                        actionToExecute = i.ID;
+                        ActionExecute(i.ID, match.Map, clickedOnPlayerCharacter(e.Location)); 
+                    };
+                    buttons.Add(button);
+                }
+
+                UIManager.OpenNewPlayerCharacterActionPanel(this, clickedOnPlayerCharacter(e.Location), e.Location, match.Map, buttons);
+                
                 //debug
                 clickedOnPlayerLabel.Text = $"You have just clicked on {clickedOnPlayerCharacter(e.Location).Name}";
+            }
+
+            if (selectableActionTiles.Contains(CameraManager.ReturnTileUnderCursor(e.Location, match.Map)))
+            {
+                actionContext.TargetTile = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
+                match.ActionToExecute.Execute(actionContext);
+                selectableActionTiles.Clear();
+                actionContext.Clear();
+                match.ActionToExecute = null;
+                UIManager.ClosePlayerCharacterActionPanel(this);
             }
 
             if (clickedOnEnemyCharacter(e.Location) != null)
@@ -303,14 +334,43 @@ namespace Game_Enginge_Of_Strategy_games
         }
         #endregion
 
+        public void ActionExecute(string actionID, TileMap map, Actors executor)
+        {
+            switch (actionID)
+            {
+                case "ActorMove":
+                    actionContext.User = executor;
+                    Tile origin = map.MapObject[executor.columnIndex, executor.rowIndex];
+
+                    for (int c = -executor.Movement; c <= executor.Movement; c++)
+                    {
+                        for (int r = -executor.Movement; r <= executor.Movement; r++)
+                        {
+                            if (Math.Abs(c) + Math.Abs(r) <= executor.Movement)
+                            {
+                                if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                                {
+                                    selectableActionTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                                }
+                            }
+                        }
+                        
+                    }
+                    match.ActionToExecute = new ActorMove();
+
+                    Invalidate();
+                    break;
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             List<SingleAction> actlist = new List<SingleAction>();
-            actorMovement actmove = new();
+            ActorMove actmove = new();
             actlist.Add(actmove);
 
-            Actors act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 1, 1, actlist);
-            match.Map.placeActor(act, 1, 1);
+            Actors act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 3, 1, 1, actlist);
+            match.Map.placeActor(act, 5, 5);
         }
 
         //To the events
