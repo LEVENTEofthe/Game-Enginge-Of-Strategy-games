@@ -42,11 +42,13 @@ namespace SRPG_library
         }
         public Actors() { }
 
+        [JsonIgnore]
         public int columnIndex      //The columns/rows are one-indexed, but since C# arrays are zero-indexed, we'd need an instance of Zero-indexed columns&rows
         {
             get { return Column - 1; }
             set { Column = value + 1; }    
         }
+        [JsonIgnore]
         public int rowIndex
         {
             get { return Row - 1; }

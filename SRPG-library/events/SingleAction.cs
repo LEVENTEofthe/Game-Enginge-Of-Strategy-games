@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SRPG_library
@@ -11,8 +12,14 @@ namespace SRPG_library
     public abstract class SingleAction  //The single blocks that when put together will form complex events
     {
         public abstract string ID { get; }
+        [JsonIgnore]
         public ActionContext ActionContext { get; }
         public abstract void Execute(ActionContext actionContext);
+
+        public override string ToString()
+        {
+            return ID;
+        }
     }
 
     public class ActorMove : SingleAction
@@ -73,9 +80,8 @@ namespace SRPG_library
         public Actors Actor {  get; private set; }
         public string ActorPool { get; private set; }
 
-        public actorChooser(string actorPool)
+        public actorChooser()
         {
-            ActorPool = actorPool;
 
         }
 

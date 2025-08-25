@@ -36,8 +36,11 @@
             exportBtn = new Button();
             HPNumupdown = new NumericUpDown();
             actorActions = new CheckedListBox();
+            MoveNumupdown = new NumericUpDown();
+            label3 = new Label();
             ((System.ComponentModel.ISupportInitialize)characterImagePicbox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)HPNumupdown).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)MoveNumupdown).BeginInit();
             SuspendLayout();
             // 
             // nameTextbox
@@ -67,7 +70,7 @@
             // 
             // characterImagePicbox
             // 
-            characterImagePicbox.Location = new Point(34, 183);
+            characterImagePicbox.Location = new Point(35, 245);
             characterImagePicbox.Name = "characterImagePicbox";
             characterImagePicbox.Size = new Size(73, 79);
             characterImagePicbox.TabIndex = 7;
@@ -75,7 +78,7 @@
             // 
             // importPicBtn
             // 
-            importPicBtn.Location = new Point(24, 148);
+            importPicBtn.Location = new Point(25, 210);
             importPicBtn.Name = "importPicBtn";
             importPicBtn.Size = new Size(94, 29);
             importPicBtn.TabIndex = 8;
@@ -107,13 +110,31 @@
             actorActions.Name = "actorActions";
             actorActions.Size = new Size(150, 114);
             actorActions.TabIndex = 12;
-            actorActions.ItemCheck += actorActions_ItemCheck;
+            // 
+            // MoveNumupdown
+            // 
+            MoveNumupdown.Location = new Point(12, 163);
+            MoveNumupdown.Name = "MoveNumupdown";
+            MoveNumupdown.Size = new Size(125, 27);
+            MoveNumupdown.TabIndex = 14;
+            MoveNumupdown.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(25, 140);
+            label3.Name = "label3";
+            label3.Size = new Size(105, 20);
+            label3.TabIndex = 13;
+            label3.Text = "Move distance";
             // 
             // CharacterEditor
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(MoveNumupdown);
+            Controls.Add(label3);
             Controls.Add(actorActions);
             Controls.Add(HPNumupdown);
             Controls.Add(exportBtn);
@@ -126,6 +147,7 @@
             Text = "Character Editor";
             ((System.ComponentModel.ISupportInitialize)characterImagePicbox).EndInit();
             ((System.ComponentModel.ISupportInitialize)HPNumupdown).EndInit();
+            ((System.ComponentModel.ISupportInitialize)MoveNumupdown).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -141,5 +163,7 @@
         private NumericUpDown HPNumupdown;
         private ListBox listBox1;
         private CheckedListBox actorActions;
+        private NumericUpDown MoveNumupdown;
+        private Label label3;
     }
 }

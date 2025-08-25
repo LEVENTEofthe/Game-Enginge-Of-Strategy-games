@@ -342,6 +342,7 @@ namespace Game_Enginge_Of_Strategy_games
                     actionContext.User = executor;
                     Tile origin = map.MapObject[executor.columnIndex, executor.rowIndex];
 
+                    //We'd want to implement a system for custom move pattens
                     for (int c = -executor.Movement; c <= executor.Movement; c++)
                     {
                         for (int r = -executor.Movement; r <= executor.Movement; r++)

@@ -11,7 +11,6 @@ namespace CharacterCreator
     {
         string characterImageSource;
         List<SingleAction?> EventList;
-        List<SingleAction> ImplementedActions = new List<SingleAction>();
         public CharacterEditor()
         {
             InitializeComponent();
@@ -73,7 +72,9 @@ namespace CharacterCreator
 
         private void exportChar(string filePath)
         {
-            Actors createdChara = new Actors(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), -1, -1, ImplementedActions);
+            List<SingleAction> ImplementedActions = actorActions.CheckedItems.OfType<SingleAction>().ToList();
+
+            Actors createdChara = new Actors(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), -1, -1, ImplementedActions);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(createdChara, options);
@@ -93,11 +94,6 @@ namespace CharacterCreator
             {
                 exportChar(sfd.FileName);
             }
-        }
-
-        private void actorActions_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-
         }
     }
 }
