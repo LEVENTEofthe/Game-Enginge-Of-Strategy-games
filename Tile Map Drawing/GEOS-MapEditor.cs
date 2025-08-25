@@ -106,9 +106,6 @@ namespace Tile_Map_Drawing
             return jagged;
         }
 
-        
-
-
 
         private void clickedInvalidateMapBtn(object sender, EventArgs e)
         {

@@ -103,7 +103,7 @@ namespace Tile_Map_Drawing
 
             if (errorList.Any())
             {
-                string errors = string.Join("\n", errorList);
+                string errors = string.Join("\n\n", errorList);
                 MessageBox.Show(
                             $"There were errors with the following files:\n\n{errors}",
                             "File Error",

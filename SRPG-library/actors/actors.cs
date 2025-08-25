@@ -57,7 +57,14 @@ namespace SRPG_library
 
         public override string ToString()
         {
-            return $"{Name}, Col: {Column}, Row: {Row}";
+            //return $"{Name}, Col: {Column}, Row: {Row}";
+            
+            List<string> list = new List<string>();
+            foreach (var item in ActionSet)
+            {
+                list.Add(item.ID);
+            }
+            return $"{Name}, {list}";
         }
     }
 }

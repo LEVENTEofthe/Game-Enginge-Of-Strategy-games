@@ -42,7 +42,7 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map1010.json");
+            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map3.json");
             TileMap map = JsonSerializer.Deserialize<TileMap>(mapjson);
 
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
@@ -228,7 +228,8 @@ namespace Game_Enginge_Of_Strategy_games
 
             //debugging
             mouseCoordinates.Text = e.Location.ToString();
-            tileCoords.Text = CameraManager.ReturnTileUnderCursor(e.Location, match.Map)?.ToString();
+            //tileCoords.Text = CameraManager.ReturnTileUnderCursor(e.Location, match.Map)?.ToString();
+            tileCoords.Text = CameraManager.ReturnTileUnderCursor(e.Location, match.Map)?.ActorStandsHere?.ToString();
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)

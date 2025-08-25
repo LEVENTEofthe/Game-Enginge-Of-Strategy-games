@@ -20,6 +20,9 @@ namespace SRPG_library
         {
             return ID;
         }
+
+        [JsonConstructorAttribute]
+        public SingleAction() { }
     }
 
     public class ActorMove : SingleAction
@@ -28,7 +31,6 @@ namespace SRPG_library
 
         public ActionContext ActionContext { get; set;}
 
-        public ActorMove() { }
 
         public override void Execute(ActionContext actionContext)
         {
@@ -80,10 +82,6 @@ namespace SRPG_library
         public Actors Actor {  get; private set; }
         public string ActorPool { get; private set; }
 
-        public actorChooser()
-        {
-
-        }
 
         public override void Execute(ActionContext actionContext)
         {
