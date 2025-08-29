@@ -19,10 +19,10 @@ namespace SRPG_library
         //public int TurnSpeed { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
-        public List<SingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
+        public List<string> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
 
         [JsonConstructor]
-        public Actors(string Name, string Image, int MaxHP, int Movement, int Column, int Row, List<SingleAction> ActionSet)
+        public Actors(string Name, string Image, int MaxHP, int Movement, int Column, int Row, List<string> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;
@@ -59,12 +59,7 @@ namespace SRPG_library
         {
             //return $"{Name}, Col: {Column}, Row: {Row}";
             
-            List<string> list = new List<string>();
-            foreach (var item in ActionSet)
-            {
-                list.Add(item.ID);
-            }
-            return $"{Name}, {list}";
+            return $"{Name}, {string.Join(", ", ActionSet)}";
         }
     }
 }

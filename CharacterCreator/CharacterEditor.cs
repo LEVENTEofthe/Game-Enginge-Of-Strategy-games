@@ -10,23 +10,13 @@ namespace CharacterCreator
     public partial class CharacterEditor : Form
     {
         string characterImageSource;
-        List<SingleAction?> EventList;
+        List<string> EventList = new();
         public CharacterEditor()
         {
             InitializeComponent();
 
-            Assembly asse = typeof(SingleAction).Assembly;
-
-            EventList = asse.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(SingleAction)) && !t.IsAbstract)
-                .Select(t => (SingleAction)Activator.CreateInstance(t))
-                .ToList();
-
-            Debug.WriteLine("SingleActions discovered: ");
-            foreach (var i in EventList)
-            {
-                Debug.WriteLine(i.ID);
-            }
+            //Until we figure out how character action/event stuff should work, let's just statically build the already implemented actions
+            EventList.Add("Move");
 
             foreach (var i in EventList)
             {
@@ -72,7 +62,7 @@ namespace CharacterCreator
 
         private void exportChar(string filePath)
         {
-            List<SingleAction> ImplementedActions = actorActions.CheckedItems.OfType<SingleAction>().ToList();
+            List<string> ImplementedActions = actorActions.CheckedItems.OfType<string>().ToList();
 
             Actors createdChara = new Actors(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), -1, -1, ImplementedActions);
 

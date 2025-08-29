@@ -6,8 +6,8 @@ using System.Diagnostics;
 
 namespace Tile_Map_Drawing
 {
-    public partial class TileMapEditor : Form
-    {
+    public partial class TileMapEditor : Form   //We'd need to implement that actors are not hardcoded into the map, but hold as references. Meaning, if I put actor A into a tile in a map, that tile wouldn't statically have all of actor A's data, but a reference to their JSON. Meaning, if I were to edit actor A's JSON file later, their data on the map would not needed to be updated. Holding the actors statically wouldn't work anyway cuz you couldn't have stuff like leveling up
+    { 
         #region submenu instances
         private Top_PropertiesUC topPropertiesRibbon;
         private int mapColumns = 2;

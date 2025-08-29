@@ -10,7 +10,7 @@ namespace SRPG_library
     {
         public abstract string Id { get; }
         public abstract string Description { get; }
-        public abstract List<SingleAction> Commands { get; }
+        public abstract List<string> Commands { get; }
         //Maybe we might want to differentiate tile and other types of events?
 
         public abstract void Trigger();

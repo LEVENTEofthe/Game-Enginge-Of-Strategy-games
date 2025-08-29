@@ -12,18 +12,18 @@ namespace Game_Enginge_Of_Strategy_games
     {
         public TileMap Map { get; set; }
         public Actors[] PlayerTeam { get; set; }
-        public List<SingleAction> ExecutableActions { get; set; }
-        public SingleAction ActionToExecute {  get; set; }
+        //public List<SingleAction> ExecutableActions { get; set; }
+        public string ActionToExecute {  get; set; }
         public Match(TileMap map)
         {
             Map = map;
 
             //For now  I'll just try loading in all possible actions statically. Would be better if we didn't have to come here every time to put them here when we create a new SingleAction
-            ActorMove actorMovement = new ActorMove();
-            ExecutableActions = new List<SingleAction>
-            {
-                actorMovement
-            };
+            //ActorMove actorMovement = new ActorMove();
+            //ExecutableActions = new List<SingleAction>
+            //{
+            //    actorMovement
+            //};
         }
     }
 }
