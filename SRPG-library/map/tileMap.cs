@@ -30,7 +30,7 @@ namespace SRPG_library
                     if (TileData[r][c].ActorStandsHere == null)
                         MapObject[c, r] = new Tile(c, r, TileData[r][c].TilesetIndex, null, TileData[r][c].Event);
                     else
-                        MapObject[c, r] = new Tile(c, r, TileData[r][c].TilesetIndex, TileData[r][c].ActorStandsHere = new Actors(TileData[r][c]), TileData[r][c].Event);
+                        MapObject[c, r] = new Tile(c, r, TileData[r][c].TilesetIndex, TileData[r][c].ActorStandsHere = new Actor(TileData[r][c]), TileData[r][c].Event);
         }
 
         public Tile? returnTile((decimal, decimal) point)   //I wonder if there is any reason to keep it decimal instead of int
@@ -43,7 +43,7 @@ namespace SRPG_library
             return null;
         }
 
-        public void placeActor(Actors actor, int column, int row)
+        public void placeActor(Actor actor, int column, int row)
         {
             if (MapObject[column -1, row -1].ActorStandsHere != null)
             {

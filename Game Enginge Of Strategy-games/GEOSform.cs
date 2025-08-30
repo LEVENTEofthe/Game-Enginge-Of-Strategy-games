@@ -7,20 +7,15 @@ using System.Text.Json;
 using System.Windows.Forms;
 using SRPG_library;
 using System.Diagnostics.Tracing;
-using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
-    public partial class GEOSform : Form
+    public partial class GEOSform : Form        //I would like to implement a gamerules thing that contains how the basic systems of the game program would behave. Using it, the users could edit things like topdown or isometric perspective, when is the camera draggable and when is not, stuff like that which might differ from game to game but would usually stay the same through the entire game (but I would still allow them to be edited midgame)
     {
         #region System variables
         //System variables
         private int tilesetSize = 16;   //the dimension of a single tile in the tileset image, in pixels
-        private (Actors, Rectangle)[] playerTiles;
-        private (Actors, Rectangle)[] enemyTiles;
         Bitmap tilesetImage;
-        ActionContext actionContext = new();
-        //List<Tile> selectableActionTiles = new List<Tile>();    //I wonder if I should transfer this to ActionContext
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
@@ -50,7 +45,6 @@ namespace Game_Enginge_Of_Strategy_games
             EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
             match = new(map);
-            actionContext.Map = match.Map;
 
             this.DoubleBuffered = true; // Makes drawing smoother
             this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event
@@ -81,9 +75,9 @@ namespace Game_Enginge_Of_Strategy_games
             #endregion
         }
 
-        public static List<Actors> ImportActors(string folderpath)  //Is this even useful?
+        public static List<Actor> ImportActors(string folderpath)  //Is this even useful?
         {
-            List<Actors> redActors = new List<Actors>();
+            List<Actor> redActors = new List<Actor>();
 
             if (!Directory.Exists(folderpath))
             {
@@ -101,7 +95,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     string json = File.ReadAllText(file);
-                    Actors? deserialized = JsonSerializer.Deserialize<Actors>(json);
+                    Actor? deserialized = JsonSerializer.Deserialize<Actor>(json);
 
                     if (deserialized != null)
                     {
@@ -121,9 +115,9 @@ namespace Game_Enginge_Of_Strategy_games
             return redActors;
         }
 
-        public static List<Actors> LoadActorsToMatch(IEnumerable<string> actorsFilePath, Match match)   //Is this even useful?
+        public static List<Actor> LoadActorsToMatch(IEnumerable<string> actorsFilePath, Match match)   //Is this even useful?
         {
-            var roster = new List<Actors>(capacity: match.PlayerTeam.Length);
+            var roster = new List<Actor>(capacity: match.PlayerTeam.Length);
 
             foreach (string path in actorsFilePath.Take(match.PlayerTeam.Length))
             {
@@ -135,7 +129,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     var json = File.ReadAllText(path);
-                    var actor = JsonSerializer.Deserialize<Actors>(json);
+                    var actor = JsonSerializer.Deserialize<Actor>(json);
 
                     if (actor == null)
                     {
@@ -204,10 +198,11 @@ namespace Game_Enginge_Of_Strategy_games
 
             //highlight action tiles
             SolidBrush eventBrush = new(Color.FromArgb(60, Color.Purple));
-            foreach (Tile tile in actionContext.SelectableTargetTiles)
+            foreach (Tile tile in match.SelectableTargetTiles)
             {
                 UIManager.highlightTile(tile, eventBrush, g);
             }
+
         }
 
         #region Camera
@@ -272,55 +267,69 @@ namespace Game_Enginge_Of_Strategy_games
         #region Mouse events
         private void GEOSform_MouseDown(object sender, MouseEventArgs e)
         {
+            isDragging = true;
             dragStart = e.Location;
 
-            if (clickedOnPlayerCharacter(e.Location) == null)
+            if (match.SelectedAction != null) //Action execute phrase
             {
-                isDragging = true;
-                dragStart = e.Location;
+                Tile clickedTile = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
+
+                if (match.SelectableTargetTiles.Contains(clickedTile))
+                {
+                    match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
+
+                    match.SelectedAction = null;
+                    match.SelectedActor = null;
+                    match.SelectableTargetTiles.Clear();
+
+                    UIManager.ClosePlayerCharacterActionPanel(this);
+                }
             }
 
-            if (clickedOnPlayerCharacter(e.Location) != null)
+            else    //Everything else phrase
             {
-                List<Button> buttons = new List<Button>();
+                
+                Actor clickedActor = clickedOnPlayerCharacter(e.Location);
 
-                foreach (var i in clickedOnPlayerCharacter(e.Location).ActionSet)
+                if (clickedActor == null)
                 {
-                    Button button = new Button { Name = i, Text = i, Size = new(90, 27) };
-                    button.Click += (s, ev) => 
-                    {
-                        match.ActionToExecute = i;
-                        ActionExecute(i, match.Map, clickedOnPlayerCharacter(e.Location)); 
-                    };
-                    buttons.Add(button);
+                    //isDragging = true;
+                    //dragStart = e.Location;
                 }
 
-                UIManager.OpenNewPlayerCharacterActionPanel(this, clickedOnPlayerCharacter(e.Location), e.Location, match.Map, buttons);
-                
+                if (clickedActor != null)
+                {
+                    List<Button> buttons = new List<Button>();
+
+                    foreach (var i in clickedActor.ActionSet)
+                    {
+                        Button button = new Button { Name = i.ID, Text = i.ID, Size = new(90, 27) };
+                        button.Click += (s, ev) =>
+                        {
+                            match.ExecuteSelectedAction(i, clickedActor);
+                            ////match.SelectedAction = i;
+                            ////ActionExecute(i, match.Map, clickedActor); 
+                        };
+                        buttons.Add(button);
+                    }
+
+                    UIManager.OpenNewPlayerCharacterActionPanel(this, clickedActor, e.Location, match.Map, buttons);
+
+                    //debug
+                    clickedOnPlayerLabel.Text = $"You have just clicked on {clickedActor.Name}";
+                }
+
+                if (clickedOnEnemyCharacter(e.Location) != null)
+                {
+
+                    //debug
+                    clickedOnPlayerLabel.Text = $"You have cilcked on an enemy, {clickedOnEnemyCharacter(e.Location).Name}";
+                }
+
                 //debug
-                clickedOnPlayerLabel.Text = $"You have just clicked on {clickedOnPlayerCharacter(e.Location).Name}";
+                tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
+                tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
             }
-
-            if (actionContext.SelectableTargetTiles.Contains(CameraManager.ReturnTileUnderCursor(e.Location, match.Map)))
-            {
-                actionContext.TargetTile = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
-                SingleAction.Execute(match.ActionToExecute, actionContext);
-                actionContext.SelectableTargetTiles.Clear();
-                actionContext.Clear();
-                match.ActionToExecute = null;
-                UIManager.ClosePlayerCharacterActionPanel(this);
-            }
-
-            if (clickedOnEnemyCharacter(e.Location) != null)
-            {
-
-                //debug
-                clickedOnPlayerLabel.Text = $"You have cilcked on an enemy, {clickedOnEnemyCharacter(e.Location).Name}";
-            }
-
-            //debug
-            tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
-            tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
         }
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
@@ -328,7 +337,7 @@ namespace Game_Enginge_Of_Strategy_games
             isDragging = false;
         }
 
-        private Actors clickedOnPlayerCharacter(Point mousePosition)
+        private Actor clickedOnPlayerCharacter(Point mousePosition)
         {
             if (CameraManager.ReturnTileUnderCursor(mousePosition, match.Map)?.ActorStandsHere != null)
             {
@@ -337,62 +346,19 @@ namespace Game_Enginge_Of_Strategy_games
             return null;
         }
 
-        private Actors clickedOnEnemyCharacter(Point mousePosition)
+        private Actor clickedOnEnemyCharacter(Point mousePosition)
         {
 
             return null;
         }
         #endregion
 
-        public void ActionExecute(string actionID, TileMap map, Actors executor)
-        {
-            switch (actionID)
-            {
-                case "Move":
-                    actionContext.User = executor;
-                    Tile origin = map.MapObject[executor.columnIndex, executor.rowIndex];
-
-                    //We'd want to implement a system for custom move pattens
-                    for (int c = -executor.Movement; c <= executor.Movement; c++)
-                    {
-                        for (int r = -executor.Movement; r <= executor.Movement; r++)
-                        {
-                            if (Math.Abs(c) + Math.Abs(r) <= executor.Movement)
-                            {
-                                if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
-                                {
-                                    actionContext.SelectableTargetTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
-                                }
-                            }
-                        }
-                        
-                    }
-                    match.ActionToExecute = "Move";
-
-                    Invalidate();
-                    break;
-            }
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            List<string> actlist = new List<string> { "Move" };
+            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction() };
 
-            Actors act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 3, 1, 1, actlist);
+            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 3, 1, 1, actlist);
             match.Map.placeActor(act, 5, 5);
         }
-
-        //To the events
-        //public void actorMoveToRelativeMapPosition(Tile[,] mapObject, Actors actor, int addCol, int addRow)
-        //{
-        //    if (mapObject[actor.Column - 1, actor.Row - 1].ActorStandsHere == actor)
-        //        mapObject[actor.Column - 1, actor.Row - 1].ActorStandsHere = null;
-
-        //    actor.Column += addCol;
-        //    actor.Row += addRow;
-
-        //    mapObject[actor.Column - 1, actor.Row - 1].ActorStandsHere = actor;
-
-        //}
     }
 }

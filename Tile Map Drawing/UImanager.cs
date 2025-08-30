@@ -19,7 +19,7 @@ namespace Tile_Map_Drawing
     public static class UImanager   //For the map drawing
     {
         #region Actor chooser
-        public static Actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
+        public static Actor ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
         {
             int index = -1;
             var form = new Form
@@ -66,9 +66,9 @@ namespace Tile_Map_Drawing
             return null;
         }
 
-        public static List<Actors> LoadActorChooserData(string jsonFolderPath)
+        public static List<Actor> LoadActorChooserData(string jsonFolderPath)
         {
-            var actorJsonsList = new List<Actors>();
+            var actorJsonsList = new List<Actor>();
             var files = Directory.GetFiles(jsonFolderPath, "*.json");
 
             List<string> errorList = new List<string>();
@@ -85,7 +85,7 @@ namespace Tile_Map_Drawing
                         continue;
                     }
 
-                    var data = JsonSerializer.Deserialize<Actors>(json);
+                    var data = JsonSerializer.Deserialize<Actor>(json);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }
@@ -114,7 +114,7 @@ namespace Tile_Map_Drawing
             return actorJsonsList;
         }
 
-        public static Panel CreateActorCard(string imageFolderPath, Actors actorObject)
+        public static Panel CreateActorCard(string imageFolderPath, Actor actorObject)
         {
             var panel = new Panel
             {

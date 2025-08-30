@@ -64,7 +64,7 @@ namespace CharacterCreator
         {
             List<string> ImplementedActions = actorActions.CheckedItems.OfType<string>().ToList();
 
-            Actors createdChara = new Actors(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), -1, -1, ImplementedActions);
+            Actor createdChara = new Actor(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), -1, -1, ImplementedActions);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(createdChara, options);

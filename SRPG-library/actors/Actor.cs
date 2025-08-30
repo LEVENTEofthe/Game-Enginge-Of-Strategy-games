@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public class Actors
+    public class Actor
     {
         public string Name { get; set; }
         public string Image { get; set; }   //name of the image in GEOS data library/assets/actor textures
@@ -20,10 +20,10 @@ namespace SRPG_library
         //public int TurnSpeed { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
-        public List<string> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
+        public List<ISingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
 
         [JsonConstructor]
-        public Actors(string Name, string Image, int MaxHP, int Movement, int Column, int Row, List<string> ActionSet)
+        public Actor(string Name, string Image, int MaxHP, int Movement, int Column, int Row, List<ISingleAction> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;
@@ -33,7 +33,7 @@ namespace SRPG_library
             this.Row = Row;
             this.ActionSet = ActionSet;
         }
-        public Actors(Tile tile)
+        public Actor(Tile tile)
         {
             Name = tile.ActorStandsHere.Name;
             Image = tile.ActorStandsHere.Image;
@@ -41,7 +41,7 @@ namespace SRPG_library
             Column = tile.ActorStandsHere.Column;
             Row = tile.ActorStandsHere.Row;
         }
-        public Actors() { }
+        public Actor() { }
 
         [JsonIgnore]
         public int columnIndex      //The columns/rows are one-indexed, but since C# arrays are zero-indexed, we'd need an instance of Zero-indexed columns&rows

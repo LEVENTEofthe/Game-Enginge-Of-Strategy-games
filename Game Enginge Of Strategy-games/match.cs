@@ -11,12 +11,17 @@ namespace Game_Enginge_Of_Strategy_games
                         //But again, looking at it, this is useless right now because Player/Enemy teams seems to be outdated concepts and the Match class doesn't contribute anything else to the TileMap class. Another argument: A game contains many matches, but a match only contains one map, hence you could just say your game contains many maps, unless the Match class were to contribute someting.
     {
         public TileMap Map { get; set; }
-        public Actors[] PlayerTeam { get; set; }
+        public Actor[] PlayerTeam { get; set; }
         //public List<SingleAction> ExecutableActions { get; set; }
-        public string ActionToExecute {  get; set; }
+        public ISingleAction SelectedAction {  get; set; }
+        public Actor SelectedActor { get; set; }
+        public List<Tile> SelectableTargetTiles {  get; set; }
+
         public Match(TileMap map)
         {
             Map = map;
+
+            SelectableTargetTiles = new List<Tile>();
 
             //For now  I'll just try loading in all possible actions statically. Would be better if we didn't have to come here every time to put them here when we create a new SingleAction
             //ActorMove actorMovement = new ActorMove();
@@ -24,6 +29,14 @@ namespace Game_Enginge_Of_Strategy_games
             //{
             //    actorMovement
             //};
+        }
+
+        public void ExecuteSelectedAction(ISingleAction action, Actor actor)
+        {
+            SelectedAction = action;
+            SelectedActor = actor;
+            SelectableTargetTiles = SelectedAction.GetSelectableTiles(Map, SelectedActor);
+
         }
     }
 }

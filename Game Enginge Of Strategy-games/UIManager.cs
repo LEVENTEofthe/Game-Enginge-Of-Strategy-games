@@ -9,7 +9,6 @@ using Microsoft.VisualBasic.ApplicationServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.Metadata;
 using System.Text.Json;
-using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -27,7 +26,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actors actor, Point location, TileMap map, List<Button> buttons)
+        public static void OpenNewPlayerCharacterActionPanel(Control parentForm, Actor actor, Point location, TileMap map, List<Button> buttons)
         {
             ClosePlayerCharacterActionPanel(parentForm);
 
@@ -76,7 +75,7 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         #region Actor chooser
-        public static Actors ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
+        public static Actor ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
         {
             int index = -1;
             var form = new Form
@@ -123,9 +122,9 @@ namespace Game_Enginge_Of_Strategy_games
             return null;
         }
 
-        public static List<Actors> LoadActorChooserData(string jsonFolderPath)
+        public static List<Actor> LoadActorChooserData(string jsonFolderPath)
         {
-            var actorJsonsList = new List<Actors>();
+            var actorJsonsList = new List<Actor>();
             var files = Directory.GetFiles(jsonFolderPath, "*.json");
 
             foreach (var file in files)
@@ -133,7 +132,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     string json = File.ReadAllText(file);
-                    var data = JsonSerializer.Deserialize<Actors>(json);
+                    var data = JsonSerializer.Deserialize<Actor>(json);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }
@@ -147,7 +146,7 @@ namespace Game_Enginge_Of_Strategy_games
             return actorJsonsList;
         }
 
-        public static Panel CreateActorCard(string imageFolderPath, Actors actorObject)
+        public static Panel CreateActorCard(string imageFolderPath, Actor actorObject)
         {
             var panel = new Panel
             {

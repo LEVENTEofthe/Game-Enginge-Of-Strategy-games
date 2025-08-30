@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public interface ICharacterActions
+    /*      //I think we doesn't even use this anymore
+    public interface ICharacterActions  
     {
         public string Name { get; }
         public string Description { get; }
 
-        public abstract void Execute(Actors user, ActionContext context);
+        public abstract void Execute(Actor user, ActionContext context);
 
         public bool canBeExecuted();
 
-        public virtual bool IsValidTarget(Actors target)
+        public virtual bool IsValidTarget(Actor target)
         {
             // Default to allowing any target
             return true;
@@ -24,6 +25,7 @@ namespace SRPG_library
 
         public void GetCost();
     }
+    */
 
     /*
     internal class characterMovement : characterActions

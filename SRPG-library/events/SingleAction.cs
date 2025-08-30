@@ -10,6 +10,58 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
+    public interface ISingleAction
+    {
+        string ID { get; }
+        List<Tile> GetSelectableTiles(TileMap map, Actor user);
+        void Execute(Actor User, object target, TileMap map);
+    }
+
+    public class MoveAction : ISingleAction
+    {
+        public string ID => "Move";
+        public List<Tile> GetSelectableTiles(TileMap map, Actor user)
+        {
+            List<Tile> selectableTiles = new List<Tile>();
+
+            Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
+
+            for (int c = -user.Movement; c <= user.Movement; c++)
+            {
+                for (int r = -user.Movement; r <= user.Movement; r++)
+                {
+                    if (Math.Abs(c) + Math.Abs(r) <= user.Movement)
+                    {
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        {
+                            selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                        }
+                    }
+                }
+            }
+            return selectableTiles;
+        }
+        public void Execute(Actor User, object target, TileMap map)
+        {
+            Tile targetTile = target as Tile;
+            
+            if (targetTile != null && targetTile.CanStepHere())
+            {
+                Tile currentTile = map.MapObject[User.columnIndex, User.rowIndex];
+                currentTile.ActorStandsHere = null;
+                User.Column = targetTile.Column;
+                User.Row = targetTile.Row;
+                targetTile.ActorStandsHere = User;
+            }
+            else
+            {
+                Debug.WriteLine($"You tried to step on the tile {targetTile} which is already occupied");
+            }
+        }
+    }
+
+
+    /*
     public static class SingleAction  //The single blocks that when put together will form complex events
     {
         public static void Execute(string ActionID, ActionContext actionContext)
@@ -36,22 +88,8 @@ namespace SRPG_library
             {
                 Debug.WriteLine($"You tried to step on the tile {actionContext.TargetTile} which is already occupied");
             }
-        }
-
-        public static void Attack(ActionContext actionContext)
-        {
-            actionContext.Target.MaxHP = actionContext.Target.MaxHP - actionContext.User.MaxHP; //.Attack
-        }
-
-        public static Actors ActorChooser(ActionContext actionContext)
-        {
-            return actionContext.Target;
-        }
-
-        public static void AttackSteal(ActionContext actionContext)
-        {
-            int attackValue = ActorChooser(actionContext).MaxHP;
-            actionContext.Target.MaxHP = actionContext.Target.MaxHP - attackValue;
+    
         }
     }
+    */
 }

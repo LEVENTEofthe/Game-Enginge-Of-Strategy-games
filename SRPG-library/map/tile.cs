@@ -15,11 +15,11 @@ namespace SRPG_library
         public string Event {  get; set; }              //Only stores the ID of Events
         public List<string> MoreEvents {  get; set; }   //In case of wanting multiple events on a single tile
         public TileInteractables MapObject { get; set; }        //Not sure we'd be needing map objects now that we have events.
-        public Actors ActorStandsHere { get; set; }
+        public Actor ActorStandsHere { get; set; }
         //public string[] Tags { get; set; }            //For variable things
 
         [JsonConstructor]
-        public Tile(int Column, int Row, int TilesetIndex, Actors ActorStandsHere, string Event)
+        public Tile(int Column, int Row, int TilesetIndex, Actor ActorStandsHere, string Event)
         {
             this.Column = Column;
             this.Row = Row;

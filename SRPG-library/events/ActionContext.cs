@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SRPG_library.events
 {
-    public class ActionContext
+    /*public class ActionContext
     {
         public Actors User { get; set; }
         public TileMap Map { get; set; }
@@ -30,4 +30,5 @@ namespace SRPG_library.events
                 SelectableTargetTiles.Clear();
         }
     }
+    */
 }
