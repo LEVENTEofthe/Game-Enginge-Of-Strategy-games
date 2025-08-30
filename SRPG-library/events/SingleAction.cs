@@ -22,22 +22,36 @@ namespace SRPG_library
             }
         }
 
-        public static void Move(ActionContext actionContext)
+        public static void Move(ActionContext actionContext) 
         {
             Tile currentTile = actionContext.Map.MapObject[actionContext.User.columnIndex, actionContext.User.rowIndex];
             if (actionContext.TargetTile != null && actionContext.TargetTile.CanStepHere())
             {
                 currentTile.ActorStandsHere = null;
-                Debug.WriteLine($"The actor on {currentTile} has already vanished");
                 actionContext.User.Column = actionContext.TargetTile.Column;
                 actionContext.User.Row = actionContext.TargetTile.Row;
                 actionContext.TargetTile.ActorStandsHere = actionContext.User;
-                Debug.WriteLine($"{actionContext.User} has appeared on the tile {actionContext.TargetTile}");
             }
             else
             {
                 Debug.WriteLine($"You tried to step on the tile {actionContext.TargetTile} which is already occupied");
             }
+        }
+
+        public static void Attack(ActionContext actionContext)
+        {
+            actionContext.Target.MaxHP = actionContext.Target.MaxHP - actionContext.User.MaxHP; //.Attack
+        }
+
+        public static Actors ActorChooser(ActionContext actionContext)
+        {
+            return actionContext.Target;
+        }
+
+        public static void AttackSteal(ActionContext actionContext)
+        {
+            int attackValue = ActorChooser(actionContext).MaxHP;
+            actionContext.Target.MaxHP = actionContext.Target.MaxHP - attackValue;
         }
     }
 }

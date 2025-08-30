@@ -7,7 +7,8 @@ using System.Diagnostics;
 namespace Tile_Map_Drawing
 {
     public partial class TileMapEditor : Form   //We'd need to implement that actors are not hardcoded into the map, but hold as references. Meaning, if I put actor A into a tile in a map, that tile wouldn't statically have all of actor A's data, but a reference to their JSON. Meaning, if I were to edit actor A's JSON file later, their data on the map would not needed to be updated. Holding the actors statically wouldn't work anyway cuz you couldn't have stuff like leveling up
-    { 
+    {                                           //But again, I'm not certain that harcoding the actors into the maps would be an issue. About leveling up, I'd imagine that this system would work as there being a class for it, and each actor would hold an object of it in one of it's field. This object holds what and how does change when the actor levels up. It would make it fine if the actor JSONs only held the base stats of the actor in question, becasue as a match starts, we'd have each actor's stats get up to date with this level manager class by storing the actor's level and extracting each upgrade up to that level just before the start of the game.
+                                                //And you would only ever place down an actor statically anyway if you are sure about their stats, and editing those stats will be so much easier once map importing becomes a thing.
         #region submenu instances
         private Top_PropertiesUC topPropertiesRibbon;
         private int mapColumns = 2;
@@ -74,7 +75,7 @@ namespace Tile_Map_Drawing
                         g.DrawImage(img, tileHitbox);
                     }
 
-                    if (mapData[x, y].ActorStandsHere != null)
+                    if (mapData[x, y].ActorStandsHere != null)      //About drawing the actors on the map, should we stick to this "ActorStandsHere is only a string value that is a referece to the JSON's name" solution, one thing I could imagine for optimalization is that all relevant actor images are retrieved from their files as the stuff starts up, so there won't be constant serialization stuff.
                         g.DrawImage(Image.FromFile(mapData[x, y].ActorStandsHere.Image), tileHitbox, src, GraphicsUnit.Pixel);
 
                     //If more than one item (like actor + event or more than one event) are on the same tile, the graphics should show that somehow. Like some red mark on the upper right corner

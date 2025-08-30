@@ -15,6 +15,7 @@ namespace SRPG_library
         public string Name { get; set; }
         public string Image { get; set; }   //name of the image in GEOS data library/assets/actor textures
         public int MaxHP { get; set; }
+        //public int Attack {  get; set; } 
         public int Movement { get; set; }
         //public int TurnSpeed { get; set; }
         public int Column { get; set; }

@@ -42,10 +42,12 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
 
-            string mapjson = File.ReadAllText("C:/Users/bakos/Documents/GEOS data library/database/maps/map3.json");
+            string mapjson = File.ReadAllText("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\maps\\map1010.json");
             TileMap map = JsonSerializer.Deserialize<TileMap>(mapjson);
 
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
+
+            EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
             match = new(map);
             actionContext.Map = match.Map;
@@ -180,6 +182,13 @@ namespace Game_Enginge_Of_Strategy_games
 
                     RectangleF tileHitbox = new RectangleF(screenPos.Item1, screenPos.Item2, size, size);
                     g.DrawImage(tilesetImage, tileHitbox, tilesetSrc, GraphicsUnit.Pixel);
+
+                    if (Tile.Event != null)
+                    {
+                        var img = EventGraphics.GetImage(Tile.Event);
+                        g.DrawImage(img, screenPos.Item1, screenPos.Item2, size, size);
+                    }
+
                     if (Tile.ActorStandsHere != null)
                         g.DrawImage(Image.FromFile(Tile.ActorStandsHere.Image), screenPos.Item1, screenPos.Item2, size, size);
                 }
