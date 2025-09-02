@@ -42,12 +42,14 @@ namespace Game_Enginge_Of_Strategy_games
 
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
-            EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
+            EventTileGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
             match = new(map);
 
+
+
             this.DoubleBuffered = true; // Makes drawing smoother
-            this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event
+            this.Paint += new PaintEventHandler(GEOSform_Paint);
             //moving the screen
             this.MouseWheel += GEOSform_MouseWheel;
             this.MouseDown += GEOSform_MouseDown;
@@ -60,7 +62,7 @@ namespace Game_Enginge_Of_Strategy_games
             yScrollBar.Size = new(26, 172);
             yScrollBar.Minimum = -100;
             yScrollBar.Maximum = 500;
-            yScrollBar.Value = 0;
+            yScrollBar.Value = Convert.ToInt32(CameraManager.OffsetY);
             this.Controls.Add(yScrollBar);
             yScrollBar.Scroll += yScrollBar_Scroll;
 
@@ -69,7 +71,7 @@ namespace Game_Enginge_Of_Strategy_games
             xScrollBar.Size = new(172, 26);
             xScrollBar.Minimum = -100;
             xScrollBar.Maximum = 500;
-            xScrollBar.Value = 0;
+            xScrollBar.Value = Convert.ToInt32(CameraManager.OffsetX);
             this.Controls.Add(xScrollBar);
             xScrollBar.Scroll += xScrollBar_Scroll;
             #endregion
@@ -179,7 +181,7 @@ namespace Game_Enginge_Of_Strategy_games
 
                     if (Tile.Event != null)
                     {
-                        var img = EventGraphics.GetImage(Tile.Event);
+                        var img = EventTileGraphics.GetImage(Tile.Event);
                         g.DrawImage(img, screenPos.Item1, screenPos.Item2, size, size);
                     }
 
@@ -197,7 +199,12 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //highlight action tiles
-            SolidBrush eventBrush = new(Color.FromArgb(60, Color.Purple));
+            Color highlight = Color.Transparent;
+            if (match.SelectedAction != null)
+            {
+                highlight = match.SelectedAction.SelectableTileColor;
+            }
+            SolidBrush eventBrush = new(highlight);
             foreach (Tile tile in match.SelectableTargetTiles)
             {
                 UIManager.highlightTile(tile, eventBrush, g);
@@ -288,7 +295,6 @@ namespace Game_Enginge_Of_Strategy_games
 
             else    //Everything else phrase
             {
-                
                 Actor clickedActor = clickedOnPlayerCharacter(e.Location);
 
                 if (clickedActor == null)
@@ -307,8 +313,7 @@ namespace Game_Enginge_Of_Strategy_games
                         button.Click += (s, ev) =>
                         {
                             match.ExecuteSelectedAction(i, clickedActor);
-                            ////match.SelectedAction = i;
-                            ////ActionExecute(i, match.Map, clickedActor); 
+                            Invalidate();
                         };
                         buttons.Add(button);
                     }
@@ -355,10 +360,12 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void button1_Click(object sender, EventArgs e)
         {
-            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction() };
+            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction() };
 
-            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 3, 1, 1, actlist);
+            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 4, 2, actlist);
             match.Map.placeActor(act, 5, 5);
+            Actor atkTarget = new("dummy", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 5, 3, 1, actlist);
+            match.Map.placeActor(atkTarget, 2, 2);
         }
     }
 }
