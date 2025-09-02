@@ -24,6 +24,13 @@ namespace SRPG_library.events
     
     public class EventActionLibrary
     {
-        private readonly Dictionary<string,  EventMethod> EventMethod;
+        private readonly Dictionary<string, EventMethod> EventMethods = new();
+
+        public void Register(EventMethod eventMethod)
+        {
+            EventMethods[eventMethod.ID] = eventMethod;
+        }
+
+        public EventMethod? Get(string id) => EventMethods.TryGetValue(id, out var desc) ? desc : null;
     }
 }

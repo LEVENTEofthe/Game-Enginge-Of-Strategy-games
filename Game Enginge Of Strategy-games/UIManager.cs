@@ -75,7 +75,7 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         #region Actor chooser
-        public static Actor ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors
+        public static Actor ActorChooser(string jsonFolderPath, string imageFolderPath)   //We should make it so it can't only deploy all actors, but can handle different pools of actors with filters
         {
             int index = -1;
             var form = new Form
