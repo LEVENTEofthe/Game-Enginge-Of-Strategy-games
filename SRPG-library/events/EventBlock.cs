@@ -6,31 +6,31 @@ using System.Threading.Tasks;
 
 namespace SRPG_library.events
 {
-    public class EventMethod
+    public class EventBlock
     {
         public string ID { get; }
         public Type InputType { get; }
         public Type OutputType { get; }
         public Func<Object?, Object?> Executor { get; }
 
-        public EventMethod(string iD, Type inputType, Type outputType, Func<object?, object?> executor)
+        public EventBlock(string ID, Type inputType, Type outputType, Func<object?, object?> executor)
         {
-            ID = iD;
+            this.ID = ID;
             InputType = inputType;
             OutputType = outputType;
             Executor = executor;
         }
     }
     
-    public class EventActionLibrary
+    public class EventBlockPool
     {
-        private readonly Dictionary<string, EventMethod> EventMethods = new();
+        private readonly Dictionary<string, EventBlock> EventBlocks = new();
 
-        public void Register(EventMethod eventMethod)
+        public void Register(EventBlock eventBlck)
         {
-            EventMethods[eventMethod.ID] = eventMethod;
+            EventBlocks[eventBlck.ID] = eventBlck;
         }
 
-        public EventMethod? Get(string id) => EventMethods.TryGetValue(id, out var desc) ? desc : null;
+        public EventBlock? Get(string id) => EventBlocks.TryGetValue(id, out var desc) ? desc : null;
     }
 }

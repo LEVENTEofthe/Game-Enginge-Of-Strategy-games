@@ -18,7 +18,6 @@ namespace SRPG_library
         List<Tile> GetSelectableTiles(TileMap map, Actor user);
         
         void Execute(Actor User, object target, TileMap map);
-        
     }
 
     public class MoveAction : ISingleAction

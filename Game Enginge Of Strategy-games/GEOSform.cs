@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using SRPG_library;
 using System.Diagnostics.Tracing;
+using SRPG_library.events;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -16,6 +17,7 @@ namespace Game_Enginge_Of_Strategy_games
         //System variables
         private int tilesetSize = 16;   //the dimension of a single tile in the tileset image, in pixels
         Bitmap tilesetImage;
+        EventBlockPool eventBlockPool;
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
@@ -75,6 +77,12 @@ namespace Game_Enginge_Of_Strategy_games
             this.Controls.Add(xScrollBar);
             xScrollBar.Scroll += xScrollBar_Scroll;
             #endregion
+
+            //EventActions
+            var pool = new EventBlockPool();
+            eventBlockPool = new();
+            EventBlock a = new("actorChooser", typeof((string, string)), typeof(Actor), input => UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures"))
+            eventBlockPool.Register(a);
         }
 
         public static List<Actor> ImportActors(string folderpath)  //Is this even useful?
@@ -202,7 +210,7 @@ namespace Game_Enginge_Of_Strategy_games
             Color highlight = Color.Transparent;
             if (match.SelectedAction != null)
             {
-                highlight = match.SelectedAction.SelectableTileColor;
+                //highlight = match.SelectedAction.SelectableTileColor;
             }
             SolidBrush eventBrush = new(highlight);
             foreach (Tile tile in match.SelectableTargetTiles)
@@ -307,7 +315,7 @@ namespace Game_Enginge_Of_Strategy_games
                 {
                     List<Button> buttons = new List<Button>();
 
-                    foreach (var i in clickedActor.ActionSet)
+                    foreach (var i in clickedActor.actionSet)
                     {
                         Button button = new Button { Name = i.ID, Text = i.ID, Size = new(90, 27) };
                         button.Click += (s, ev) =>

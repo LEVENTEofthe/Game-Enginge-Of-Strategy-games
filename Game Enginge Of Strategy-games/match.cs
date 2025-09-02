@@ -13,7 +13,7 @@ namespace Game_Enginge_Of_Strategy_games
         public TileMap Map { get; set; }
         public Actor[] PlayerTeam { get; set; }
         //public List<SingleAction> ExecutableActions { get; set; }
-        public ISingleAction SelectedAction {  get; set; }
+        public ActionEvent SelectedAction {  get; set; }
         public Actor SelectedActor { get; set; }
         public List<Tile> SelectableTargetTiles {  get; set; }
 
@@ -31,12 +31,11 @@ namespace Game_Enginge_Of_Strategy_games
             //};
         }
 
-        public void ExecuteSelectedAction(ISingleAction action, Actor actor)
+        public void ExecuteSelectedAction(ActionEvent action, Actor actor)
         {
             SelectedAction = action;
             SelectedActor = actor;
-            SelectableTargetTiles = SelectedAction.GetSelectableTiles(Map, SelectedActor);
-
+            //SelectableTargetTiles = SelectedAction.GetSelectableTiles(Map, SelectedActor);
         }
     }
 }

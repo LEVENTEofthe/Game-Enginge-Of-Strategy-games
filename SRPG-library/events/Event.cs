@@ -11,13 +11,13 @@ namespace SRPG_library
     {
         public string ID { get; set; }
         public string Description { get; set; }
-        public List<string> Commands { get; set; }  //We are only storing the IDs of each command, because I would like to include UI function as well, and you can't put them into the class library.
+        public List<string> BlockIDs { get; set; }  //We are only storing the IDs of each command, because I would like to include UI function as well, and you can't put them into the class library.
 
-        public object? Execute(EventActionLibrary actions, object? initialInput = null)
+        public object? Execute(EventBlockPool actions, object? initialInput = null)
         {
             object? current = initialInput;
 
-            foreach (var commandID in Commands)
+            foreach (var commandID in BlockIDs)
             {
                 var method = actions.Get(commandID) ??
                     throw new InvalidOperationException($"The action {commandID} is not found");

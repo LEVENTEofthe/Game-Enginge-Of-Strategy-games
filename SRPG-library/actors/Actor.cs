@@ -21,17 +21,22 @@ namespace SRPG_library
         //public int TurnSpeed { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
-        public List<ISingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
 
+
+        //public List<ISingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
+        public List<ActionEvent> actionSet { get; set; }
+
+        
+        
         [JsonConstructor]
-        public Actor(string Name, string Image, int MaxHP, int Movement, int AttackRange, List<ISingleAction> ActionSet)
+        public Actor(string Name, string Image, int MaxHP, int Movement, int AttackRange, List<ActionEvent> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;
             this.HP = MaxHP;
             this.Movement = Movement;
             this.AttackRange = AttackRange;
-            this.ActionSet = ActionSet;
+            this.actionSet = ActionSet;
         }
         public Actor(Tile tile)
         {
@@ -42,7 +47,7 @@ namespace SRPG_library
             AttackRange = tile.ActorStandsHere.AttackRange;
             Column = tile.ActorStandsHere.Column;
             Row = tile.ActorStandsHere.Row;
-            ActionSet = tile.ActorStandsHere.ActionSet;
+            actionSet = tile.ActorStandsHere.actionSet;
         }
         public Actor() { }
 

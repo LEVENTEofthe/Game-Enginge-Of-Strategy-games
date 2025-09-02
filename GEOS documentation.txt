@@ -19,4 +19,14 @@ Each map consist of tiles, and each tile consist of the following:
  - ActorStandsHere, a reference[ ? ] to the actor who is occupying the tile. In case of no actor standing on the 
 
 
-MapObjects
+Actors:
+
+actions/events: Actor objects are able to hold multiple [Events] and execute them to alter the state of the match. These events are stored in the actor's [List<ActionEvent>] ActionSet field which is created along with the actor object.
+
+Events: Each [Event] is an user set line of [EventBlock]s that get executed in the set order upon execution. They are basically complex actions that make use of several small actions to create the desired effect. Since [Event] objects are to be stored and serialized into the actor JSON files, an [Event] object only stores the string ID of each [EventBlock] they implement instead of storing whole bodyies of code of the methods they represent.
+
+[EventBlock]s, at their core, are methods encapsulated into a class, for the Events are made up of pure methods that work together. 
+You can think of your [EventBlocks] as a list of mere string IDs existing on [ wherever I'll decide to put em ] and the only thing they know about themselves are their input and output types, but no body of code are assinged to them. When you load up the software or your game program, the class [EventBlockPool] statically assings a method (from either inside the SRPG-library or in the "Game Engin Of strategy-games" project) to the implemented [EventBlock]s. 
+
+[EventBlockPool] is a class that is located within "EventBlocks.cs". It works as a dictionary of EventBlock IDs and EventBlocks. The reason for it being a dictionary compared to a mere list of [EventBlock]s is to cheapen the cost of lookup with its [Get] method. An object of this class lives in your game program's code and on opening, it registers each method you'd like to use in your event as [EventBlock]s, stores them and is able to return any by simply refering to the ID of the [EventBlock] in question. This makes it very easy for the [Event] class to access the functions it'd like to execute.
+
