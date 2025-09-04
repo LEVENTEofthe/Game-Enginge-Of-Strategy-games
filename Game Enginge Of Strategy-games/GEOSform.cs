@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using SRPG_library;
 using System.Diagnostics.Tracing;
 using SRPG_library.events;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -22,12 +23,13 @@ namespace Game_Enginge_Of_Strategy_games
         private bool isDragging = false;
         private Point dragStart;
         private Tile tileUnderCursor;
+        List<(Tile, Color)> highlightedTiles = new List<(Tile, Color)>();
         private Match match;
         //UI
         private HScrollBar xScrollBar;
         private VScrollBar yScrollBar;
         #endregion
-        
+
         //About the actor actions, what if we had/loaded in a default list of actions that might be used in the match, and when an actor would like to use them, they just call it by the ID and the rest is executed IDK how?
         //We could have them in the Match class object, that would make sense since the actions are only used in matches. The question is, do we put all action logic in the match or we dynamically give them it somehow?
         //As I currently see it, the action's context should be created insinde the GEOSform, cuz here you can reach both the SRPG-library and the UI manager. But it is gettin to spread to too many places.
@@ -48,6 +50,7 @@ namespace Game_Enginge_Of_Strategy_games
 
             match = new(map);
 
+            eventBlockPool = new();
 
 
             this.DoubleBuffered = true; // Makes drawing smoother
@@ -77,12 +80,6 @@ namespace Game_Enginge_Of_Strategy_games
             this.Controls.Add(xScrollBar);
             xScrollBar.Scroll += xScrollBar_Scroll;
             #endregion
-
-            //EventActions
-            var pool = new EventBlockPool();
-            eventBlockPool = new();
-            EventBlock a = new("actorChooser", typeof((string, string)), typeof(Actor), input => UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures"))
-            eventBlockPool.Register(a);
         }
 
         public static List<Actor> ImportActors(string folderpath)  //Is this even useful?
@@ -218,6 +215,12 @@ namespace Game_Enginge_Of_Strategy_games
                 UIManager.highlightTile(tile, eventBrush, g);
             }
 
+            foreach ((Tile, Color) i in highlightedTiles)
+            {
+                SolidBrush highlighter = new(i.Item2);
+                UIManager.highlightTile(i.Item1, highlighter, g);
+            }
+
         }
 
         #region Camera
@@ -291,7 +294,8 @@ namespace Game_Enginge_Of_Strategy_games
 
                 if (match.SelectableTargetTiles.Contains(clickedTile))
                 {
-                    match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
+                    //match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
+                    match.SelectedAction.Execute(eventBlockPool, clickedTile.ActorStandsHere);
 
                     match.SelectedAction = null;
                     match.SelectedActor = null;
@@ -299,7 +303,7 @@ namespace Game_Enginge_Of_Strategy_games
 
                     UIManager.ClosePlayerCharacterActionPanel(this);
                 }
-            }
+        }
 
             else    //Everything else phrase
             {
@@ -366,14 +370,79 @@ namespace Game_Enginge_Of_Strategy_games
         }
         #endregion
 
+
+
+
+        ///////
         private void button1_Click(object sender, EventArgs e)
         {
-            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction() };
+            //EventActions
+            
+            EventBlockParameters mapParameter = new("map", typeof(TileMap));
+            EventBlockParameters actorParameter = new("actor", typeof(Actor));
+            IReadOnlyList<EventBlockParameters> paramok = new List<EventBlockParameters> { mapParameter, actorParameter };
+            EventBlock getSelectableTilesBlock = new("GetSelectableTiles", paramok, typeof(List<Tile>), executor: args => {
+                TileMap Map = (TileMap)args[0]!;
+                Actor User = (Actor)args[1]!;
+                GetSelectableTiles(Map, User);
+                return null;
+            }
+            );
+            eventBlockPool.Register(getSelectableTilesBlock);
 
-            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 4, 2, actlist);
-            match.Map.placeActor(act, 5, 5);
+            var block1 = new EventBlock_EditorInstance
+            {
+                BlockID = "GetSelectableTiles",
+                Parameters = new List<ParameterBinding>
+                {
+                    new ParameterBinding{ BindingType = ParameterBindingType.Constant, ConstantValue = match.Map },
+                    new ParameterBinding{ BindingType = ParameterBindingType.UserContext, UserProperty = "Actor" },
+                }
+            };
+
+            var Blocks = new List<EventBlock_EditorInstance> { block1 };
+            var action = new GameEvent { ID = "GetSelectableTiles", Blocks = new List<EventBlock_EditorInstance> { block1 } };
+
+            List<GameEvent> actlist = new List<GameEvent> { action};
+
+
+            //List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction() };
+
+            //Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 4, 2, aaa);
+            //match.Map.placeActor(act, 5, 5);
             Actor atkTarget = new("dummy", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 5, 3, 1, actlist);
             match.Map.placeActor(atkTarget, 2, 2);
+        }
+
+        public List<Tile> GetSelectableTiles(TileMap map, Actor user)
+        {
+            List<Tile> selectableTiles = new List<Tile>();
+
+            Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
+
+            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
+            {
+                for (int r = -user.AttackRange; r <= user.AttackRange; r++)
+                {
+                    if (Math.Abs(c) + Math.Abs(r) <= user.AttackRange)
+                    {
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        {
+                            if (map.MapObject[origin.columnIndex + c, origin.rowIndex + r].ActorStandsHere != null)
+                                selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                        }
+                    }
+                }
+            }
+            return selectableTiles;
+        }
+
+        public void AttackAction(Actor User, Tile targetTile, TileMap map)
+        {
+            if (targetTile != null && targetTile.ActorStandsHere != null)
+            {
+                targetTile.ActorStandsHere.HP = targetTile.ActorStandsHere.HP - 10;
+            }
         }
     }
 }

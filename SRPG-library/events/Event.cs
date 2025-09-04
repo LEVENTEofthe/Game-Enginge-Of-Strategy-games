@@ -7,28 +7,54 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public class ActionEvent    //The plan is that we'll make this thing inside the class library that would know what each command ID need to do, but doesn't know how to do it. We'd give this thing to the GEOS form and it would fill the HOWs with the methods we'd like to use in the events from inside itself.
+    public class GameEvent
     {
         public string ID { get; set; }
-        public string Description { get; set; }
-        public List<string> BlockIDs { get; set; }  //We are only storing the IDs of each command, because I would like to include UI function as well, and you can't put them into the class library.
+        public List<EventBlock_EditorInstance> Blocks { get; set; } = new();
 
-        public object? Execute(EventBlockPool actions, object? initialInput = null)
+        //public GameEvent(string ID,  List<EventBlock_EditorInstance> Blocks)
+        //{
+        //    this.ID = ID;
+        //    this.Blocks = Blocks;
+        //}
+
+        public object? Execute(EventBlockPool pool, object user)
         {
-            object? current = initialInput;
+            var results = new List<object?>();
 
-            foreach (var commandID in BlockIDs)
+            for (int i = 0; i < Blocks.Count; i++)
             {
-                var method = actions.Get(commandID) ??
-                    throw new InvalidOperationException($"The action {commandID} is not found");
+                var block = Blocks[i];
+                var method = pool.Get(block.BlockID)
+                    ?? throw new InvalidOperationException($"Method {block.BlockID} not found.");
 
-                if (current != null && !method.InputType.IsAssignableFrom(current.GetType()))
-                    throw new InvalidOperationException($"Type mismatch: {commandID} expected {method.InputType} but got {current.GetType()}");
+                //resolve arguments
+                var paramets = new object?[block.Parameters.Count];
+                for (int j = 0; j < block.Parameters.Count; j++)
+                {
+                    var binding = block.Parameters[j];
+                    paramets[j] = binding.BindingType switch
+                    {
+                        ParameterBindingType.Constant => binding.ConstantValue,
+                        ParameterBindingType.BlockResult => results[binding.SourceBlockIndex!.Value],
+                        ParameterBindingType.UserContext => ResolveUserValue(user, binding.UserProperty!),
+                        _ => throw new InvalidOperationException("Unknown argument source type")
+                    };
+                }
 
-                current = method.Executor(current);
+                var rslt = method.Executor(paramets);
+                results.Add(rslt);
             }
 
-            return current;
+            return results.LastOrDefault();
         }
-    }   
+
+        private object? ResolveUserValue(object user, string propertyName)
+        {
+            var prop = user.GetType().GetProperty(propertyName);
+            if (prop == null)
+                throw new InvalidOperationException($"Property {propertyName} not found on {user.GetType().Name}");
+            return prop.GetValue(user);
+        }
+    }
 }

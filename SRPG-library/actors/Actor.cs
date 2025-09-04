@@ -24,12 +24,12 @@ namespace SRPG_library
 
 
         //public List<ISingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
-        public List<ActionEvent> actionSet { get; set; }
+        public List<GameEvent> actionSet { get; set; }
 
         
         
         [JsonConstructor]
-        public Actor(string Name, string Image, int MaxHP, int Movement, int AttackRange, List<ActionEvent> ActionSet)
+        public Actor(string Name, string Image, int MaxHP, int Movement, int AttackRange, List<GameEvent> ActionSet)
         {
             this.Name = Name;
             this.Image = Image;

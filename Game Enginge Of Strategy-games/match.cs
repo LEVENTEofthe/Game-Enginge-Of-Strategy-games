@@ -13,7 +13,7 @@ namespace Game_Enginge_Of_Strategy_games
         public TileMap Map { get; set; }
         public Actor[] PlayerTeam { get; set; }
         //public List<SingleAction> ExecutableActions { get; set; }
-        public ActionEvent SelectedAction {  get; set; }
+        public GameEvent SelectedAction {  get; set; }
         public Actor SelectedActor { get; set; }
         public List<Tile> SelectableTargetTiles {  get; set; }
 
@@ -31,7 +31,7 @@ namespace Game_Enginge_Of_Strategy_games
             //};
         }
 
-        public void ExecuteSelectedAction(ActionEvent action, Actor actor)
+        public void ExecuteSelectedAction(GameEvent action, Actor actor)
         {
             SelectedAction = action;
             SelectedActor = actor;
