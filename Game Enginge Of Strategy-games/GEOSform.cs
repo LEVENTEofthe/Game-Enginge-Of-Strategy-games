@@ -16,6 +16,7 @@ namespace Game_Enginge_Of_Strategy_games
         //System variables
         private int tilesetSize = 16;   //the dimension of a single tile in the tileset image, in pixels
         Bitmap tilesetImage;
+        Dictionary<string, object> handlers;
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
@@ -72,6 +73,13 @@ namespace Game_Enginge_Of_Strategy_games
             xScrollBar.Value = 0;
             this.Controls.Add(xScrollBar);
             xScrollBar.Scroll += xScrollBar_Scroll;
+            #endregion
+
+            #region ActionVarialbeHandlers
+            handlers = new Dictionary<string, object>
+            {
+                //["ActorChooser"] = UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures")
+            };
             #endregion
         }
 
@@ -301,14 +309,21 @@ namespace Game_Enginge_Of_Strategy_games
                 {
                     List<Button> buttons = new List<Button>();
 
-                    foreach (var i in clickedActor.ActionSet)
+                    foreach (ISingleAction ActorAction in clickedActor.ActionSet)
                     {
-                        Button button = new Button { Name = i.ID, Text = i.ID, Size = new(90, 27) };
+                        Button button = new Button { Name = ActorAction.ID, Text = ActorAction.ID, Size = new(90, 27) };
                         button.Click += (s, ev) =>
                         {
-                            match.ExecuteSelectedAction(i, clickedActor);
+                            foreach (string VariableKey in ActorAction.Variables.Keys.ToList())
+                            {
+                                if (handlers.TryGetValue(VariableKey, out var Valu))
+                                    ActorAction.Variables[VariableKey] = Valu;
+                            }
+
+                            match.ExecuteSelectedAction(ActorAction, clickedActor);
                             ////match.SelectedAction = i;
                             ////ActionExecute(i, match.Map, clickedActor); 
+                            Invalidate();
                         };
                         buttons.Add(button);
                     }
@@ -355,10 +370,14 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void button1_Click(object sender, EventArgs e)
         {
-            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction() };
+            Actor an = UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures");
 
-            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 3, 1, 1, actlist);
+            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction(), new ThiefAttackAction() };
+
+            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 12, 4, 3, 1, 1, actlist);
             match.Map.placeActor(act, 5, 5);
+            Actor dummy = new("dummy", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 4, 3, 1, 1, actlist);
+            match.Map.placeActor(dummy, 3, 2);
         }
     }
 }

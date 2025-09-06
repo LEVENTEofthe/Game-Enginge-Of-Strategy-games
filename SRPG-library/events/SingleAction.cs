@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,16 +11,23 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public interface ISingleAction
+    public interface ISingleAction      //I am thinking of making it so that actor class object by default would only have the necessary class fields implemented to them, excluding action specific data like attack and move distance. My solution would be that actions that actually NEED those fields would bestow them on the objects that is using them. Like, every attack action would be bestowing the same AttackValue field to the actors, except those that would want to work by different logic, and those actors that has no attack actions, they don't need to implement any attack value field. The values of the bestowen fields would be set in the character creator.
     {
         string ID { get; }
+        Dictionary<string, object> Variables { get; }
+        Color SelectableTileColor { get; }
+
         List<Tile> GetSelectableTiles(TileMap map, Actor user);
         void Execute(Actor User, object target, TileMap map);
+
     }
 
     public class MoveAction : ISingleAction
     {
         public string ID => "Move";
+        public Dictionary<string, object> Variables => new Dictionary<string, object>();
+        public Color SelectableTileColor => Color.FromArgb(60, Color.Purple);
+
         public List<Tile> GetSelectableTiles(TileMap map, Actor user)
         {
             List<Tile> selectableTiles = new List<Tile>();
@@ -41,10 +49,11 @@ namespace SRPG_library
             }
             return selectableTiles;
         }
+
         public void Execute(Actor User, object target, TileMap map)
         {
             Tile targetTile = target as Tile;
-            
+
             if (targetTile != null && targetTile.CanStepHere())
             {
                 Tile currentTile = map.MapObject[User.columnIndex, User.rowIndex];
@@ -60,36 +69,165 @@ namespace SRPG_library
         }
     }
 
-
-    /*
-    public static class SingleAction  //The single blocks that when put together will form complex events
+    public class AttackAction : ISingleAction
     {
-        public static void Execute(string ActionID, ActionContext actionContext)
+        public string ID => "Attack";
+        public Dictionary<string, object> Variables => new Dictionary<string, object>();
+        public Color SelectableTileColor => Color.FromArgb(100, Color.Crimson);
+
+        public List<Tile> GetSelectableTiles(TileMap map, Actor user)
         {
-            switch (ActionID)
+            List<Tile> selectableTiles = new List<Tile>();
+
+            Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
+
+            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
             {
-                case "Move":
-                    Move(actionContext);
-                    break;
+                for (int r = -user.AttackRange; r <= user.AttackRange; r++)
+                {
+                    if (Math.Abs(c) + Math.Abs(r) <= user.AttackRange)
+                    {
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        {
+                            if (map.MapObject[origin.columnIndex + c, origin.rowIndex + r].ActorStandsHere != null)
+                                selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                        }
+                    }
+                }
             }
+            return selectableTiles;
         }
 
-        public static void Move(ActionContext actionContext) 
+        public void Execute(Actor User, object target, TileMap map)
         {
-            Tile currentTile = actionContext.Map.MapObject[actionContext.User.columnIndex, actionContext.User.rowIndex];
-            if (actionContext.TargetTile != null && actionContext.TargetTile.CanStepHere())
+            Tile targetTile = target as Tile;
+
+            if (targetTile != null && targetTile.ActorStandsHere != null)
             {
-                currentTile.ActorStandsHere = null;
-                actionContext.User.Column = actionContext.TargetTile.Column;
-                actionContext.User.Row = actionContext.TargetTile.Row;
-                actionContext.TargetTile.ActorStandsHere = actionContext.User;
+                targetTile.ActorStandsHere.HP = targetTile.ActorStandsHere.HP - 10;
             }
-            else
-            {
-                Debug.WriteLine($"You tried to step on the tile {actionContext.TargetTile} which is already occupied");
-            }
-    
         }
     }
-    */
+
+    public class HealAction : ISingleAction
+    {
+        public string ID => "Heal";
+        public Dictionary<string, object> Variables => new Dictionary<string, object>();
+        public Color SelectableTileColor => Color.FromArgb(60, Color.LightGreen);
+
+        public List<Tile> GetSelectableTiles(TileMap map, Actor user)
+        {
+            List<Tile> selectableTiles = new List<Tile>();
+
+            Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
+
+            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
+            {
+                for (int r = -user.AttackRange; r <= user.AttackRange; r++)
+                {
+                    if (Math.Abs(c) + Math.Abs(r) <= user.AttackRange)
+                    {
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        {
+                            if (map.MapObject[origin.columnIndex + c, origin.rowIndex + r].ActorStandsHere != null)
+                                selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                        }
+                    }
+                }
+            }
+            return selectableTiles;
+        }
+
+        public void Execute(Actor User, object target, TileMap map)
+        {
+            Tile targetTile = target as Tile;
+
+            if (targetTile != null && targetTile.ActorStandsHere != null)
+            {
+                targetTile.ActorStandsHere.HP = targetTile.ActorStandsHere.HP + 4;
+            }
+        }
+    }
+
+    public class ThiefAttackAction : ISingleAction
+    {
+        public string ID => "Thief attack";
+        public Actor ActorStolenFrom;
+        public Dictionary<string, object> Variables => new Dictionary<string, object> { { "ActorChooser", ActorStolenFrom } };
+        public Color SelectableTileColor => Color.FromArgb(100, Color.Crimson);
+
+        public List<Tile> GetSelectableTiles(TileMap map, Actor user)
+        {
+            List<Tile> selectableTiles = new List<Tile>();
+
+            Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
+
+            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
+            {
+                for (int r = -user.AttackRange; r <= user.AttackRange; r++)
+                {
+                    if (Math.Abs(c) + Math.Abs(r) <= user.AttackRange)
+                    {
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        {
+                            if (map.MapObject[origin.columnIndex + c, origin.rowIndex + r].ActorStandsHere != null)
+                                selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                        }
+                    }
+                }
+            }
+            return selectableTiles;
+        }
+
+        public void Execute(Actor User, object target, TileMap map)
+        {
+            Tile targetTile = target as Tile;
+
+            if (targetTile != null && targetTile.ActorStandsHere != null)
+            {
+                targetTile.ActorStandsHere.HP = targetTile.ActorStandsHere.HP - ActorStolenFrom.HP;
+            }
+        }
+    }
+
+    public class AttackDynamicAction : ISingleAction
+    {
+        public string ID => "DynamicAttack";
+        public int attackValue;
+        public Dictionary<string, object> Variables => new Dictionary<string, object> { { "ActorChooser", attackValue } };
+        public Color SelectableTileColor => Color.FromArgb(100, Color.Crimson);
+
+        public List<Tile> GetSelectableTiles(TileMap map, Actor user)
+        {
+            List<Tile> selectableTiles = new List<Tile>();
+
+            Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
+
+            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
+            {
+                for (int r = -user.AttackRange; r <= user.AttackRange; r++)
+                {
+                    if (Math.Abs(c) + Math.Abs(r) <= user.AttackRange)
+                    {
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        {
+                            if (map.MapObject[origin.columnIndex + c, origin.rowIndex + r].ActorStandsHere != null)
+                                selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
+                        }
+                    }
+                }
+            }
+            return selectableTiles;
+        }
+
+        public void Execute(Actor User, object target, TileMap map)
+        {
+            Tile targetTile = target as Tile;
+
+            if (targetTile != null && targetTile.ActorStandsHere != null)
+            {
+                targetTile.ActorStandsHere.HP = targetTile.ActorStandsHere.HP - attackValue;
+            }
+        }
+    }
 }

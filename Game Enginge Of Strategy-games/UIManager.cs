@@ -8,7 +8,7 @@ using SRPG_library;
 using Microsoft.VisualBasic.ApplicationServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.Metadata;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -132,7 +132,7 @@ namespace Game_Enginge_Of_Strategy_games
                 try
                 {
                     string json = File.ReadAllText(file);
-                    var data = JsonSerializer.Deserialize<Actor>(json);
+                    var data = JsonConvert.DeserializeObject<Actor>(json);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }

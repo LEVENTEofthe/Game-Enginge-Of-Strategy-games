@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Windows.Forms;
 using SRPG_library;
 
@@ -9,19 +9,13 @@ namespace CharacterCreator
 {
     public partial class CharacterEditor : Form
     {
+        List<ISingleAction?> ActionList;
         string characterImageSource;
-        List<string> EventList = new();
         public CharacterEditor()
         {
             InitializeComponent();
 
-            //Until we figure out how character action/event stuff should work, let's just statically build the already implemented actions
-            EventList.Add("Move");
-
-            foreach (var i in EventList)
-            {
-                actorActions.Items.Add(i);
-            }
+            LoadActionsToCheckbox();
         }
 
         private void importPicBtn_Click(object sender, EventArgs e)
@@ -62,12 +56,13 @@ namespace CharacterCreator
 
         private void exportChar(string filePath)
         {
-            List<string> ImplementedActions = actorActions.CheckedItems.OfType<string>().ToList();
+            List<ISingleAction> ImplementedActions = actorActions.CheckedItems.OfType<ISingleAction>().ToList();
 
-            Actor createdChara = new Actor(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), -1, -1, ImplementedActions);
+            Actor createdChara = new Actor(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), 2, -1, -1, ImplementedActions);
 
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            string json = JsonSerializer.Serialize(createdChara, options);
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string json = JsonConvert.SerializeObject(createdChara, Formatting.Indented, settings);
+            
             File.WriteAllText(filePath, json);
         }
 
@@ -84,6 +79,26 @@ namespace CharacterCreator
             {
                 exportChar(sfd.FileName);
             }
+        }
+
+        private void LoadActionsToCheckbox()
+        {
+            Assembly assem = typeof(ISingleAction).Assembly;
+
+            ActionList = assem.GetTypes()
+                .Where(t => typeof(ISingleAction).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                .Select(t => (ISingleAction)Activator.CreateInstance(t))
+                .ToList();
+
+            Debug.WriteLine("starting");
+            foreach (var instance in ActionList)
+            {
+                Debug.WriteLine("First");
+                Debug.WriteLine($"{instance.ID}");
+                actorActions.Items.Add(instance, false);
+            }
+
+            actorActions.DisplayMember = "ID";
         }
     }
 }
