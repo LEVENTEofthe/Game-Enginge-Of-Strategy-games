@@ -152,9 +152,14 @@ namespace SRPG_library
     public class ThiefAttackAction : ISingleAction
     {
         public string ID => "Thief attack";
-        public Actor ActorStolenFrom;
-        public Dictionary<string, object> Variables => new Dictionary<string, object> { { "ActorChooser", ActorStolenFrom } };
+        public Dictionary<string, object> Variables { get; } = new();
+        public Actor ActorStolenFrom { get => (Actor)Variables["ActorChooser"]; set => Variables["ActorChooser"] = value; }
         public Color SelectableTileColor => Color.FromArgb(100, Color.Crimson);
+
+        public ThiefAttackAction()
+        {
+            Variables["ActorChooser"] = new Actor();
+        }
 
         public List<Tile> GetSelectableTiles(TileMap map, Actor user)
         {
