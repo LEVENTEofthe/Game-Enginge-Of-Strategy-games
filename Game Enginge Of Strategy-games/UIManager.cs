@@ -125,14 +125,15 @@ namespace Game_Enginge_Of_Strategy_games
         public static List<Actor> LoadActorChooserData(string jsonFolderPath)
         {
             var actorJsonsList = new List<Actor>();
-            var files = Directory.GetFiles(jsonFolderPath, "*.json");
+            var jsonFiles = Directory.GetFiles(jsonFolderPath, "*.json");
+            var SerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All, Formatting = Formatting.Indented };
 
-            foreach (var file in files)
+            foreach (var file in jsonFiles)
             {
                 try
                 {
-                    string json = File.ReadAllText(file);
-                    var data = JsonConvert.DeserializeObject<Actor>(json);
+                    string content = File.ReadAllText(file);
+                    var data = JsonConvert.DeserializeObject<Actor>(content, SerializerSettings);
                     if (data != null)
                         actorJsonsList.Add(data);
                 }
