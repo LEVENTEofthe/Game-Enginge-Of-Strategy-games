@@ -314,17 +314,23 @@ namespace Game_Enginge_Of_Strategy_games
                     {
                         Button button = new Button { Name = ActorAction.ID, Text = ActorAction.ID, Size = new(90, 27) };
                         button.Click += (s, ev) =>
+
+                        #region clicking a character action button
                         {
                             foreach (string VariableKey in ActorAction.Variables.Keys.ToList())
                             {
                                 if (handlers.TryGetValue(VariableKey, out var method))
+                                {
                                     ActorAction.Variables[VariableKey] = method();
+                                }
                             }
 
                             match.ExecuteSelectedAction(ActorAction, clickedActor);
 
                             Invalidate();
                         };
+                        #endregion
+
                         buttons.Add(button);
                     }
 

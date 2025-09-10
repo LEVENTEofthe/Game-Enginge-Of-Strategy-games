@@ -12,23 +12,20 @@ namespace Game_Enginge_Of_Strategy_games
     {
         public TileMap Map { get; set; }
         public Actor[] PlayerTeam { get; set; }
-        //public List<SingleAction> ExecutableActions { get; set; }
+        public ParticingSides StartTurn { get; set; }
+        public ParticingSides CurrentTurn { get; set; }
+        public List<ParticingSides> TurnOrder { get; set; }
         public ISingleAction SelectedAction {  get; set; }
         public Actor SelectedActor { get; set; }
         public List<Tile> SelectableTargetTiles {  get; set; }
 
-        public Match(TileMap map)
+        public Match(TileMap map, ParticingSides startTurn, List<ParticingSides> turnOrder)
         {
             Map = map;
+            StartTurn = startTurn;
+            TurnOrder = turnOrder;
 
             SelectableTargetTiles = new List<Tile>();
-
-            //For now  I'll just try loading in all possible actions statically. Would be better if we didn't have to come here every time to put them here when we create a new SingleAction
-            //ActorMove actorMovement = new ActorMove();
-            //ExecutableActions = new List<SingleAction>
-            //{
-            //    actorMovement
-            //};
         }
 
         public void ExecuteSelectedAction(ISingleAction action, Actor actor)
@@ -38,5 +35,12 @@ namespace Game_Enginge_Of_Strategy_games
             SelectableTargetTiles = SelectedAction.GetSelectableTiles(Map, SelectedActor);
 
         }
+
+        public void TurnEnd()
+        {
+            CurrentTurn;
+        }
     }
+
+    public enum ParticingSides { player, enemy }    //We'd want to make sure the users can initiate more than one player input side and more than one computer controlled side with differing AI
 }
