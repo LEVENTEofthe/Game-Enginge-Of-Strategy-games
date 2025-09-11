@@ -1,12 +1,14 @@
+using SRPG_library;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Tracing;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using SRPG_library;
-using System.Diagnostics.Tracing;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -38,15 +40,23 @@ namespace Game_Enginge_Of_Strategy_games
             //What does initialize component do anyway?
             InitializeComponent();
 
-            string mapjson = File.ReadAllText("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\maps\\map1010.json");
+            #region ActionVarialbeHandlers
+            handlers = new Dictionary<string, Func<Object>>();
+            handlers["ActorChooser"] = () => UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures");
+            #endregion
+
+            string mapjson = File.ReadAllText("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\maps\\map1.json");
             TileMap map = JsonSerializer.Deserialize<TileMap>(mapjson);
 
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
+            match = new(map);
+            List<IGameState> turnOrder = new List<IGameState> { new PlayerTurn_SelectingAction(this, match, handlers), new PlayerTurn_FinalizingAction(this, match, handlers) };
+            match.TurnOrder = turnOrder;
+
             EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
-            List<ParticingSides> turnOrder = new List<ParticingSides> { ParticingSides.enemy, ParticingSides.player };
-            match = new(map, turnOrder);
+            
 
             this.DoubleBuffered = true; // Makes drawing smoother
             this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event
@@ -76,13 +86,19 @@ namespace Game_Enginge_Of_Strategy_games
             xScrollBar.Scroll += xScrollBar_Scroll;
             #endregion
 
-            #region ActionVarialbeHandlers
-            handlers = new Dictionary<string, Func<Object>>();
 
 
-                handlers["ActorChooser"] = () => UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures");
-            
-            #endregion
+
+
+            //Debug
+            Debug.WriteLine($"We're here and the turn is {match.CurrentTurn}");
+
+            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction(), new AliceAttackAction() };
+            Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 665, 4, 1, 2, 5, actlist);
+            match.Map.placeActor(Sarsio, 2, 3);
+            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 20, 4, 3, 7, 5, actlist);
+            Milo.Variables.Add("Edmond unit");
+            match.Map.placeActor(Milo, 7, 3);
         }
 
         public static List<Actor> ImportActors(string folderpath)  //Is this even useful?
@@ -207,7 +223,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //highlight action tiles
-            SolidBrush eventBrush = new(Color.FromArgb(60, Color.Purple));
+            SolidBrush eventBrush = new(Color.FromArgb(120, Color.Purple));
             foreach (Tile tile in match.SelectableTargetTiles)
             {
                 UIManager.highlightTile(tile, eventBrush, g);
@@ -244,6 +260,7 @@ namespace Game_Enginge_Of_Strategy_games
             mouseCoordinates.Text = e.Location.ToString();
             //tileCoords.Text = CameraManager.ReturnTileUnderCursor(e.Location, match.Map)?.ToString();
             tileCoords.Text = CameraManager.ReturnTileUnderCursor(e.Location, match.Map)?.ActorStandsHere?.ToString();
+            currentTurnLbl.Text = match.CurrentTurn.ToString();
         }
 
         private void GEOSform_MouseWheel(object sender, MouseEventArgs e)
@@ -279,87 +296,24 @@ namespace Game_Enginge_Of_Strategy_games
         {
             isDragging = true;
             dragStart = e.Location;
+            //Actor clickedActor = clickedOnPlayerCharacter(e.Location);
 
-            if (match.SelectedAction != null) //Action execute phrase
-            {
-                Tile clickedTile = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
+            match.CurrentTurn.MouseDown(e);
+            Invalidate();
 
-                if (match.SelectableTargetTiles.Contains(clickedTile))
-                {
-                    match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
 
-                    match.SelectedAction = null;
-                    match.SelectedActor = null;
-                    match.SelectableTargetTiles.Clear();
-
-                    UIManager.ClosePlayerCharacterActionPanel(this);
-                }
-            }
-
-            else    //Everything else phrase
-            {
-                
-                Actor clickedActor = clickedOnPlayerCharacter(e.Location);
-
-                if (clickedActor == null)
-                {
-                    //isDragging = true;
-                    //dragStart = e.Location;
-                }
-
-                if (clickedActor != null)
-                {
-                    List<Button> buttons = new List<Button>();
-
-                    foreach (ISingleAction ActorAction in clickedActor.ActionSet)
-                    {
-                        Button button = new Button { Name = ActorAction.ID, Text = ActorAction.ID, Size = new(90, 27) };
-                        button.Click += (s, ev) =>
-
-                        #region clicking a character action button
-                        {
-                            foreach (string VariableKey in ActorAction.Variables.Keys.ToList())
-                            {
-                                if (handlers.TryGetValue(VariableKey, out var method))
-                                {
-                                    ActorAction.Variables[VariableKey] = method();
-                                }
-                            }
-
-                            match.ExecuteSelectedAction(ActorAction, clickedActor);
-
-                            Invalidate();
-                        };
-                        #endregion
-
-                        buttons.Add(button);
-                    }
-
-                    UIManager.OpenNewPlayerCharacterActionPanel(this, clickedActor, e.Location, match.Map, buttons);
-
-                    //debug
-                    clickedOnPlayerLabel.Text = $"You have just clicked on {clickedActor.Name}, HP: {clickedActor.HP}";
-                }
-
-                if (clickedOnEnemyCharacter(e.Location) != null)
-                {
-
-                    //debug
-                    clickedOnPlayerLabel.Text = $"You have cilcked on an enemy, {clickedOnEnemyCharacter(e.Location).Name}";
-                }
-
-                //debug
-                tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
-                tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
-            }
+            //debug
+            tilePicker.Text = match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ToString();
+            tileInfoLabel.Text = $"Actor stands here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.ActorStandsHere}, Event: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.Event}, Can step here: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.CanStepHere()} position: {match.Map.returnTile(CameraManager.ScreenToTile(e.Location))?.returnTilePosition()}";
         }
+        
 
         private void GEOSform_MouseUp(object sender, MouseEventArgs e)
         {
             isDragging = false;
         }
 
-        private Actor clickedOnPlayerCharacter(Point mousePosition)
+        public Actor clickedOnPlayerCharacter(Point mousePosition)
         {
             if (CameraManager.ReturnTileUnderCursor(mousePosition, match.Map)?.ActorStandsHere != null)
             {
@@ -377,12 +331,142 @@ namespace Game_Enginge_Of_Strategy_games
 
         private void button1_Click(object sender, EventArgs e)
         {
-            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction(), new ThiefAttackAction() };
-
-            Actor act = new("Ene", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder.png", 12, 4, 3, 1, 1, actlist);
-            match.Map.placeActor(act, 5, 5);
-            Actor dummy = new("dummy", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/palaceholder2.png", 12, 4, 3, 1, 1, actlist);
-            match.Map.placeActor(dummy, 3, 2);
+            
+            Debug.WriteLine("This button is for debugging actions. It doesn't do anything currently though");
         }
     }
+
+
+    #region GameStates
+    public class MatchSetup : IGameState
+    {
+        public Form ParentForm => throw new NotImplementedException();
+        public Match match => throw new NotImplementedException();
+
+        public Dictionary<string, Func<object>> Handlers => throw new NotImplementedException();
+
+        public void MouseDown(MouseEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PlayerTurn_SelectingAction : IGameState
+    {
+        public Form ParentForm {  get; set; }
+        public Match match { get; set; }
+        public Dictionary<string, Func<object>> Handlers { get; set; }
+
+        public PlayerTurn_SelectingAction(Form parentForm, Match match, Dictionary<string, Func<object>> handlers)
+        {
+            Handlers = handlers;
+            this.match = match;
+            ParentForm = parentForm;
+        }
+
+        public void MouseDown(MouseEventArgs e)
+        {
+            IGameState gameState = this;
+            Actor clickedActor = gameState.clickedOnPlayerCharacter(e.Location, match);
+
+            if (clickedActor != null)
+            {
+                List<Button> buttons = new List<Button>();
+
+                foreach (ISingleAction ActorAction in clickedActor.ActionSet)
+                {
+                    System.Windows.Forms.ToolTip ToolTip1 = new System.Windows.Forms.ToolTip();
+                    
+
+                    Button button = new Button { Name = ActorAction.ID, Text = ActorAction.ID, Size = new(90, 31), Font = new("Arial", 9) };
+                    ToolTip1.SetToolTip(button, ActorAction.Description);
+
+                    button.Click += (s, ev) =>
+
+                    #region clicking a character action button
+                    {
+                        foreach (string VariableKey in ActorAction.Variables.Keys.ToList())
+                        {
+                            if (Handlers.TryGetValue(VariableKey, out var method))
+                            {
+                                ActorAction.Variables[VariableKey] = method();
+                            }
+                        }
+
+                        match.ExecuteSelectedAction(ActorAction, clickedActor);
+
+                        if (match.CurrentTurn is PlayerTurn_SelectingAction)
+                            match.TurnEnd();
+
+                        UIManager.ClosePlayerCharacterActionPanel(ParentForm);
+                    };
+                    #endregion
+
+                    buttons.Add(button);
+                }
+
+                UIManager.OpenNewPlayerCharacterActionPanel(ParentForm, clickedActor, e.Location, match.Map, buttons);
+            }
+        }
+
+        public override string ToString()
+        {
+            return "SelectingAction";
+        }
+    }
+
+    public class PlayerTurn_FinalizingAction : IGameState
+    {
+        public Form ParentForm { get; set; }
+        public Match match { get; set; }
+        public Dictionary<string, Func<object>> Handlers { get; set; }
+
+        public PlayerTurn_FinalizingAction(Form parentForm, Match match, Dictionary<string, Func<object>> handlers)
+        {
+            ParentForm = parentForm;
+            this.match = match;
+            Handlers = handlers;
+        }
+
+        public void MouseDown(MouseEventArgs e)
+        {
+            if (match.SelectedAction != null) //Action execute phrase
+            {
+                Tile clickedTile = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
+
+                if (match.SelectableTargetTiles.Contains(clickedTile))
+                {
+                    match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
+
+                    //
+                    if (match.SelectedAction is AliceAttackAction)
+                        UIManager.ShowDamageNumber(ParentForm, new Point(910, 350), 9999, Color.FromArgb(255, Color.Red));
+
+                    match.SelectedAction = null;
+                    match.SelectedActor = null;
+                    match.SelectableTargetTiles.Clear();
+
+                    UIManager.ClosePlayerCharacterActionPanel(ParentForm);
+
+                    match.TurnEnd();
+                }
+            }
+        }
+    }
+
+    public class EnemyTurn : IGameState
+    {
+        public Form ParentForm => throw new NotImplementedException();
+
+        public Match match => throw new NotImplementedException();
+
+        public Dictionary<string, Func<object>> Handlers => throw new NotImplementedException();
+
+        public void MouseDown(MouseEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    #endregion
 }

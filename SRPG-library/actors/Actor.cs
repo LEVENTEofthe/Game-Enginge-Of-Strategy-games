@@ -22,6 +22,7 @@ namespace SRPG_library
         public int Column { get; set; }
         public int Row { get; set; }
         public List<ISingleAction> ActionSet { get; set; }   //recently added, need to update the character creator and json reader //For now it's only SingleAction instead of Events
+        public List<string> Variables { get; set; }
 
         [JsonConstructor]
         public Actor(string Name, string Image, int HP, int Movement, int AttackRange, int Column, int Row, List<ISingleAction> ActionSet)
@@ -34,6 +35,8 @@ namespace SRPG_library
             this.Column = Column;
             this.Row = Row;
             this.ActionSet = ActionSet;
+
+            Variables = new List<string>();
         }
         public Actor(Tile tile)
         {
@@ -44,8 +47,10 @@ namespace SRPG_library
             AttackRange = tile.ActorStandsHere.AttackRange;
             Column = tile.ActorStandsHere.Column;
             Row = tile.ActorStandsHere.Row;
+
+            Variables = new List<string>();
         }
-        public Actor() { }
+        public Actor() { Variables = new List<string>(); }
 
         [JsonIgnore]
         public int columnIndex      //The columns/rows are one-indexed, but since C# arrays are zero-indexed, we'd need an instance of Zero-indexed columns&rows
@@ -63,8 +68,9 @@ namespace SRPG_library
         public override string ToString()
         {
             //return $"{Name}, Col: {Column}, Row: {Row}";
-            
-            return $"{Name}, {string.Join(", ", ActionSet)}";
+            //return $"{Name}, {string.Join(", ", ActionSet)}";
+
+            return $"{Name}, HP: {HP}";
         }
     }
 }

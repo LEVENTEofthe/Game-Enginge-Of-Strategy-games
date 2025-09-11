@@ -12,18 +12,27 @@ namespace Game_Enginge_Of_Strategy_games
     {
         public TileMap Map { get; set; }
         public Actor[] PlayerTeam { get; set; }
-        public (ParticingSides, int) CurrentTurn { get; set; }
-        public List<ParticingSides> TurnOrder { get; set; }
+        public IGameState CurrentTurn { get; set; }
+        private List<IGameState> turnOrder;
+        public int TurnNumber { get; set; }
         public ISingleAction SelectedAction {  get; set; }
         public Actor SelectedActor { get; set; }
         public List<Tile> SelectableTargetTiles {  get; set; }
 
-        public Match(TileMap map, List<ParticingSides> turnOrder)
+        public Match(TileMap map)
         {
             Map = map;
-            TurnOrder = turnOrder;
 
             SelectableTargetTiles = new List<Tile>();
+        }
+
+        public List<IGameState> TurnOrder
+        {
+            get { return turnOrder; }
+            set { turnOrder = value;
+                CurrentTurn = turnOrder.FirstOrDefault();
+                TurnNumber = 1;
+            }
         }
 
         public void ExecuteSelectedAction(ISingleAction action, Actor actor)
@@ -36,11 +45,12 @@ namespace Game_Enginge_Of_Strategy_games
 
         public void TurnEnd()
         {
-            int newTurnNumber = CurrentTurn.Item2 + 1;
-            ParticingSides newSidesTurn = TurnOrder[newTurnNumber % TurnOrder.Count];
-            CurrentTurn = (newSidesTurn, newTurnNumber);
+            TurnNumber = TurnNumber + 1;
+            IGameState newSidesTurn = TurnOrder[TurnNumber % TurnOrder.Count];
+            CurrentTurn = newSidesTurn;
         }
     }
 
     public enum ParticingSides { player, enemy }    //We'd want to make sure the users can initiate more than one player input side and more than one computer controlled side with differing AI
-}
+}                                                   //Guess I'd make it work that each ParticingSides type would implement different IGameState childs. So there would be different ParticingSides object for gamestates where you can move all your units once during your turn and for one where each of your units have their own turn where only they can move
+                                                    //Another option would be deleting ParticingSides and feeding only Player and Enemy IGameStates to TurnOrder, because from a Player IGameState you can go to other IGameStates which will lead back to the original Player state, which you have the option to end and advance turn

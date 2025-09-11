@@ -19,4 +19,10 @@ Each map consist of tiles, and each tile consist of the following:
  - ActorStandsHere, a reference[ ? ] to the actor who is occupying the tile. In case of no actor standing on the 
 
 
-MapObjects
+
+
+
+
+
+
+GameRules (to be implemented) are how the same system works slightly differently for different games. I'd separate it into categories, like Interface Rules, which would have stuff like "Can you drag the screen during fights by dragging on game objects or not" and GameplayRules like "Are there different heights in the maps or every map is perfectly flat in gameplay aspects"

@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             mouseCoordinates = new Label();
-            clickedOnPlayerLabel = new Label();
             tileCoords = new Label();
             tilePicker = new Label();
             tileInfoLabel = new Label();
             button1 = new Button();
+            currentTurnLbl = new Label();
             SuspendLayout();
             // 
             // mouseCoordinates
@@ -44,15 +44,6 @@
             mouseCoordinates.Size = new Size(135, 20);
             mouseCoordinates.TabIndex = 4;
             mouseCoordinates.Text = "mouse coordinates";
-            // 
-            // clickedOnPlayerLabel
-            // 
-            clickedOnPlayerLabel.AutoSize = true;
-            clickedOnPlayerLabel.Location = new Point(0, 573);
-            clickedOnPlayerLabel.Name = "clickedOnPlayerLabel";
-            clickedOnPlayerLabel.Size = new Size(128, 20);
-            clickedOnPlayerLabel.TabIndex = 7;
-            clickedOnPlayerLabel.Text = "clicked on player?";
             // 
             // tileCoords
             // 
@@ -91,17 +82,26 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // currentTurnLbl
+            // 
+            currentTurnLbl.AutoSize = true;
+            currentTurnLbl.Location = new Point(888, 22);
+            currentTurnLbl.Name = "currentTurnLbl";
+            currentTurnLbl.Size = new Size(86, 20);
+            currentTurnLbl.TabIndex = 18;
+            currentTurnLbl.Text = "CurrentTurn";
+            // 
             // GEOSform
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(1182, 653);
+            Controls.Add(currentTurnLbl);
             Controls.Add(button1);
             Controls.Add(tileInfoLabel);
             Controls.Add(tilePicker);
             Controls.Add(tileCoords);
-            Controls.Add(clickedOnPlayerLabel);
             Controls.Add(mouseCoordinates);
             DoubleBuffered = true;
             Name = "GEOSform";
@@ -112,10 +112,10 @@
 
         #endregion
         private Label mouseCoordinates;
-        private Label clickedOnPlayerLabel;
         private Label tileCoords;
         private Label tilePicker;
         private Label tileInfoLabel;
         private Button button1;
+        private Label currentTurnLbl;
     }
 }
