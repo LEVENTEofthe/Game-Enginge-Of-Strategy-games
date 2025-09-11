@@ -45,7 +45,8 @@ namespace Game_Enginge_Of_Strategy_games
 
             EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
-            match = new(map);
+            List<ParticingSides> turnOrder = new List<ParticingSides> { ParticingSides.enemy, ParticingSides.player };
+            match = new(map, turnOrder);
 
             this.DoubleBuffered = true; // Makes drawing smoother
             this.Paint += new PaintEventHandler(GEOSform_Paint); // Hook into the Paint event

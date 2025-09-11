@@ -12,17 +12,15 @@ namespace Game_Enginge_Of_Strategy_games
     {
         public TileMap Map { get; set; }
         public Actor[] PlayerTeam { get; set; }
-        public ParticingSides StartTurn { get; set; }
-        public ParticingSides CurrentTurn { get; set; }
+        public (ParticingSides, int) CurrentTurn { get; set; }
         public List<ParticingSides> TurnOrder { get; set; }
         public ISingleAction SelectedAction {  get; set; }
         public Actor SelectedActor { get; set; }
         public List<Tile> SelectableTargetTiles {  get; set; }
 
-        public Match(TileMap map, ParticingSides startTurn, List<ParticingSides> turnOrder)
+        public Match(TileMap map, List<ParticingSides> turnOrder)
         {
             Map = map;
-            StartTurn = startTurn;
             TurnOrder = turnOrder;
 
             SelectableTargetTiles = new List<Tile>();
@@ -38,7 +36,9 @@ namespace Game_Enginge_Of_Strategy_games
 
         public void TurnEnd()
         {
-            CurrentTurn;
+            int newTurnNumber = CurrentTurn.Item2 + 1;
+            ParticingSides newSidesTurn = TurnOrder[newTurnNumber % TurnOrder.Count];
+            CurrentTurn = (newSidesTurn, newTurnNumber);
         }
     }
 
