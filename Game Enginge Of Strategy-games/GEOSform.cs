@@ -1,5 +1,6 @@
 using SRPG_library;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Drawing.Text;
@@ -51,8 +52,8 @@ namespace Game_Enginge_Of_Strategy_games
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             match = new(map);
-            List<IGameState> turnOrder = new List<IGameState> { new PlayerTurn_SelectingAction(this, match, handlers), new PlayerTurn_FinalizingAction(this, match, handlers) };
-            match.TurnOrder = turnOrder;
+            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction(this, match, handlers), new PlayerTurn_FinalizingAction(this, match, handlers) };
+
 
             EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
@@ -223,10 +224,13 @@ namespace Game_Enginge_Of_Strategy_games
             }
 
             //highlight action tiles
-            SolidBrush eventBrush = new(Color.FromArgb(120, Color.Purple));
-            foreach (Tile tile in match.SelectableTargetTiles)
+            if (match.SelectedAction != null)
             {
-                UIManager.highlightTile(tile, eventBrush, g);
+                SolidBrush eventBrush = new(match.SelectedAction.SelectableTileColor);
+                foreach (Tile tile in match.SelectableTargetTiles)
+                {
+                    UIManager.highlightTile(tile, eventBrush, g);
+                }
             }
 
         }
@@ -329,6 +333,8 @@ namespace Game_Enginge_Of_Strategy_games
         }
         #endregion
 
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             
@@ -411,7 +417,7 @@ namespace Game_Enginge_Of_Strategy_games
 
         public override string ToString()
         {
-            return "SelectingAction";
+            return "Selecting Action";
         }
     }
 
@@ -438,10 +444,6 @@ namespace Game_Enginge_Of_Strategy_games
                 {
                     match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
 
-                    //
-                    if (match.SelectedAction is AliceAttackAction)
-                        UIManager.ShowDamageNumber(ParentForm, new Point(910, 350), 9999, Color.FromArgb(255, Color.Red));
-
                     match.SelectedAction = null;
                     match.SelectedActor = null;
                     match.SelectableTargetTiles.Clear();
@@ -451,6 +453,10 @@ namespace Game_Enginge_Of_Strategy_games
                     match.TurnEnd();
                 }
             }
+        }
+        public override string ToString()
+        {
+            return "Finalizing Action";
         }
     }
 

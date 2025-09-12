@@ -46,8 +46,8 @@ namespace Game_Enginge_Of_Strategy_games
         public void TurnEnd()
         {
             TurnNumber = TurnNumber + 1;
-            IGameState newSidesTurn = TurnOrder[TurnNumber % TurnOrder.Count];
-            CurrentTurn = newSidesTurn;
+            IGameState newTurn = TurnOrder[(TurnNumber - 1) % TurnOrder.Count]; //The turn number is one-indexed and the list is zero-indexed
+            CurrentTurn = newTurn;
         }
     }
 

@@ -28,7 +28,7 @@ namespace SRPG_library
         public string ID => "Move";
         public string Description => "";
         public Dictionary<string, object> Variables => new Dictionary<string, object>();
-        public Color SelectableTileColor => Color.FromArgb(254, Color.Purple);
+        public Color SelectableTileColor => Color.FromArgb(110, Color.Purple);
 
         public List<Tile> GetSelectableTiles(TileMap map, Actor user)
         {
@@ -76,7 +76,7 @@ namespace SRPG_library
         public string ID => "Attack";
         public string Description => "";
         public Dictionary<string, object> Variables => new Dictionary<string, object>();
-        public Color SelectableTileColor => Color.FromArgb(100, Color.Crimson);
+        public Color SelectableTileColor => Color.FromArgb(110, Color.Crimson);
 
         public List<Tile> GetSelectableTiles(TileMap map, Actor user)
         {
