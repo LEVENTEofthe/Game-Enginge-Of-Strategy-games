@@ -52,7 +52,7 @@ namespace Game_Enginge_Of_Strategy_games
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             match = new(map);
-            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction(this, match, handlers), new PlayerTurn_FinalizingAction(this, match, handlers) };
+            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction_AllUnitsOneTime(this, match, handlers), new PlayerTurn_FinalizingAction(this, match, handlers) };
 
 
             EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
@@ -95,10 +95,11 @@ namespace Game_Enginge_Of_Strategy_games
             Debug.WriteLine($"We're here and the turn is {match.CurrentTurn}");
 
             List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction(), new AliceAttackAction() };
-            Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 665, 4, 1, 2, 5, actlist);
+            Dictionary<string, object> SarsioVariables = new Dictionary<string, object> { { "MovementRange", 5 }, { "HP", 665 }, { "Strength", 10} };
+            Dictionary<string, object> MiloVariables = new Dictionary<string, object> { { "MovementRange", 4 }, { "HP", 25 }, { "Strength", 8 }, { "EdmondUnit", 1} };
+            Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 4, actlist, SarsioVariables, null, 2, 5);
             match.Map.placeActor(Sarsio, 2, 3);
-            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 20, 4, 3, 7, 5, actlist);
-            Milo.Variables.Add("Edmond unit");
+            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 5, actlist, MiloVariables, null, 7, 5);
             match.Map.placeActor(Milo, 7, 3);
         }
 
@@ -341,138 +342,4 @@ namespace Game_Enginge_Of_Strategy_games
             Debug.WriteLine("This button is for debugging actions. It doesn't do anything currently though");
         }
     }
-
-
-    #region GameStates
-    public class MatchSetup : IGameState
-    {
-        public Form ParentForm => throw new NotImplementedException();
-        public Match match => throw new NotImplementedException();
-
-        public Dictionary<string, Func<object>> Handlers => throw new NotImplementedException();
-
-        public void MouseDown(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class PlayerTurn_SelectingAction : IGameState
-    {
-        public Form ParentForm {  get; set; }
-        public Match match { get; set; }
-        public Dictionary<string, Func<object>> Handlers { get; set; }
-
-        public PlayerTurn_SelectingAction(Form parentForm, Match match, Dictionary<string, Func<object>> handlers)
-        {
-            Handlers = handlers;
-            this.match = match;
-            ParentForm = parentForm;
-        }
-
-        public void MouseDown(MouseEventArgs e)
-        {
-            IGameState gameState = this;
-            Actor clickedActor = gameState.clickedOnPlayerCharacter(e.Location, match);
-
-            if (clickedActor != null)
-            {
-                List<Button> buttons = new List<Button>();
-
-                foreach (ISingleAction ActorAction in clickedActor.ActionSet)
-                {
-                    System.Windows.Forms.ToolTip ToolTip1 = new System.Windows.Forms.ToolTip();
-                    
-
-                    Button button = new Button { Name = ActorAction.ID, Text = ActorAction.ID, Size = new(90, 31), Font = new("Arial", 9) };
-                    ToolTip1.SetToolTip(button, ActorAction.Description);
-
-                    button.Click += (s, ev) =>
-
-                    #region clicking a character action button
-                    {
-                        foreach (string VariableKey in ActorAction.Variables.Keys.ToList())
-                        {
-                            if (Handlers.TryGetValue(VariableKey, out var method))
-                            {
-                                ActorAction.Variables[VariableKey] = method();
-                            }
-                        }
-
-                        match.ExecuteSelectedAction(ActorAction, clickedActor);
-
-                        if (match.CurrentTurn is PlayerTurn_SelectingAction)
-                            match.TurnEnd();
-
-                        UIManager.ClosePlayerCharacterActionPanel(ParentForm);
-                    };
-                    #endregion
-
-                    buttons.Add(button);
-                }
-
-                UIManager.OpenNewPlayerCharacterActionPanel(ParentForm, clickedActor, e.Location, match.Map, buttons);
-            }
-        }
-
-        public override string ToString()
-        {
-            return "Selecting Action";
-        }
-    }
-
-    public class PlayerTurn_FinalizingAction : IGameState
-    {
-        public Form ParentForm { get; set; }
-        public Match match { get; set; }
-        public Dictionary<string, Func<object>> Handlers { get; set; }
-
-        public PlayerTurn_FinalizingAction(Form parentForm, Match match, Dictionary<string, Func<object>> handlers)
-        {
-            ParentForm = parentForm;
-            this.match = match;
-            Handlers = handlers;
-        }
-
-        public void MouseDown(MouseEventArgs e)
-        {
-            if (match.SelectedAction != null) //Action execute phrase
-            {
-                Tile clickedTile = CameraManager.ReturnTileUnderCursor(e.Location, match.Map);
-
-                if (match.SelectableTargetTiles.Contains(clickedTile))
-                {
-                    match.SelectedAction.Execute(match.SelectedActor, CameraManager.ReturnTileUnderCursor(e.Location, match.Map), match.Map);
-
-                    match.SelectedAction = null;
-                    match.SelectedActor = null;
-                    match.SelectableTargetTiles.Clear();
-
-                    UIManager.ClosePlayerCharacterActionPanel(ParentForm);
-
-                    match.TurnEnd();
-                }
-            }
-        }
-        public override string ToString()
-        {
-            return "Finalizing Action";
-        }
-    }
-
-    public class EnemyTurn : IGameState
-    {
-        public Form ParentForm => throw new NotImplementedException();
-
-        public Match match => throw new NotImplementedException();
-
-        public Dictionary<string, Func<object>> Handlers => throw new NotImplementedException();
-
-        public void MouseDown(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    #endregion
 }

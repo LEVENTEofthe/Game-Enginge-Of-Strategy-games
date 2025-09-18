@@ -36,11 +36,11 @@ namespace SRPG_library
 
             Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
 
-            for (int c = -user.Movement; c <= user.Movement; c++)
+            for (int c = -(int)user.Variables.GetValueOrDefault("Move"); c <= (int)user.Variables.GetValueOrDefault("Move"); c++)
             {
-                for (int r = -user.Movement; r <= user.Movement; r++)
+                for (int r = -(int)user.Variables.GetValueOrDefault("Move"); r <= (int)user.Variables.GetValueOrDefault("Move"); r++)
                 {
-                    if (Math.Abs(c) + Math.Abs(r) <= user.Movement)
+                    if (Math.Abs(c) + Math.Abs(r) <= (int)user.Variables.GetValueOrDefault("Move"))
                     {
                         if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
                         {
@@ -76,6 +76,8 @@ namespace SRPG_library
         public string ID => "Attack";
         public string Description => "";
         public Dictionary<string, object> Variables => new Dictionary<string, object>();
+        public int Strength { get => (int)Variables["Strength"]; set => Variables["Strength"] = value; }
+        public int Range { get => (int)Variables["AttackRange"]; set => Variables["AttackRange"] = value; }
         public Color SelectableTileColor => Color.FromArgb(110, Color.Crimson);
 
         public List<Tile> GetSelectableTiles(TileMap map, Actor user)
@@ -84,11 +86,11 @@ namespace SRPG_library
 
             Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
 
-            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
+            for (int c = -Range; c <= Range; c++)
             {
-                for (int r = -user.AttackRange; r <= user.AttackRange; r++)
+                for (int r = -Range; r <= Range; r++)
                 {
-                    if (Math.Abs(c) + Math.Abs(r) <= user.AttackRange)
+                    if (Math.Abs(c) + Math.Abs(r) <= Range)
                     {
                         if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
                         {
@@ -106,9 +108,12 @@ namespace SRPG_library
             Tile targetTile = target as Tile;
 
             if (targetTile != null && targetTile.ActorStandsHere != null)
-            {
-                targetTile.ActorStandsHere.HP = targetTile.ActorStandsHere.HP - 10;
-            }
+                if (targetTile.ActorStandsHere.Variables.ContainsKey("HP")) 
+                {
+                    int HP = (int)targetTile.ActorStandsHere.Variables.GetValueOrDefault("HP") - Strength;
+
+                    targetTile.ActorStandsHere.Variables["HP"] = HP;
+                } 
         }
     }
 
@@ -125,7 +130,7 @@ namespace SRPG_library
 
             Tile origin = map.MapObject[user.columnIndex, user.rowIndex];
 
-            for (int c = -user.AttackRange; c <= user.AttackRange; c++)
+            for (int c = -(int)user.Variables.GetValueOrDefault("Heal"); c <= user.AttackRange; c++)
             {
                 for (int r = -user.AttackRange; r <= user.AttackRange; r++)
                 {
