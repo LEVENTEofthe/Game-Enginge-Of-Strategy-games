@@ -16,15 +16,15 @@ namespace SRPG_library
         public string Name { get; set; }
         public string Image { get; set; }   //name of the image in GEOS data library/assets/actor textures
         public int HP { get; set; }
-        public int TurnSpeed { get; set; }
-        public List<ISingleAction> ActionSet { get; set; }
+        public int TurnSpeed { get; set; }  //For IGameStates where the player actors can't all act on the same turn, but every single actor have their turn come up in the order of this speed stat
+        public List<IActorAction> ActionSet { get; set; }
         public Dictionary<string, object> Variables { get; set; }
         public ActorAI AI { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
 
         [JsonConstructor]
-        public Actor(string Name, string Image, int HP, int TurnSpeed, List<ISingleAction> ActionSet, Dictionary<string, object> Variables, ActorAI AI, int Column, int Row)
+        public Actor(string Name, string Image, int HP, int TurnSpeed, List<IActorAction> ActionSet, Dictionary<string, object> Variables, ActorAI AI, int Column, int Row)
         {
             this.Name = Name;
             this.Image = Image;

@@ -1,4 +1,5 @@
 using SRPG_library;
+using SRPG_library.actors;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace Game_Enginge_Of_Strategy_games
         //System variables
         private int tilesetSize = 16;   //the dimension of a single tile in the tileset image, in pixels
         Bitmap tilesetImage;
-        Dictionary<string, Func<Object>> handlers;
+        Dictionary<string, Func<Object>> ActionSetupMethods;
         //moving the screen
         private bool isDragging = false;
         private Point dragStart;
@@ -38,13 +39,11 @@ namespace Game_Enginge_Of_Strategy_games
 
         public GEOSform()
         {
-            //What does initialize component do anyway?
             InitializeComponent();
 
-            #region ActionVarialbeHandlers
-            handlers = new Dictionary<string, Func<Object>>();
-            handlers["ActorChooser"] = () => UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures");
-            #endregion
+            //Some actions need an UI or other setup method to be executed before their 'SingleAction.Execute' methods could execute. These setup methods are attached to them as Variables.
+            ActionSetupMethods = new Dictionary<string, Func<Object>>();
+            ActionSetupMethods["ActorChooser"] = () => UIManager.ActorChooser("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\actors", "C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\actor textures");
 
             string mapjson = File.ReadAllText("C:\\Users\\bakos\\Documents\\GEOS data library\\database\\maps\\map1.json");
             TileMap map = JsonSerializer.Deserialize<TileMap>(mapjson);
@@ -52,10 +51,10 @@ namespace Game_Enginge_Of_Strategy_games
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             match = new(map);
-            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction_AllUnitsOneTime(this, match, handlers), new PlayerTurn_FinalizingAction(this, match, handlers) };
+            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction_AllUnitsOneTime(this, match, ActionSetupMethods), new PlayerTurn_FinalizingAction(this, match, ActionSetupMethods) };
 
 
-            EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
+            EventTileGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
 
             
 
@@ -94,7 +93,7 @@ namespace Game_Enginge_Of_Strategy_games
             //Debug
             Debug.WriteLine($"We're here and the turn is {match.CurrentTurn}");
 
-            List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction(), new AliceAttackAction() };
+            List<IActorAction> actlist = new List<IActorAction> { new MoveAction(), new AttackAction(), new AliceAttackAction(), new ThiefAttackAction() };
             Dictionary<string, object> SarsioVariables = new Dictionary<string, object> { { "Move", 5 }, { "HP", 665 }, { "Strength", 10}, { "AttackRange", 1}, { "SuperEffectiveMultiplier", 1.5f } };
             Dictionary<string, object> MiloVariables = new Dictionary<string, object> { { "Move", 4 }, { "HP", 25 }, { "Strength", 8 }, { "AttackRange", 2 }, { "EdmondUnit", true}, { "SuperEffectiveMultiplier", 1.5f } };
             Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 665, 4, actlist, SarsioVariables, null, 2, 5);
@@ -207,7 +206,7 @@ namespace Game_Enginge_Of_Strategy_games
 
                     if (Tile.Event != null)
                     {
-                        var img = EventGraphics.GetImage(Tile.Event);
+                        var img = EventTileGraphics.GetImage(Tile.Event);
                         g.DrawImage(img, screenPos.Item1, screenPos.Item2, size, size);
                     }
 

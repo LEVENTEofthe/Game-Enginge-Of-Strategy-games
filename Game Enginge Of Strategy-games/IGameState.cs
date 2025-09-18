@@ -1,4 +1,5 @@
 ﻿using SRPG_library;
+using SRPG_library.actors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,23 +67,22 @@ namespace Game_Enginge_Of_Strategy_games
             {
                 List<Button> buttons = new List<Button>();
 
-                foreach (ISingleAction ActorAction in clickedActor.ActionSet)
+                foreach (IActorAction ActorAction in clickedActor.ActionSet)
                 {
-                    System.Windows.Forms.ToolTip ToolTip1 = new System.Windows.Forms.ToolTip();
-
+                    ToolTip toolTip = new ToolTip();
 
                     Button button = new Button { Name = ActorAction.ID, Text = ActorAction.ID, Size = new(90, 31), Font = new("Arial", 9) };
-                    ToolTip1.SetToolTip(button, ActorAction.Description);
+                    toolTip.SetToolTip(button, ActorAction.Description);
 
                     button.Click += (s, ev) =>
-
                     #region clicking a character action button
                     {
+                        //Before an Action
                         foreach (string VariableKey in ActorAction.VariablesToImplement.Keys.ToList())
                         {
                             if (Handlers.TryGetValue(VariableKey, out var method))
                             {
-                                //ActorAction.VariablesToImplement[VariableKey] = method();
+                                clickedActor.Variables[VariableKey] = method();
                             }
                         }
 

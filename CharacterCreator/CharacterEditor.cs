@@ -4,13 +4,16 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using System.Windows.Forms;
 using SRPG_library;
+using SRPG_library.actors;
 
 namespace CharacterCreator
 {
     public partial class CharacterEditor : Form
     {
-        List<ISingleAction?> ActionList;
         string characterImageSource;
+        List<IActorAction?> ActionList;
+        Dictionary<string, object> Variables = new Dictionary<string, object>();
+        ActorAI actorAI = null;
         public CharacterEditor()
         {
             InitializeComponent();
@@ -34,16 +37,16 @@ namespace CharacterCreator
                 {
                     tryImage = Image.FromFile(ofd.FileName);
 
-                    if (tryImage.Size == new Size(8, 8) || tryImage.Size == new Size(16, 16) || tryImage.Size == new Size(32, 32) || tryImage.Size == new Size(64, 64) || tryImage.Size == new Size(128, 128))
+                    //if (tryImage.Size == new Size(8, 8) || tryImage.Size == new Size(16, 16) || tryImage.Size == new Size(32, 32) || tryImage.Size == new Size(64, 64) || tryImage.Size == new Size(128, 128))
                     {
                         characterImagePicbox.Image = tryImage;
                         characterImageSource = $"{ofd.InitialDirectory}/{ofd.SafeFileName}";
                     }
-                    else
-                    {
-                        MessageBox.Show($"Invalid image size: {tryImage.Size}", "Invalid size", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        tryImage.Dispose();
-                    }
+                    //else
+                    //{
+                    //    MessageBox.Show($"Invalid image size: {tryImage.Size}", "Invalid size", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //    tryImage.Dispose();
+                    //}
 
                 }
                 catch (Exception ex)
@@ -56,9 +59,9 @@ namespace CharacterCreator
 
         private void exportChar(string filePath)
         {
-            List<ISingleAction> ImplementedActions = actorActions.CheckedItems.OfType<ISingleAction>().ToList();
+            List<IActorAction> ImplementedActions = actorActions.CheckedItems.OfType<IActorAction>().ToList();
 
-            Actor createdChara = new Actor(nameTextbox.Text, characterImageSource, Convert.ToInt32(HPNumupdown.Value), Convert.ToInt32(MoveNumupdown.Value), 2, -1, -1, ImplementedActions);
+            Actor createdChara = new Actor(nameTextbox.Text, characterImageSource, Convert.ToInt32(TurnSpeed.Value), Convert.ToInt32(MoveNumupdown.Value), ImplementedActions, Variables, actorAI, -1, -1);
 
             var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
             string json = JsonConvert.SerializeObject(createdChara, Formatting.Indented, settings);
@@ -83,11 +86,11 @@ namespace CharacterCreator
 
         private void LoadActionsToCheckbox()
         {
-            Assembly assem = typeof(ISingleAction).Assembly;
+            Assembly assem = typeof(IActorAction).Assembly;
 
             ActionList = assem.GetTypes()
-                .Where(t => typeof(ISingleAction).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                .Select(t => (ISingleAction)Activator.CreateInstance(t))
+                .Where(t => typeof(IActorAction).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                .Select(t => (IActorAction)Activator.CreateInstance(t))
                 .ToList();
 
             Debug.WriteLine("starting");

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SRPG_library;
+using SRPG_library.actors;
 
 namespace Game_Enginge_Of_Strategy_games
 {
@@ -15,11 +16,11 @@ namespace Game_Enginge_Of_Strategy_games
         public IGameState CurrentTurn { get; set; }
         private List<IGameState> turnOrder;
         public int TurnNumber { get; set; }
-        public ISingleAction SelectedAction {  get; set; }
+        public IActorAction SelectedAction {  get; set; }
         public Actor SelectedActor { get; set; }
         public List<Tile> SelectableTargetTiles {  get; set; }
 
-        public Match(TileMap map)
+        public Match(TileMap map)   //Turn order can't be declared in the same line you declare the match for the IGameState objects needs the match object to already exist when you create them
         {
             Map = map;
 
@@ -35,7 +36,7 @@ namespace Game_Enginge_Of_Strategy_games
             }
         }
 
-        public void ExecuteSelectedAction(ISingleAction action, Actor actor)
+        public void ExecuteSelectedAction(IActorAction action, Actor actor)
         {
             SelectedAction = action;
             SelectedActor = actor;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SRPG_library
 {
-    public static class EventGraphics
+    public static class EventTileGraphics
     {
         private static Dictionary<string, Image> eventImages = new();
 

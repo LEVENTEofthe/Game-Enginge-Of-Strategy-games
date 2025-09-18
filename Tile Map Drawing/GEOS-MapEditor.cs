@@ -41,7 +41,7 @@ namespace Tile_Map_Drawing
 
             ShowSubmenu("Properties");   //Default
 
-            EventGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
+            EventTileGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
         }
 
         private void MapDrawingField_Paint(object sender, PaintEventArgs e)     //Gotta copy here the GEOS map drawing
@@ -71,7 +71,7 @@ namespace Tile_Map_Drawing
 
                     if (mapData[x, y].Event != null)
                     {
-                        var img = EventGraphics.GetImage(mapData[x, y].Event);
+                        var img = EventTileGraphics.GetImage(mapData[x, y].Event);
                         g.DrawImage(img, tileHitbox);
                     }
 
