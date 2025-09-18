@@ -95,11 +95,11 @@ namespace Game_Enginge_Of_Strategy_games
             Debug.WriteLine($"We're here and the turn is {match.CurrentTurn}");
 
             List<ISingleAction> actlist = new List<ISingleAction> { new MoveAction(), new AttackAction(), new AliceAttackAction() };
-            Dictionary<string, object> SarsioVariables = new Dictionary<string, object> { { "MovementRange", 5 }, { "HP", 665 }, { "Strength", 10} };
-            Dictionary<string, object> MiloVariables = new Dictionary<string, object> { { "MovementRange", 4 }, { "HP", 25 }, { "Strength", 8 }, { "EdmondUnit", 1} };
-            Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 4, actlist, SarsioVariables, null, 2, 5);
+            Dictionary<string, object> SarsioVariables = new Dictionary<string, object> { { "Move", 5 }, { "HP", 665 }, { "Strength", 10}, { "AttackRange", 1}, { "SuperEffectiveMultiplier", 1.5f } };
+            Dictionary<string, object> MiloVariables = new Dictionary<string, object> { { "Move", 4 }, { "HP", 25 }, { "Strength", 8 }, { "AttackRange", 2 }, { "EdmondUnit", true}, { "SuperEffectiveMultiplier", 1.5f } };
+            Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 665, 4, actlist, SarsioVariables, null, 2, 5);
             match.Map.placeActor(Sarsio, 2, 3);
-            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 5, actlist, MiloVariables, null, 7, 5);
+            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 18, 5, actlist, MiloVariables, null, 7, 5);
             match.Map.placeActor(Milo, 7, 3);
         }
 

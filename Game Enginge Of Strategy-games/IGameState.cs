@@ -78,11 +78,11 @@ namespace Game_Enginge_Of_Strategy_games
 
                     #region clicking a character action button
                     {
-                        foreach (string VariableKey in ActorAction.Variables.Keys.ToList())
+                        foreach (string VariableKey in ActorAction.VariablesToImplement.Keys.ToList())
                         {
                             if (Handlers.TryGetValue(VariableKey, out var method))
                             {
-                                ActorAction.Variables[VariableKey] = method();
+                                //ActorAction.VariablesToImplement[VariableKey] = method();
                             }
                         }
 
@@ -167,7 +167,7 @@ namespace Game_Enginge_Of_Strategy_games
             foreach (Tile tile in match.Map.MapObject)
             {
                 if (tile.ActorStandsHere != null)
-                    if (tile.ActorStandsHere.Variables.Contains("CPUcontrolled"))
+                    //if (tile.ActorStandsHere.Variables.Contains("CPUcontrolled"))
                     {
 
                     }
