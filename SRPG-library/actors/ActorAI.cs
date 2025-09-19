@@ -7,19 +7,23 @@ using System.Threading.Tasks;
 
 namespace SRPG_library.actors
 {
-    public interface ActorAI
+
+    public interface IActorAI
     {
         string AIType { get; }
-        Actor myself {  get; }
 
         void MyTurn(TileMap map);
-
+    }
+    public interface IActorAIFactory
+    {
+        IActorAI Create(Actor holder);
     }
 
-    public class EnemyAI : ActorAI
+
+    public class EnemyAI : IActorAI
     {
         public string AIType => "Enemy";
-        public Actor myself { get; set; }
+        private readonly Actor myself;
         
         public EnemyAI(Actor actor)
         {
@@ -30,15 +34,17 @@ namespace SRPG_library.actors
         {
             Actor aggro = FindClosestActor(map, myself);
 
-            if (aggro == null)
+            if (aggro != null)
             {
+                Debug.WriteLine($"aggro: {aggro.Name}, ({aggro.Column}, {aggro.Row})");
                 MoveAction moveAction = myself.ActionSet.OfType<MoveAction>().FirstOrDefault();
                 if (moveAction != null)
                 {
                     List<Tile> canStepTo = moveAction.GetSelectableTiles(map, myself);
+                    //int currentDistance = Math.Abs(myself.Column - aggro.Column) + Math.Abs(myself.Row - aggro.Row);                                            
                     Tile wantToMoveThere = canStepTo
-                        .OrderBy(tile => Math.Abs(tile.Column - aggro.Column) + Math.Abs(tile.Row - aggro.Row))
-                        .FirstOrDefault();
+                    .OrderBy(tile => Math.Abs(tile.Column - aggro.Column) + Math.Abs(tile.Row - aggro.Row))
+                    .FirstOrDefault();
 
                     if (wantToMoveThere != null)
                         moveAction.Execute(myself, wantToMoveThere, map);
@@ -56,8 +62,8 @@ namespace SRPG_library.actors
             var visited = new bool[map.Columns, map.Rows];
             var queue = new Queue<(int x, int y, int dist)>();
 
-            queue.Enqueue((myself.Column, myself.Row, 0));
-            visited[myself.Column, myself.Row] = true;
+            queue.Enqueue((myself.columnIndex, myself.rowIndex, 0));
+            visited[myself.columnIndex, myself.rowIndex] = true;
 
             int[] dx = { 1, -1, 0, 0 };
             int[] dy = { 0, 0, 1, -1 };
@@ -82,7 +88,13 @@ namespace SRPG_library.actors
                 }
             }
 
+            Debug.WriteLine("I can't find you");
             return null;
         }
+    }
+
+    public class EnemyAIFactory : IActorAIFactory
+    {
+        public IActorAI Create(Actor holder) => new EnemyAI(holder);
     }
 }

@@ -19,12 +19,12 @@ namespace SRPG_library
         public int TurnSpeed { get; set; }  //For IGameStates where the player actors can't all act on the same turn, but every single actor have their turn come up in the order of this speed stat
         public List<IActorAction> ActionSet { get; set; }
         public Dictionary<string, object> Variables { get; set; }
-        public ActorAI AI { get; set; }
+        public IActorAI AI { get; set; }
         public int Column { get; set; }
         public int Row { get; set; }
 
         [JsonConstructor]
-        public Actor(string Name, string Image, int HP, int TurnSpeed, List<IActorAction> ActionSet, Dictionary<string, object> Variables, ActorAI AI, int Column, int Row)
+        public Actor(string Name, string Image, int HP, int TurnSpeed, List<IActorAction> ActionSet, Dictionary<string, object> Variables, IActorAIFactory AIFactory, int Column, int Row)
         {
             this.Name = Name;
             this.Image = Image;
@@ -32,7 +32,8 @@ namespace SRPG_library
             this.TurnSpeed = TurnSpeed;
             this.ActionSet = ActionSet;
             this.Variables = Variables;
-            this.AI = AI;
+            if (AIFactory != null)
+                AI = AIFactory.Create(this);
             this.Column = Column;
             this.Row = Row;
         }

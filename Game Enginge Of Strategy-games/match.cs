@@ -49,6 +49,7 @@ namespace Game_Enginge_Of_Strategy_games
             TurnNumber = TurnNumber + 1;
             IGameState newTurn = TurnOrder[(TurnNumber - 1) % TurnOrder.Count]; //The turn number is one-indexed and the list is zero-indexed
             CurrentTurn = newTurn;
+            CurrentTurn.OnTurnStart();
         }
     }
 

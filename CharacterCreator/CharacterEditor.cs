@@ -13,7 +13,7 @@ namespace CharacterCreator
         string characterImageSource;
         List<IActorAction?> ActionList;
         Dictionary<string, object> Variables = new Dictionary<string, object>();
-        ActorAI actorAI = null;
+        IActorAI actorAI = null;
         public CharacterEditor()
         {
             InitializeComponent();

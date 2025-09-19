@@ -44,7 +44,9 @@ namespace SRPG_library.actors
                 {
                     if (Math.Abs(c) + Math.Abs(r) <= MoveRange)
                     {
-                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && origin.Row + r <= map.Rows && origin.Row + r > 0)
+                        if (origin.Column + c <= map.Columns && origin.Column + c > 0 && 
+                            origin.Row + r <= map.Rows && origin.Row + r > 0 && 
+                            map.MapObject[origin.columnIndex + c, origin.rowIndex + r].CanStepHere())
                         {
                             selectableTiles.Add(map.MapObject[origin.columnIndex + c, origin.rowIndex + r]);
                         }

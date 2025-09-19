@@ -51,7 +51,7 @@ namespace Game_Enginge_Of_Strategy_games
             tilesetImage = new Bitmap(map.Tileset);   //apparently, you can only set only one tileset at the moment, so we should later make it so each map/match can have different tilesets or something
 
             match = new(map);
-            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction_AllUnitsOneTime(this, match, ActionSetupMethods), new PlayerTurn_FinalizingAction(this, match, ActionSetupMethods) };
+            match.TurnOrder = new List <IGameState> { new PlayerTurn_SelectingAction_AllUnitsOneTime(this, match, ActionSetupMethods), new PlayerTurn_FinalizingAction(this, match, ActionSetupMethods), new EnemyTurn_AllUnitsActOneTime(this, match, ActionSetupMethods) };
 
 
             EventTileGraphics.LoadImages("C:\\Users\\bakos\\Documents\\GEOS data library\\assets\\event textures");
@@ -95,10 +95,11 @@ namespace Game_Enginge_Of_Strategy_games
 
             List<IActorAction> actlist = new List<IActorAction> { new MoveAction(), new AttackAction(), new AliceAttackAction(), new ThiefAttackAction() };
             Dictionary<string, object> SarsioVariables = new Dictionary<string, object> { { "Move", 5 }, { "HP", 665 }, { "Strength", 10}, { "AttackRange", 1}, { "SuperEffectiveMultiplier", 1.5f } };
-            Dictionary<string, object> MiloVariables = new Dictionary<string, object> { { "Move", 4 }, { "HP", 25 }, { "Strength", 8 }, { "AttackRange", 2 }, { "EdmondUnit", true}, { "SuperEffectiveMultiplier", 1.5f } };
+            Dictionary<string, object> MiloVariables = new Dictionary<string, object> { { "Move", 2 }, { "HP", 25 }, { "Strength", 8 }, { "AttackRange", 2 }, { "EdmondUnit", true}, { "SuperEffectiveMultiplier", 1.5f } };
             Actor Sarsio = new("Sarsio", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Sarsio.png", 665, 4, actlist, SarsioVariables, null, 2, 5);
             match.Map.placeActor(Sarsio, 2, 3);
-            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 18, 5, actlist, MiloVariables, null, 7, 5);
+            EnemyAIFactory enem = new();
+            Actor Milo = new("Milo", "C:/Users/bakos/Documents/GEOS data library/assets/actor textures/Milo.png", 18, 5, actlist, MiloVariables, enem, 7, 5);
             match.Map.placeActor(Milo, 7, 3);
         }
 

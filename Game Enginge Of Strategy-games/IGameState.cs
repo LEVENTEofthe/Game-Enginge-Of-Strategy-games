@@ -2,6 +2,7 @@
 using SRPG_library.actors;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -163,15 +164,19 @@ namespace Game_Enginge_Of_Strategy_games
         }
 
         public void OnTurnStart() 
-        { 
+        {
             foreach (Tile tile in match.Map.MapObject)
             {
                 if (tile.ActorStandsHere != null)
-                    //if (tile.ActorStandsHere.Variables.Contains("CPUcontrolled"))
+                {
+                    if (tile.ActorStandsHere.AI != null)
                     {
-
+                        tile.ActorStandsHere.AI.MyTurn(match.Map);
                     }
+                }
             }
+
+            match.TurnEnd();
         }
 
         public void MouseDown(MouseEventArgs e)
